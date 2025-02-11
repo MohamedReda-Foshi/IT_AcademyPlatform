@@ -9,7 +9,7 @@ interface ResgisterParams{
     password: string
 }
 
-export const register =async ({ adminname, email, password}: ResgisterParams)=>{
+export const registerAdmin =async ({ adminname, email, password}: ResgisterParams)=>{
     const findAdmin= await AdminModel.findOne({email});
     if(findAdmin){
         return{error:{message:"admin unser already exists"}};

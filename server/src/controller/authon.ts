@@ -1,5 +1,4 @@
-import asyncHandler from 'express-async-handler';
-import { register } from '../services/adminServices';
+{/*import asyncHandler from 'express-async-handler';
 
 interface RegisterParams {
   firstNameUser: string;
@@ -9,7 +8,7 @@ interface RegisterParams {
   adminname: string;
 }
 
-export const registerUser = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   try {
     const userData: RegisterParams = {
       firstNameUser: req.body.firstNameUser,
@@ -29,3 +28,4 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+*/}
