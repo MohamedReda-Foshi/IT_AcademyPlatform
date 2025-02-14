@@ -1,5 +1,10 @@
 import { userModel } from "../Model/userModel";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+
+dotenv.config();
+
 interface ResgisterParams{
     firstName:string;
     lastName:string;
@@ -27,7 +32,7 @@ export const registerUser = async ({
         password:hachedPassword})
     await newUser.save();
 
-    return newUser;
+    return generateJWT({firstName,lastName,email});
 }
 
 interface LoginParams{
@@ -44,7 +49,14 @@ export const login =async ({email,password}: LoginParams)=>{
     };
     const passwordMatch = await bcrypt.compare(password,findUser.password);
     if(passwordMatch) {
-        return findUser;
+        return generateJWT({email,firstName:findUser.firstName,lastName:findUser.lastName});
     }
     return {data:"Iconract password"}
-}
+};
+
+
+const generateJWT=(data:any)=>{
+    return jwt.sign(data,'XE93hyuttumhjzi4sk9hRIQ5mIyscfwb');
+
+} 
+/// npm i --save-dev @types/jsonwebtoken
