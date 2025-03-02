@@ -5,50 +5,40 @@ import Link from 'next/link'
 
 function Navigation() {
   return (
-    
-    <div className="flex h-16 items-center  justify-between px-4">
 
-    <h1>logo</h1>
-      <div className=" items-center " >
-        <nav>
-          <ul className="flex items-center gap-3 border-red-500 p-3 border-4 rounded-full text-sm">
-            <li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="/"> Home </Link>
-            </li>
-            <li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="#"> Courses </Link>
-            </li>
-            <li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="#">  </Link>
-            </li>
-            <li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="/About">About</Link>
-            </li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="/Contact"> Contact </Link>
-            <li>
-              <Link className="text-gray-500 transition hover:text-gray-500/75" href="#"> Blog </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <>
 
-      <div className="flex items-center gap-4">
-        <div className="sm:flex sm:gap-4">
+      <nav className="bg-black border-b border-red-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/">
+                <span className="flex items-center">
+                  <span className="text-red-600 text-2xl font-bold">Tech</span>
+                  <span className="text-white text-2xl font-bold">Learn</span>
+                </span>
+              </Link>
+            </div>
+            <div className="flex items-center space-x-8">
+              <Link href="/" className="hover:text-red-500 transition">Home</Link>
+              <Link href="/Courses" className="hover:text-red-500 transition">Courses</Link>
+              <Link href="/About" className="hover:text-red-600 transition">About</Link>
+              <Link href="/Contact" className="hover:text-red-500 transition">Contact</Link>
 
-          <Button button="Sign up" />
+              <Link href="/Login"><Button button="Login" /></Link>
+              <Link href="/Singup"><SeButton button="sing up" /></Link>
 
-          <div className="hidden sm:flex">
-          <SeButton button="Register"/>
 
+            </div>
           </div>
         </div>
-
-      </div>
-    </div>
+      </nav>
 
 
 
-  )
+    </>
+
+  );
 }
 
-export default Navigation
+export default Navigation;
