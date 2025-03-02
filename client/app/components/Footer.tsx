@@ -1,15 +1,16 @@
 import React from 'react'
-import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin ,Github  } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin, Github } from 'lucide-react';
 
 function Footer() {
   return (
-<footer className="bg-[#1E1E1E] text-white">
+    <footer className="bg-[#1E1E1E] text-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-red-600">EduTech Pro</h3>
+            <span className="text-red-600 text-2xl font-bold">Tech</span>
+            <span className="text-white text-2xl font-bold">Learn</span>
             <p className="text-gray-300">
               Empowering futures through innovative IT education and professional development.
             </p>
@@ -18,7 +19,7 @@ function Footer() {
               <Twitter className="w-5 h-5 text-gray-300 hover:text-red-600 cursor-pointer" />
               <Linkedin className="w-5 h-5 text-gray-300 hover:text-red-600 cursor-pointer" />
               <Instagram className="w-5 h-5 text-gray-300 hover:text-red-600 cursor-pointer" />
-              <Github className="w-5 h-5 text-gray-300 hover:text-red-600 cursor-pointer" /> 
+              <Github className="w-5 h-5 text-gray-300 hover:text-red-600 cursor-pointer" />
             </div>
           </div>
 

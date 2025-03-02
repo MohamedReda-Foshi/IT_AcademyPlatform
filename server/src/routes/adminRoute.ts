@@ -29,14 +29,7 @@ router.post("/login", async (req, res) => {
       }
     });
 
-router.post("logout",(req,res)=>{
-  try{
 
-  }
-  catch{
-    
-  }
-})
 //get all admin user
 
 router.get("/AdminUser",async(req,res)=>{

@@ -1,9 +1,14 @@
 import React from 'react'
 
-function SeButton(props) {
+
+interface SeButtonProps {
+    button: string;
+}
+
+function SeButton(props:SeButtonProps) {
     return (
         <div>
-            <a className="inline-block rounded-3xl border border-current px-4 py-2 text-sm font-medium text-red-600 transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring "
+            <a className="bg-white text-red-500 hover:bg-red-800 px-4 py-2 rounded-md transition "
 
                 href="#"
             >                    {props.button}

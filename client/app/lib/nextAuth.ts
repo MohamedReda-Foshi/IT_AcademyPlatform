@@ -17,7 +17,7 @@ export const authOptions:AuthOptions={
     },
     jwt:{
 
-    },callbacks:{
+    },callbacks:{ 
 
     }
 
