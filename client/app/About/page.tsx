@@ -236,52 +236,7 @@ export default function About() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-red-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <Link href="/">
-                <span className="flex items-center">
-                  <span className="text-red-600 text-2xl font-bold">Tech</span>
-                  <span className="text-white text-2xl font-bold">Learn</span>
-                </span>
-              </Link>
-              <p className="mt-4 text-gray-400">
-                Empowering IT professionals with the skills they need to succeed in todays digital world.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium mb-4">Courses</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/courses/web-development" className="hover:text-red-500 transition">Web Development</Link></li>
-                <li><Link href="/courses/cybersecurity" className="hover:text-red-500 transition">Cybersecurity</Link></li>
-                <li><Link href="/courses/cloud-computing" className="hover:text-red-500 transition">Cloud Computing</Link></li>
-                <li><Link href="/courses/data-science" className="hover:text-red-500 transition">Data Science</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-red-500 transition">About Us</Link></li>
-                <li><Link href="/careers" className="hover:text-red-500 transition">Careers</Link></li>
-                <li><Link href="/blog" className="hover:text-red-500 transition">Blog</Link></li>
-                <li><Link href="/contact" className="hover:text-red-500 transition">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium mb-4">Legal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/terms" className="hover:text-red-500 transition">Terms of Service</Link></li>
-                <li><Link href="/privacy" className="hover:text-red-500 transition">Privacy Policy</Link></li>
-                <li><Link href="/cookies" className="hover:text-red-500 transition">Cookie Policy</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} TechLearn. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+    
     </div>
   );
 }

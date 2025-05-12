@@ -7,13 +7,12 @@ interface ButtonProps {
 
 function Button(props: ButtonProps) {
   return (
-    <div>
-      <a
+    <div className='py-4'>
+      <button
         className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition"
-        href="#"
       >
         {props.button}
-      </a>
+      </button>
     </div>
   );
 }

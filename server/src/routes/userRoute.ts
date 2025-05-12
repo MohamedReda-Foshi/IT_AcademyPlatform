@@ -15,6 +15,18 @@ router.get("/getuser",async(req,res)=>{
   }
 });
 
+router.get("/getusername/:id",async(req,res)=>{
+
+  try{
+    const id = req.params.id;
+    const UserName = await userModel.findById(id).select( 'firstName lastName');
+    res.status(200).json(UserName);
+  }catch(err){
+    res.status(404).send(err);
+
+  }
+
+});
 
 
 

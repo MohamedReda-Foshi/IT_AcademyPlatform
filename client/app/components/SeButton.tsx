@@ -8,11 +8,9 @@ interface SeButtonProps {
 function SeButton(props:SeButtonProps) {
     return (
         <div>
-            <a className="bg-white text-red-500 hover:bg-red-800 px-4 py-2 rounded-md transition "
-
-                href="#"
+            <button className="bg-white text-red-500 hover:bg-red-800 px-4 py-2 rounded-md transition "
             >                    {props.button}
-            </a>
+            </button>
     
         </div>
     )

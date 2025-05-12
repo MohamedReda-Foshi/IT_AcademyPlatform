@@ -1,13 +1,13 @@
 import React from 'react'
-import Button from '../components/Button';
-import Link from 'next/link';
+import Button from '../components/Button'
+
 function page() {
-return (
+  return (
     <div>
       <div className="flex py-32 items-center justify-start ">
         <div className="mx-auto w-full max-w-lg bg-black p-6 rounded-2xl">
-          <h1 className="text-4xl font-bold">Login </h1>
-          <p className="mt-3 text">Login</p>
+          <h1 className="text-4xl font-bold">Admin Login </h1>
+          <p className="mt-3 text">Login:</p>
 
           <form className="mt-10 py-4"> 
             <div className="grid gap-6 sm:grid-row-2">
@@ -22,14 +22,12 @@ return (
               </div>
  
             </div>
-            <Link href="/Courses">
-                <Button button="send"/>
-            </Link>
+           <Button button="send"/>
           </form>
         </div>
       </div>
     </div>
-    )
+  )
 }
 
-export default page
+export default page;

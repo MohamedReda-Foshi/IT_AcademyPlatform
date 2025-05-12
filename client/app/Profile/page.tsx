@@ -5,19 +5,22 @@ import React from 'react'
 function page() {
     return (
         <div className='flex  p-9'>
-            <div className=" bg-[f4f4f0] py-10 flex ">
-                <div className="w-full">
+            <div className=" bg-[f4f4f0] py-10  ">
+                <div className="items-center justify-center flex border-gray-400 rounded-2xl">
 
-                    <div className=' flex flext-row gap-8'>
+                    <div className=' flex flext-row gap-8 rounded- '>
 
-                        <Image
-                            className='rounded-lg hover:scale-110 transition'
+                       <Image
+                            className='rounded-full'
                             src="https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg"
-                            width={300}
-                            height={400}
+                            width={100}
+                            height={100}
                             alt="Front-end Development"
                             objectFit='cover'
-                        />                        <h1 className='text-xl font-semibold'>Full Name</h1>
+                        />
+                    <h1 className='text-xl font-semibold'>First Name :</h1>
+                    <h1 className='text-xl font-semibold'>Last Name : </h1>
+                    
                     </div>
 
                     <div>
@@ -25,11 +28,6 @@ function page() {
                         <p className='text-lg'>example@gmail.com</p>
 
                     </div>
-
-
-
-
-
 
                 </div>
             </div>
