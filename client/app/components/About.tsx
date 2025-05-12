@@ -3,9 +3,12 @@ import React from 'react'
 
 function About() {
   return (
-    <div className='px-5'>
+    <div className='p-10'>
 
-      <h1 className='text-3xl'>Ho we are</h1>
+      <span className='text-3xl flex items-center justify-center'>
+      <span className="text-red-600 text-3xl font-bold">Who </span>
+      <span className="text-white text-3xl font-bold">We are</span>
+      </span>
 
       <div className='flex flex-col md:flex-row md:flex gap-4 items-center justify-center'>
 

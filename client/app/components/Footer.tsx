@@ -3,7 +3,7 @@ import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin, Github } f
 
 function Footer() {
   return (
-    <footer className="bg-[#1E1E1E] text-white">
+    <footer className="bg-[#000000] text-white">
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -27,10 +27,10 @@ function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-red-600">Support</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-white">Help Center</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">Contact Us</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">FAQ</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">Community</a></li>
+              <li><p className="text-gray-300 hover:text-white">Help Center</p></li>
+              <li><p className="text-gray-300 hover:text-white">Contact Us</p></li>
+              <li><p className="text-gray-300 hover:text-white">FAQ</p></li>
+              <li><p className="text-gray-300 hover:text-white">Community</p></li>
             </ul>
           </div>
           {/* Contact Info */}

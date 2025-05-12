@@ -11,10 +11,10 @@ router.post('/regester',async(req,res)=>{
   try {
     const {adminname, email, password} = req.body
     const data = await registerAdmin({adminname, email, password})
-    res.status(201).send(data);
+    res.status(201).json(data);
 
   } catch {
-    res.status(500).send("Something went wrong!");
+    res.status(500).json("Something went wrong!");
   }
 });
 
@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
     const data = await login({ email, password });
     res.status(200).json(data);
     }catch{
-        res.status(404).send("not 404");
+        res.status(404).json("not 404");
       }
     });
 
@@ -38,12 +38,12 @@ router.get("/AdminUser",async(req,res)=>{
     res.status(200).json(data);
   }
   catch(err){
-    res.status(404).send(err)
+    res.status(404).json(err)
   }
 })
 
 
-// get all user
+
 
 // delet user
 router.delete("/deleuser",async(req,res)=>{
@@ -54,7 +54,7 @@ router.delete("/deleuser",async(req,res)=>{
       res.status(200).json(data);
     }
     catch(err){
-      res.status(404).send(err);
+      res.status(404).json(err);
     }
 })
 
