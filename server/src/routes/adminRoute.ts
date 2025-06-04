@@ -3,6 +3,7 @@ import {login} from "../services/adminServices"
 import { registerAdmin } from '../services/adminServices';
 import {userModel} from '../Model/userModel'
 import { AdminModel } from '../Model/adminModel';
+import { auth } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.post('/regester',async(req,res)=>{
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/ ", async (req, res) => {
 
   try {
     const { email, password } = req.body;

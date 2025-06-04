@@ -7,7 +7,7 @@ dotenv.config();
 export function connection(){
     
     mongoose
-    .connect("mongodb://localhost:27017/elearn")
+    .connect(process.env.DATAURL as string,)
     .then(async()=>{
         console.log("Database connected!");
         app.listen(process.env.PORT, () => {

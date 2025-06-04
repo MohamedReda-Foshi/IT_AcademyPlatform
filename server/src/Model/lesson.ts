@@ -1,23 +1,32 @@
-import mongoose, { Schema,Document } from "mongoose";
+// import mongoose, { Schema, Document, Types } from "mongoose";
 
-export interface Icourse extends Document{
-    Namecourse:String,
+// export interface ILesson extends Document {
+//   Namelesson: string;
+//   description?: string;
+//   videoUrl?: string;
+//   duration?: number;
+//   text?: Types.ObjectId[];
+//   video?: Types.ObjectId[];
+//   quize?: Types.ObjectId[];
+//   price: "Free" | "Paid";
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
-    Descriptioncourse:String,
-    Descriptioncourseshort:String,
-    Typecourse:String,
-    levelcourse:"Beginner"|"Intermediate"|"Advanced",
-    imagecourse:String
-}
+// // Export the schema so it can be used in course model
+// export const lessonSchema = new Schema<ILesson>({
+//   Namelesson: { type: String, required: true },
+//   description: { type: String },
+//   videoUrl: { type: String },
+//   duration: { type: Number, default: 0 },
+//   text: [{ type: Schema.Types.ObjectId, ref: "Text" }],
+//   video: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+//   quize: [{ type: Schema.Types.ObjectId, ref: "Quiz" }],
+//   price: { type: String, enum: ["Free", "Paid"], default: "Free" },
+  
+// }, {
+//   timestamps: true
+// });
 
-const lessonSchema = new Schema<Icourse>({
-
-    Namecourse:{type:String,required:true},
-    Descriptioncourse:{type:String,required:true},
-    
-    Descriptioncourseshort:{type:String,required:true},
-    Typecourse:{type:String,required:true},
-    levelcourse:{type:String,required:true,enum:["Beginner","Intermediate","Advanced"]},
-    imagecourse:{type:String,required:true}
-})
-export const courseModel = mongoose.model<Icourse>('course',lessonSchema);
+// // Optional: Export as standalone model if needed elsewhere
+// export const LessonModel = mongoose.model<ILesson>("Lesson", lessonSchema);

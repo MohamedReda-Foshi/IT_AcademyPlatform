@@ -1,35 +1,71 @@
-import Image from 'next/image'
 import React from 'react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../lib/nextAuth';
+import SingnOut from '../_components/SingnOut';
+import Image from 'next/image'
+import Button from '../components/Button';
 
 
-function page() {
+export default async function page(){
+    const session = await getServerSession(authOptions);
+    console.log(session);
+    const defaultAvatar="../asset/image/avatar.png";
+
     return (
         <div className='flex  p-9'>
             <div className=" bg-[f4f4f0] py-10  ">
                 <div className="items-center justify-center flex border-gray-400 rounded-2xl">
 
-                    <div className=' flex flext-row gap-8 rounded- '>
+                    <div className=' flex flex-col gap-8 rounded- '>
 
-                       <Image
+                        <Image
                             className='rounded-full'
-                            src="https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg"
+                            src={session?.user?.image || defaultAvatar}
                             width={100}
                             height={100}
-                            alt="Front-end Development"
+                            alt="user profile image"
                             objectFit='cover'
                         />
-                    <h1 className='text-xl font-semibold'>First Name :</h1>
-                    <h1 className='text-xl font-semibold'>Last Name : </h1>
-                    
+                        
+                        <div className='flex flex-row gap-2'>
+                            <h1 className='text-xl '>Full Name:</h1>
+                            <h1 className='text-xl '>{session?.user?.name} </h1>
+                        </div>
+                        
+                        <div className='flex flex-row gap-2'>
+                            <h1 className='text-xl '>Email:</h1>
+                            <p className='text-xl '>{session?.user?.email}</p>
+                        </div>
+                        <div className='flex flex-row gap-2'>
+                            <h1 className='text-xl '>Role:</h1>
+                            <p className='text-xl '>user</p>
+                        </div>
+                        <div>
+                            <input type="message" 
+                                className='text-xl border-2 border-gray-400 rounded-md px-2 py-1 w-full text-black'
+                                placeholder='Write a message...' 
+                            />
+                            
+                            <Button button='button'/>
+                        </div>
+
+
+
+                        <SingnOut/>
                     </div>
 
-                    <div>
-                        <h1 className='text-2xl font-bold'>Email</h1>
-                        <p className='text-lg'>example@gmail.com</p>
+                   
 
-                    </div>
 
                 </div>
+
+                 <div>
+                        <p>Xpnumber:50</p>
+                        <p>Level:1</p>
+                        <p>Rank:Beginner</p>
+                        <p>Certificate</p>
+                </div>
+                
             </div>
 
 
@@ -40,5 +76,3 @@ function page() {
 
     )
 }
-
-export default page
