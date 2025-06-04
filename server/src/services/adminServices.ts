@@ -1,4 +1,9 @@
 import { AdminModel } from "../Model/adminModel";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+
 
 
 
@@ -13,10 +18,15 @@ export const registerAdmin =async ({ adminname, email, password}: ResgisterParam
     const findAdmin= await AdminModel.findOne({email});
     if(findAdmin){
         return{error:{message:"admin unser already exists"}};
-    } 
-    const newAdmin=new AdminModel({adminname, email, password});
+    }
+    const hachedPassword = await bcrypt.hash(password,10);
+    const newAdmin=new AdminModel({
+        adminname, 
+        email, 
+        password:hachedPassword})
     await newAdmin.save();
-    return {admin:newAdmin};
+    
+    return generateJWT({adminname,email});
 }
 
 
@@ -28,16 +38,25 @@ interface LoginParams{
 export const login= async({ email, password}: LoginParams)=>{
     const findAdmin = await AdminModel.findOne({email});
     if(!findAdmin){
-        return{error:{message:"admin not found"}};
+        return{message:"admin not found"};
     }
-    const isMatch= password===findAdmin.password
+    const isMatch= await bcrypt.compare(password,findAdmin.password);
     if(isMatch){
-        return{
-            findAdmin
+        return {
+            token: generateJWT({email, adminname: findAdmin.adminname})
         };
     }
-    return{error:{message:"wrong password"}};
+    return {data:"Iconract password"}
 
 }
 
+
+interface JWTPayload {
+    email: string;
+    adminname: string;
+}
+
+const generateJWT = (data: JWTPayload) => {
+    return jwt.sign(data, process.env.JWT_SECRET_KEY as string);
+}
 

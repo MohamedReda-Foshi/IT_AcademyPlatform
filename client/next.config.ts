@@ -5,9 +5,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'tolustar.com',
+        hostname:'tolustar.com',
+
       },
     ],
+    domains: [
+      'lh3.googleusercontent.com',
+    ]
   },
 };
 

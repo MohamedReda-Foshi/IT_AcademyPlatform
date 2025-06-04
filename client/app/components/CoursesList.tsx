@@ -19,11 +19,8 @@ export default function CoursesList({ courses }: CoursesListProps) {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {courses.map((course) => (
-            <Link 
-              key={course._id} 
-              href={`/Courses/${course._id}`}    
-            >
-              <div className="flex flex-col h-full bg-black rounded-xl shadow-md hover:shadow-lg transition overflow-hidden">
+           
+              <div key={course._id} className="flex flex-col h-full bg-black rounded-xl shadow-md hover:shadow-lg transition overflow-hidden">
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     className="rounded-t-xl group-hover:scale-105 transition duration-300"
@@ -68,10 +65,15 @@ export default function CoursesList({ courses }: CoursesListProps) {
                       {course.rating}/5
                     </span>
                   </div>
+                   <Link 
+              href={`/Courses/${course._id}`}    
+            >
+
                   <Button button="Enroll" />
+            </Link>
                 </div>
               </div>
-            </Link>
+            
           ))}
         </div>
       </div>

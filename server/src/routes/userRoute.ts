@@ -2,12 +2,16 @@ import express from 'express';
 import {login} from "../services/userServices"
 import { registerUser } from '../services/userServices';
 import { userModel } from '../Model/userModel';
+import { auth } from '../middlewares/auth';
 const router = express.Router();
+import {  Request, Response, NextFunction } from 'express';
+import {role} from '../middlewares/roleauth';
 
 
-router.get("/getuser",async(req,res)=>{
+
+router.get("/getuser",auth, role ("user","admin"),async(req: Request, res: Response, next: NextFunction):Promise<void>=>{
   try{
-    const Userdata = await userModel.find();
+    const Userdata = await userModel.find().select('firstName lastName email role');
     res.status(200).json(Userdata);
 
   }catch(err){
@@ -15,12 +19,13 @@ router.get("/getuser",async(req,res)=>{
   }
 });
 
-router.get("/getusername/:id",async(req,res)=>{
+router.get("/getusername/:id", async (req: Request, res: Response, next: NextFunction):Promise<void>=>{
 
   try{
-    const id = req.params.id;
+    const id = req.params._id;
     const UserName = await userModel.findById(id).select( 'firstName lastName');
     res.status(200).json(UserName);
+    next();
   }catch(err){
     res.status(404).send(err);
 
@@ -61,17 +66,18 @@ router.get("/getusername/:id",async(req,res)=>{
 
 
 //Authoniocation
-router.post('/regester',async(req,res)=>{
+router.post('/register',async(req,res,next)=>{
   try{
-    const {firstName, lastName,email,password} = req.body
-    const data = await registerUser({ firstName,lastName, email, password})
+    const {firstName, lastName,role, email, password} = req.body
+    const data = await registerUser({ firstName, lastName,role, email, password})
     res.status(201).send(data);
   }catch{
     res.status(404).send("Something went wrong!");
   }
+  next();
 }); 
 
-router.post("/login", async (req, res) => {
+router.post("/login", async(req ,res)=> {
     try {
       const { email, password } = req.body;
       const data = await login({ email, password });
@@ -80,18 +86,23 @@ router.post("/login", async (req, res) => {
         res.status(500).send("Something went wrong!");
       }
     });
+interface AuthRequest extends express.Request {
+  query: {
+    role?: string;
+  }
+}
 
 
 
+// Route that uses middleware
 
 
-// google
+// router.get('/me', async (req, res) => {
+//   if (!req.firstName) return res.status(401).json({ user: null });
+//   const user = await userModel.findById(req.firstName.id).select('name avatarUrl');
+//   res.json({ user });
+// });
 
 
-
-
-
-
-//git hub
 
 export default router;

@@ -1,22 +1,18 @@
 import React from 'react';
+import DataTable from '../../components/DataTable';
 
-const DataTable = ({ 
-  data = [], 
-  title = "Data Table",
-  columns = [],
-  emptyMessage = "No data available"
-}) => {
-  // Early return if no data and no columns specified
-  if (data.length === 0 && columns.length === 0) {
-    return (
-      <div className="container mx-auto py-8">
-        <h2 className="text-2xl font-bold mb-4">{title}</h2>
-        <div className="bg-white p-4 border border-gray-200 rounded">
-          <p className="text-gray-500">{emptyMessage}</p>
-        </div>
-      </div>
-    );
-  }
+interface Column<T> {
+  key: string;
+  header: string;
+  render?: (item: T) => React.ReactNode;
+}
+
+interface DataTableProps<T> {
+  data?: T[];
+  title?: string;
+  columns?: Column<T>[];
+  emptyMessage?: string;
+}
 
   // If no columns are provided, automatically generate them from the first item
   interface Column<T> {

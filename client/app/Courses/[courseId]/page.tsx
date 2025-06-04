@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
-import { fetchCourseById } from '@/app/lib/api/courses/coures'
+import  {fetchCourseById}  from '@/app/lib/api/coures'
+
 
 export interface CourseData {
-  id:               string
+  id:               number
   Namecourse:       string
   DescriptionCourse:string
   shortDescription: string
@@ -27,21 +28,20 @@ export interface CourseData {
   i:number
 }
 
-type Props = {
-  params: { courseId: string }
-}
 
-export default async function CoursePage({ params }: Props) {
-  const { courseId } = params
-  let course: CourseData[0] | null = null 
+
+export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
+  const  {courseId}  = await params
+  let datacourse: CourseData | null = null 
+  console.log('Course Page - courseId:', courseId); 
 
   try {
-    course = await fetchCourseById(courseId)
+    datacourse = await fetchCourseById(courseId)
   } catch (error) {
     console.log('Failed to fetch course:', error)
   }
 
-  if (!course) {
+  if (!datacourse) {
     return (
       <div className="p-8 text-center">
         <p className="text-red-500">Course not found.</p>
@@ -50,15 +50,15 @@ export default async function CoursePage({ params }: Props) {
   }
 
   return (
-    <div className='flex flex-row py-20 px-8'>
-    <div className=" mx-auto space-y-8">
-      <h1 className="text-4xl font-bold">{course.Namecourse}</h1>
+    <div className='flex flex-row py-20 space-y-4 px-10 '>
+    <div className=" flex-1 p-6 space-y-4">
+      <h1 className="text-4xl font-bold">{datacourse.Namecourse}</h1>
 
      
 
-      <p>{course.DescriptionCourse}</p>
+      <p>{datacourse.DescriptionCourse}</p>
 
-      <Link href={`/Courses/${course.id}/Lesson/${course.id}`}>
+      <Link href={`/Courses/${datacourse.id}/Lesson/${datacourse.id}`}>
       
 
         <Button button="Get Started" />
@@ -67,13 +67,13 @@ export default async function CoursePage({ params }: Props) {
 
       <section>
         <h2 className="text-2xl font-semibold">Overview</h2>
-        <p>{course.shortDescription ?? 'No overview available.'}</p>
+        <p>{datacourse.shortDescription ?? 'No overview available.'}</p>
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold">What you will learn</h2>
         <ul className="list-disc pl-5">
-          {course.learningOutcomes.map((o, i) => (
+          {datacourse.learningOutcomes.map((o, i) => (
             <li key={i}>{o}</li>
           ))}
         </ul>
@@ -83,19 +83,19 @@ export default async function CoursePage({ params }: Props) {
 
       <aside className="p-6 rounded-lg bg-red-600">
       <Image
-        src={course.imageUrl ?? '/default.png'}
-        alt={course.Namecourse}
+        src={datacourse.imageUrl ?? '/default.png'}
+        alt={datacourse.Namecourse}
         width={300}
         height={450}
         className="rounded-lg object-cover"
       />
         <h3 className="text-xl font-semibold mb-2">Course Details</h3>
-        <p><strong>Duration:</strong> {course.duration} hours</p>
-        <p><strong>Level:</strong> {course.level}</p>
-        <p><strong>Category:</strong> {course.category}</p>
-        <p><strong>Lessons:</strong> {course.totalLessons}</p>
-        <p><strong>Quizzes:</strong> {course.totalQuizzes}</p>
-        <p><strong>Enrolled:</strong> {course.enrollments}</p>
+        <p><strong>Duration:</strong> {datacourse.duration} hours</p>
+        <p><strong>Level:</strong> {datacourse.level}</p>
+        <p><strong>Category:</strong> {datacourse.category}</p>
+        <p><strong>Lessons:</strong> {datacourse.totalLessons}</p>
+        <p><strong>Quizzes:</strong> {datacourse.totalQuizzes}</p>
+        <p><strong>Enrolled:</strong> {datacourse.enrollments}</p>
       </aside>
           </div>
     </div>

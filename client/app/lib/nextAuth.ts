@@ -1,6 +1,7 @@
 import Google from "next-auth/providers/google";
-import {type AuthOptions} from 'next-auth';
+import Github from "next-auth/providers/github";
 
+import {type AuthOptions} from 'next-auth';
 
 export const authOptions:AuthOptions={
     
@@ -8,7 +9,12 @@ export const authOptions:AuthOptions={
         Google({
         clientId:process.env.GOOGLE_CLIENT_ID as string,
         clientSecret:process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    Github({
+        clientId:process.env.GITHUB_ID as string,
+        clientSecret:process.env.GITHUB_SECRET as string,
     })
+   
     
 ],
     session:{
@@ -17,9 +23,13 @@ export const authOptions:AuthOptions={
     },
     jwt:{
 
-    },callbacks:{ 
+    },
+    callbacks:{ 
+        
 
-    }
+    },
+    secret:process.env.NEXTAUTH_SECRET as string,
+    
 
 
 

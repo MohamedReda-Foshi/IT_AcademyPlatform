@@ -8,6 +8,7 @@ dotenv.config();
 interface ResgisterParams{
     firstName:string;
     lastName:string;
+    role: { type: String, enum: ['user', 'admin'], required: true };
     email:string;
     password:string;
 }
@@ -15,6 +16,7 @@ interface ResgisterParams{
 export const registerUser = async ({
     firstName,
     lastName,
+    role,
     email,
     password
 }:ResgisterParams)=>{
@@ -28,6 +30,7 @@ export const registerUser = async ({
     const newUser =new userModel({
         firstName,
         lastName,
+        role,
         email,
         password:hachedPassword})
     await newUser.save();
@@ -38,6 +41,7 @@ export const registerUser = async ({
 interface LoginParams{
     email:string;
     password:string;
+    role?: string;
 }
 
 
@@ -49,14 +53,20 @@ export const login =async ({email,password}: LoginParams)=>{
     };
     const passwordMatch = await bcrypt.compare(password,findUser.password);
     if(passwordMatch) {
-        return generateJWT({email,firstName:findUser.firstName,lastName:findUser.lastName});
+        const token =generateJWT({id:findUser._id,role:findUser.role})
+        return token;
     }
     return {data:"Iconract password"}
+    
 };
 
 
-const generateJWT=(data:any)=>{
-    return jwt.sign(data,'XE93hyuttumhjzi4sk9hRIQ5mIyscfwb');
+const generateJWT=(payload:any)=>{
+    return jwt.sign(payload,process.env.JWT_SECRET_KEY as string,{
+        expiresIn:"1d"});
+
 
 } 
-/// npm i --save-dev @types/jsonwebtoken
+export const verifyJWT = (token: string) => {
+    return jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+};

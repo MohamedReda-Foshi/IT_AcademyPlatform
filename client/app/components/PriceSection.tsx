@@ -29,7 +29,7 @@ const CheckIcon: React.FC = () => (
     viewBox="0 0 24 24"
     strokeWidth="1.5"
     stroke="currentColor"
-    className="size-5 text-red-700"
+    className="size-5 text-red-600 mt-0.5 flex-shrink-0"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
   </svg>
@@ -37,9 +37,9 @@ const CheckIcon: React.FC = () => (
 
 // Feature item component
 const FeatureItem: React.FC<FeatureItemProps> = ({ text }) => (
-  <li className="flex items-center gap-1">
+  <li className="flex items-start gap-3 py-2">
     <CheckIcon />
-    <span className="text-white">{text}</span>
+    <span className="text-gray-200">{text}</span>
   </li>
 );
 
@@ -54,10 +54,10 @@ const PricingCard: React.FC<PricingCardProps> = ({
 }) => {
   return (
     <div
-      className={`rounded-2xl p-6 shadow-xs sm:px-8 lg:p-12 ${
+      className={`rounded-xl bg-gray-800/50 backdrop-blur-lg p-8 transition-all hover:scale-[1.02] ${
         isMost
-          ? "border border-red-600 ring-1"
-          : "border border-gray-200"
+          ? "ring-2 ring-red-600 shadow-lg"
+          : "border border-gray-700/50"
       }`}
       data-tier={tier}
     >
@@ -67,8 +67,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
           <span className="sr-only">Plan</span>
         </h2>
         <p className="mt-2 sm:mt-4">
-          <strong className="text-3xl font-bold text-white sm:text-4xl">{price}</strong>
-          <span className="text-sm font-medium text-white">/month</span>
+          <strong className="text-4xl font-bold text-white">{price}</strong>
+          <span className="text-lg font-medium text-gray-300">/month</span>
         </p>
       </div>
       <ul className="mt-6 space-y-2">
@@ -121,13 +121,17 @@ const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
   };
   
   return (
-    <div className={`mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 ${className}`}>
-      <div className="flex items-center p-9 justify-center">
-        <span className="text-red-600 text-3xl font-bold">Our </span>
-        <span className="text-white text-3xl font-bold">Team</span>
+    <div className={`mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 ${className}`}>
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-bold text-white">
+          <span className="text-red-600">Our</span> Pricing
+        </h2>
+        <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
+          Simple, transparent pricing for teams of all sizes.
+        </p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <PricingCard
           title={pricingData.free.title}
           price={pricingData.free.price}
