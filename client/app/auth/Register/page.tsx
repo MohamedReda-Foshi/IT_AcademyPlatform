@@ -1,11 +1,11 @@
 "use client"
 import React, { useState } from 'react';
-import Button from '../components/Button';
+import Button from '../../components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '@/app/lib/simpleAth/Auth';
-import SingninWithGoogle from '../_components/SingninWithGoogle';
-import SingninWithGitHub from '../_components/SingninWithGitHub';
+import SingninWithGoogle from '../../_components/SingninWithGoogle';
+import SingninWithGitHub from '../../_components/SingninWithGitHub';
 
 export default function RegisterForm() {
   

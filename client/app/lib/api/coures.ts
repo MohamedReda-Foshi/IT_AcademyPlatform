@@ -49,6 +49,8 @@ export async function fetchCourseById(id: string): Promise<CourseData[]> {
   }
 }
 
+
+
 export async function fetchLessonById(id: string): Promise<LessonData[]> {
   console.log('Fetching lesson with id:', id)
   try {

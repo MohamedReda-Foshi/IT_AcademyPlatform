@@ -19,7 +19,8 @@ router.get("/getChapter/:courseId", async (req: Request, res: Response): Promise
   try {
     const chapters = await chapterModel
       .find({ courseId })
-      .populate('courseId', 'Namecourse category shortDescription imageUrl duration level rating');
+      .populate('courseId', ' ChapterTitile videoUrl text quize ')
+      .sort({ order: 1 }); // Sort chapters by order
 
     res.json(chapters);
   } catch (error) {
@@ -33,7 +34,7 @@ router.get("/getChapter/:courseId", async (req: Request, res: Response): Promise
  * Create a new chapter
  */
 router.post("/addChapter", async (req: Request, res: Response): Promise<void> => {
-  const { ChapterTitile, order, videoUrl, text, quize, courseId } = req.body;
+  const { ChapterTitle, order, videoUrl,videoTitle,filesname,filedata, text, quize, courseId } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
     res.status(400).json({ message: "Invalid course ID format" });
@@ -42,12 +43,15 @@ router.post("/addChapter", async (req: Request, res: Response): Promise<void> =>
 
   try {
     const newChapter = new chapterModel({
-      ChapterTitile,
+      ChapterTitle,
       order,
       videoUrl,
       text,
       quize,
       courseId,
+      videoTitle,
+      filesname,
+      filedata
     });
 
     const savedChapter = await newChapter.save();

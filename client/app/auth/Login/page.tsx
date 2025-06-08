@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react';
-import Button from '../components/Button';
+import Button from '../../components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '../lib/simpleAth/Auth';
-import SingninWithGoogle from '../_components/SingninWithGoogle';
+import { loginUser } from '../../lib/simpleAth/Auth';
+import SingninWithGoogle from '../../_components/SingninWithGoogle';
 
 export default function LoginPage() {
   const router = useRouter();

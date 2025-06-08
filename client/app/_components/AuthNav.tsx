@@ -16,10 +16,10 @@ export default function AuthNav() {
     </Link>
     ) : (
     <div className="flex space-x-4">
-      <Link href="/Login">
+      <Link href="/auth/Login">
            <Button button="Login"/>
       </Link>
-      <Link href="/Register">
+      <Link href="/auth/Register">
           <Button button="Register"/>
       </Link>
     </div>
