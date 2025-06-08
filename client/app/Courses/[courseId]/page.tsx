@@ -2,10 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
 import  {fetchCourseById}  from '@/app/lib/api/coures'
+import { Types } from 'mongoose';
+
 
 
 export interface CourseData {
-  id:               number
+  id:               Types.ObjectId
   Namecourse:       string
   DescriptionCourse:string
   shortDescription: string
@@ -53,6 +55,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
     <div className='flex flex-row py-20 space-y-4 px-10 '>
     <div className=" flex-1 p-6 space-y-4">
       <h1 className="text-4xl font-bold">{datacourse.Namecourse}</h1>
+      <p className="text-gray-500 mb-4">id: {datacourse.id}</p>
 
      
 

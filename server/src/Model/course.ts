@@ -21,7 +21,6 @@ export interface Icourse extends Document {
   enrollments: number; // number of enrollments
   XpNumber: number; // XP number for the course
   
-  ChapterId?: Types.ObjectId; // Reference to the course this chapter belongs to
 
   
 }
@@ -50,7 +49,6 @@ const courseSchema = new Schema<Icourse>({
   enrollments: { type: Number, default: 0 },
   XpNumber: { type: Number, default: 0 },
   
-  ChapterId: { type: Schema.Types.ObjectId, ref: "Chapter" }, // Reference to the chapter this course belongs to
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 
