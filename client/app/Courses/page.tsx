@@ -16,12 +16,12 @@ export default async function CoursesPage() {
  
 
   return (
-    <div className=" flex flex-row ">
+    <div className=" py-8">
       <div>
-        <h1 className="text-3xl font-bold text-center mt-8">Courses</h1>
+        <h1 className="text-3xl font-bold text-center mt-8 py-7">Courses</h1>
 
 
-        <div>
+        <div className=' flex flex-row items-center justify-center'>
           <CoursesList courses={courses} />
         </div>
       </div>

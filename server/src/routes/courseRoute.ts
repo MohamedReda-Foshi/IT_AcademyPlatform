@@ -3,7 +3,6 @@ import {courseModel,Icourse } from '../Model/course';
 import mongoose from 'mongoose';
 import { auth } from '../middlewares/auth';
 import { role } from '../middlewares/roleauth';
-import { chapterModel } from '../Model/chapter';
 
 // this is a cart course 
 
@@ -58,7 +57,9 @@ router.get("/course/CourseCard", async(req, res) => {
 
 
 // this is a course page all user can see
-router.get("/:id", async (req: Request, res: Response):Promise<any> => {
+router.get("/:id", 
+  
+  async (req: Request, res: Response):Promise<any> => {
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
@@ -92,6 +93,9 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
             totalLessons,
             totalQuizzes,
             enrollments,
+            videoUrl,
+            text,
+            quize,
             createdAt,
             updatedAt
           } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
@@ -112,7 +116,9 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
             totalLessons,
             totalQuizzes,
             enrollments,
-            
+            videoUrl,
+            text,
+            quize,
             createdAt,
             updatedAt
           });
@@ -124,7 +130,9 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
 
 
 
-    router.get("/lesson/:id", async (req: Request, res: Response):Promise<any> => {
+    router.get("/lesson/:id",
+
+       async (req: Request, res: Response):Promise<any> => {
 
     const { id } = req.params;
     if (!id) {
@@ -146,24 +154,30 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
         const {
             _id,   
             Namecourse,
+            videoUrl,
+            text,
+            quize,
             totalLessons,
             totalQuizzes,
             enrollments,
             XpNumber,
             duration
-
-            
+                        
             
           } = Lesson.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
       
           res.status(200).json({
             id: _id,
             Namecourse,
-            duration,
+            videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [], // Convert ObjectId to string
+            // Convert ObjectId to string for each field
+            text: text ? text.map((t: any) => t.toString()) : [],
+            quize: quize ? quize.map((q: any) => q.toString()) : [],
             totalLessons,
             totalQuizzes,
             enrollments,
-            XpNumber  
+            XpNumber ,
+            duration
 
             
           });
@@ -173,54 +187,6 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
         }
       });
 
-
-
-      router.get("/getChapter/:courseId", async (req: Request, res: Response): Promise<void> => {
-        const { courseId } = req.params;
-      
-        if (!mongoose.Types.ObjectId.isValid(courseId)) {
-          res.status(400).json({ message: "Invalid course ID format" });
-          return;
-        }
-      
-        try {
-          const chapters = await chapterModel
-            .find({ courseId })
-            .populate('courseId', 'Namecourse category shortDescription imageUrl duration level rating');
-      
-          res.json(chapters);
-        } catch (error) {
-          console.error("Error fetching chapters:", error);
-          res.status(500).json({ message: "Internal server error" });
-        }
-      });
-
-
-      router.post("/addChapter", async (req: Request, res: Response): Promise<void> => {
-        const { ChapterTitile, order, videoUrl, text, quize, courseId } = req.body;
-      
-        if (!mongoose.Types.ObjectId.isValid(courseId)) {
-          res.status(400).json({ message: "Invalid course ID format" });
-          return;
-        }
-      
-        try {
-          const newChapter = new chapterModel({
-            ChapterTitile,
-            order,
-            videoUrl,
-            text,
-            quize,
-            courseId,
-          });
-      
-          const savedChapter = await newChapter.save();
-          res.status(201).json(savedChapter);
-        } catch (error) {
-          console.error("Error adding chapter:", error);
-          res.status(500).json({ message: "Internal server error" });
-        }
-      });
 
 
 
@@ -266,7 +232,10 @@ router.get("/:id", async (req: Request, res: Response):Promise<any> => {
 
  //auth,role("admin")
 // add onlie admin can add a course
- router.post("/AddCourse", async(req, res) => {
+ router.post("/AddCourse",
+    auth,
+    role("admin"),
+   async(req, res) => {
      try{
         const {
             Namecourse,

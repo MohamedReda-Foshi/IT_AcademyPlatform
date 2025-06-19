@@ -6,6 +6,14 @@ import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
 import { BookOpen, Star } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
+
 
 export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
 
@@ -16,12 +24,13 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
   );
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
-    const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
-    const [contentData,setContentData]= useState()
+  const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
+  const [contentData, setContentData] = useState<string | string[] | undefined>()
+  const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     axios
-      .get<ChapterData[]>(`http://localhost:8001/course/getChapter/${params}`)
+      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`)
 
       .then((res) => {
         setChaptersData(res.data);
@@ -36,88 +45,91 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
   function onSelect(
     chapter: ChapterData,
     type: "text" | "file" | "video",
-  
+
   ) {
     setSelectedChapter(chapter);
     setContentType(type);
-    
+
 
     let contentData;
-      switch (type) {
-        case "text":
-          contentData = chapter.text;
-          break;
-        case "file":
-          contentData = chapter.filedata;
-          break;
-        case "video":
-          contentData = chapter.videoUrl;
-          break;
-      }
-    
-    
-    
-    
-    
-    
-    
+    switch (type) {
+      case "text":
+        contentData = chapter.text;
+        break;
+      case "file":
+        contentData = chapter.filedata;
+        break;
+      case "video":
+        contentData = chapter.videoUrl;
+        break;
+    }
+
+
+
+
+
+
+
     setContentData(contentData)
     console.log(`Selected chapter ${chapter} with type: ${type}`);
     console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);
-}
+  }
 
 
-return (
-  <div className=' grid grid-cols-3 gap-16 justify-between '>
-    <div className='grid-cols-1'>
-        <div className="p-6 border-b border-red-500/30 bg-red-900/20">
-              <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
-                <Star className=" text-red-400" />
-                Chapter Learning Outcomes
-                
-              </h2>
-            </div>
+  return (
+    <div className=' grid grid-cols-3 gap-1 justify-between '>
+      <div className="col-span-1">
+      <div className="p-6 border-b border-red-500/30 bg-red-900/20">
+        <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
+          <Star className="text-red-400" />
+          Chapter Learning Outcomes
+        </h2>
+      </div>
 
-        {chaptersData.map((chapter: ChapterData) => (
-          <div
-            key={chapter.id}
-            className="border border-red-500 hover:border-red-300 bg-zinc-800 hover:bg-zinc-700 transition-colors rounded-lg p-4 mb-4 cursor-pointer px-60 "
-          >
-            
-            <h3 className="text-xl font-semibold text-white mb-2">
-              {chapter.ChapterTitle}
-            </h3>
-            <p className="text-white mb-1 text-base">
-              <span className="">Order:</span>
-            </p>
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        value={openItem}
+        onValueChange={(value) => setOpenItem(value)}
+      >
+        {chaptersData.map((chapter) => (
+          <AccordionItem key={chapter.id} value={`item-${chapter.id}`}>
+            <AccordionTrigger>
+              <span className="text-xl font-semibold text-white mb-2 px-2">
+                {chapter.order}. {chapter.ChapterTitle}
+              </span>
+            </AccordionTrigger>
 
-              <button className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition"
-               onClick={() => onSelect(chapter, "text")}>
-                {chapter.text}
+            <AccordionContent className="flex flex-col gap-4 px-4 py-2">
+              <button
+                className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition"
+                onClick={() => onSelect(chapter, "text")}
+              >
+                {chapter.textTitle}
               </button>
 
-
-              <button className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition"
-               onClick={() => onSelect(chapter, "video")}>
+              <button
+                className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition"
+                onClick={() => onSelect(chapter, "video")}
+              >
                 {chapter.videoTitle}
               </button>
-              
-              <button className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition"
-               onClick={() => chapter.filedata ? onSelect(chapter, "file") : null}>
-                {chapter.filename}
-              </button>
-             
 
-
-
-
-            <p className="text-white text-base">
-              <span className="">Description:</span>{' '}
-              {chapter.ChapterDescription}
-            </p>
-          </div>
+              {chapter.filedata && (
+                <button
+                  className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition"
+                  onClick={() => onSelect(chapter, "file")}
+                >
+                  {chapter.filename}
+                </button>
+              )}
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
+    </div>
+
 
 
 

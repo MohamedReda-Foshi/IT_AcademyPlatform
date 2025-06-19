@@ -5,6 +5,7 @@ export interface LessonData {
   id: Types.ObjectId ; // Unique identifier for the lesson
   ChapterId: string;
   Namecourse: string
+  chapterTitle:string;
   
     videoUrl?: string[]
     text?: string[]

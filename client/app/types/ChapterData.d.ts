@@ -6,7 +6,8 @@ export interface ChapterData {
     videoUrl?: string; // video URL of the lesson
     filename:string;
     filedata?: string; // file URL of the lesson
-    text?: string; // text content of the chapter
+    textTitle:string
+    text?: string[]; // text content of the chapter
     quize?: string; // text content of the chapter;
     ChapterDescription: string; // description of the chapter
 }

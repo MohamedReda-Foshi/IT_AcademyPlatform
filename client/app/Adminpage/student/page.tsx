@@ -100,5 +100,4 @@ interface DataTableProps<T> {
     </div>
   );
 };
-}
 export default DataTable;

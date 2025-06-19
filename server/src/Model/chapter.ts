@@ -20,7 +20,8 @@ const courseSchema = new Schema<Ichapter>({
     order: { type: Number, required: true, default: 0 },
     videoTitle:{type:String,default: null },
     videoUrl: { type: String, default: null }, // Optional video URL
-    text: { type: String, default: null }, // Optional text content
+    textTitle:{type:String,default: null },
+    text: {type: [String], default: null }, // Optional text content
     quize: { type: String, default: null }, // Optional quiz content
     filename: { type: String, default: null },
     filedata: { type: String, default: null },

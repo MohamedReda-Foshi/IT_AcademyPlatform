@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-interface ResgisterParams{
+interface RegisterParams{
     firstName:string;
     lastName:string;
     role: { type: String, enum: ['user', 'admin'], required: true };
@@ -19,7 +19,7 @@ export const registerUser = async ({
     role,
     email,
     password
-}:ResgisterParams)=>{
+}:RegisterParams)=>{
     
     const findUser =await userModel.findOne({email});
 
@@ -51,6 +51,7 @@ export const login =async ({email,password}: LoginParams)=>{
     if(!findUser) return {
         data:"User is not found"
     };
+    
     const passwordMatch = await bcrypt.compare(password,findUser.password);
     if(passwordMatch) {
         const token =generateJWT({id:findUser._id,role:findUser.role})

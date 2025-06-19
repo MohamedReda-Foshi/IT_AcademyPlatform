@@ -1,94 +1,99 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import Button from '../../components/Button';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { loginUser } from '../../lib/simpleAth/Auth';
+import { signIn } from 'next-auth/react';
 import SingninWithGoogle from '../../_components/SingninWithGoogle';
+import SingninWithGitHub from '../../_components/SingninWithGitHub';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-    
+    setIsLoading(true);
+    setError("");
+
     try {
-      const { ok, status, data } = await loginUser(form.email, form.password);
-      
-      if (ok) {
-        // Redirect to dashboard or home page after successful login
-        router.push('/Courses'); // Change this to your desired redirect page
-      } else {
-        setError((data as any)?.message || `Login failed: ${status}`);
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (!res?.ok) {
+        setError("Invalid email or password");
+        return;
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Login failed. Please try again later.');
+      
+      // Successful login - you can add navigation here if needed
+      window.location.href = "/Profile"; // Redirect to home page after successful login
+    } catch {
+      setError("An error occurred. Please try again.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex py-32 items-center justify-start">
-      <div className="mx-auto w-full max-w-lg bg-black p-6 rounded-2xl">
-        <h1 className="text-4xl font-bold text-white mb-6">Login</h1>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-      <SingninWithGoogle/>
-        <form onSubmit={handleSubmit} className="grid gap-6">
-          <div className="relative z-0">
+    <div className="flex min-h-screen py-32 items-center justify-start bg-gradient-to-b from-gray-900 to-black">
+      <div className="mx-auto w-full max-w-lg bg-black/50 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-gray-800">
+        <h1 className="text-4xl font-bold text-white mb-8 text-center">Welcome Back</h1>
+        
+        <div className="flex flex-row gap-4 justify-center mb-8">
+          <SingninWithGoogle />
+          <SingninWithGitHub />
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500 text-sm animate-fade-in">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="grid gap-6">
+          <div className="relative z-0 group">
             <input
               type="email"
               name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder=" "
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               required
-              className="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0"
+              disabled={isLoading}
+              className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />
             <label className="absolute left-0 top-3 -z-10 origin-[0] -translate-y-6 transform scale-75 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-red-600">
               Email
             </label>
           </div>
-
-          <div className="relative z-0">
+          <div className="relative z-0 group">
             <input
               type="password"
               name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder=" "
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               required
-              className="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0"
+              disabled={isLoading}
+              className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />
             <label className="absolute left-0 top-3 -z-10 origin-[0] -translate-y-6 transform scale-75 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-red-600">
               Password
             </label>
           </div>
-
-          <Button button={loading ? "Logging in..." : "Login"}  />
+          <Button button={isLoading ? 'Logging in...' : 'Login'} />
         </form>
 
-        <p className="mt-4 text-center text-gray-400">
+        <p className="mt-6 text-center text-gray-400">
           Don&apos;t have an account?{' '}
-          <Link href="/Register" className="text-red-600 hover:underline">
+          <Link href="/auth/Register" className="text-red-600 hover:text-red-500 transition-colors duration-200 hover:underline">
             Register
           </Link>
         </p>
-        
-        <div className="mt-2 text-center">
-          <Link href="/ForgotPassword" className="text-sm text-gray-400 hover:underline">
+        <div className="mt-4 text-center">
+          <Link href="/ForgotPassword" className="text-sm text-gray-400 hover:text-gray-300 transition-colors duration-200 hover:underline">
             Forgot your password?
           </Link>
         </div>

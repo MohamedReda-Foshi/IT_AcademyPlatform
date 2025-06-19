@@ -11,17 +11,17 @@ export default function Avatar() {
   }
 
   const { name, image } = session.user
-    const defaultAvatar="../asset/image/avatar.png";
+    const defaultAvatar="/avatar.png";
 
   return (
     <div className="flex items-center flex-row gap-2 py-3">
       <Image
         className='rounded-full'
         src={image ?? defaultAvatar}
-        width={40}
-        height={40}
-        alt="user profile image"
-        objectFit='cover'
+        width={50}
+        height={50}
+        alt="Avatar"
+        priority
       />
       <p className="text-sm">{name}</p>
     </div>

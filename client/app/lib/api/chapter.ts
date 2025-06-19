@@ -13,7 +13,7 @@ export async function fetchChapterById(id: Types.ObjectId | string): Promise<Cha
   }
   try {
     const idstring =id.toString
-    const res = await fetch(`http://localhost:8001/course/getChapter/${idstring}` )
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idstring}` )
         console.log('Fetching chapters for courseId:', idstring);
 
     if (!res.ok) {

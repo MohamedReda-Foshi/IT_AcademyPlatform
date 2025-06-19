@@ -23,13 +23,14 @@ export const auth = (req: Request, res: Response, next: NextFunction): void => {
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(403).json({ message: "Authorization header was not provided" });
+    console.log(authHeader);
     return;
   }
 
   const token = authHeader.split(" ")[1];
   if (!token) {
     res.status(403).json({ message: "Token was not provided" });
-    console.error("Token was not provided");
+    console.log("Token was not provided");
     return;
   }
 
@@ -42,6 +43,6 @@ export const auth = (req: Request, res: Response, next: NextFunction): void => {
 
     next();
   } catch (err) {
-    res.status(401).json(console.error(err));
+    res.status(401).json(console.log(err));
   }
 };

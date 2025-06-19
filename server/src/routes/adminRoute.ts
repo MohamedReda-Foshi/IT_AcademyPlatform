@@ -4,36 +4,18 @@ import { registerAdmin } from '../services/adminServices';
 import {userModel} from '../Model/userModel'
 import { AdminModel } from '../Model/adminModel';
 import { auth } from '../middlewares/auth';
+import {role} from '../middlewares/roleauth';
 
 const router = express.Router();
 
 
-router.post('/regester',async(req,res)=>{
-  try {
-    const {adminname, email, password} = req.body
-    const data = await registerAdmin({adminname, email, password})
-    res.status(201).json(data);
 
-  } catch {
-    res.status(500).json("Something went wrong!");
-  }
-});
 
-router.post("/ ", async (req, res) => {
-
-  try {
-    const { email, password } = req.body;
-    const data = await login({ email, password });
-    res.status(200).json(data);
-    }catch{
-        res.status(404).json("not 404");
-      }
-    });
 
 
 //get all admin user
 
-router.get("/AdminUser",async(req,res)=>{
+router.get("/AdminUser",auth, role ("admin"),async(req,res)=>{
   try{
     const data = await AdminModel.find();
     res.status(200).json(data);

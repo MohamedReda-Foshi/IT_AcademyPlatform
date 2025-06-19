@@ -1,6 +1,10 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { chapterModel } from '../Model/chapter';
+import {role} from '../middlewares/roleauth';
+import { auth } from '../middlewares/auth';
+
+
 
 const router = Router();
 
@@ -8,7 +12,9 @@ const router = Router();
  * GET /getChapter/:courseId
  * Fetch all chapters associated with a specific course
  */
-router.get("/getChapter/:courseId", async (req: Request, res: Response): Promise<void> => {
+router.get("/getChapter/:courseId",
+ 
+   async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
@@ -33,8 +39,18 @@ router.get("/getChapter/:courseId", async (req: Request, res: Response): Promise
  * POST /addChapter
  * Create a new chapter
  */
-router.post("/addChapter", async (req: Request, res: Response): Promise<void> => {
-  const { ChapterTitle, order, videoUrl,videoTitle,filesname,filedata, text, quize, courseId } = req.body;
+router.post("/addChapter" ,auth, role ("admin"), async (req: Request, res: Response): Promise<void> => {
+  const { ChapterTitle,
+     order,
+      videoUrl,
+      videoTitle,
+      textTitle,
+      text, 
+      quize,
+      filesname,
+      filedata, 
+      courseId 
+    } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
     res.status(400).json({ message: "Invalid course ID format" });
@@ -46,6 +62,7 @@ router.post("/addChapter", async (req: Request, res: Response): Promise<void> =>
       ChapterTitle,
       order,
       videoUrl,
+      textTitle,
       text,
       quize,
       courseId,
