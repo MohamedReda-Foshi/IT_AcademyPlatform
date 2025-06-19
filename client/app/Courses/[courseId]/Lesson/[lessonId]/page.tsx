@@ -6,17 +6,13 @@ import Chapter from '@/app/components/Chapter'
 
 
 
-  
-  
-  
-
-
-export default async function LessonPage({ params }: { params: Promise<{ lessonId: string }> }) {
+export default async function LessonPage({ params }: { params: { lessonId: string } }) {
   const { lessonId } = await params
   let lesson: LessonData | null = null
   
  try {
   lesson = await fetchLessonById(lessonId) 
+  
   
  } catch (error) {
    console.log('Failed to fetch lesson:', error)
@@ -49,7 +45,6 @@ export default async function LessonPage({ params }: { params: Promise<{ lessonI
               <h1 className="text-4xl font-bold text-white mb-4">
                 {lesson.Namecourse}
                 <br/>
-                this is the lesson id {lesson.id}.
               </h1>
 
               <div className="flex flex-wrap gap-6 text-sm">
@@ -146,6 +141,7 @@ export default async function LessonPage({ params }: { params: Promise<{ lessonI
                 Full-stack developer with 8+ years of experience building scalable web applications with React and Next.js.
               </p>
             </div>
+            
         </div>
       </div>
     </div>

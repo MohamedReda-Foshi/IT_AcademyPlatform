@@ -1,12 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 // Your backend URL
-
+const BACKEND_URL = 'http://localhost:8000';
 
 interface RegisterFormData {
   firstName: string;
   lastName: string;
-  role: 'user' | 'admin';
+  role: 'user';
   email: string;
   password: string;
 }
@@ -15,6 +15,8 @@ interface AuthResponseData {
   message: string;
   token?: string;
   user?: {
+    id?: string;
+    _id?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -28,31 +30,50 @@ interface AuthResponse {
   status: number;
 }
 
+interface SessionData {
+  user: {
+    id?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+  } | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isExpired: boolean;
+}
+
 // Function to register a new user
 export async function registerUser(formData: RegisterFormData): Promise<AuthResponse> {
   try {
-    // Make a POST request to your backend endpoint
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/register`, formData, {
+    const response = await axios.post(`${BACKEND_URL}/user/register`, formData, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
     
-    // If successful, return the response
     console.log('Registration successful:', response.data);
     return {
       ok: true,
       data: response.data,
       status: response.status
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Registration error:', error);
     
-    // Return error information
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<AuthResponseData>;
+      return {
+        ok: false,
+        data: axiosError.response?.data || { message: 'Registration failed' },
+        status: axiosError.response?.status || 500
+      };
+    }
+    
     return {
       ok: false,
-      data: error.response?.data || { message: 'Network error occurred' },
-      status: error.response?.status || 500
+      data: { message: 'Network error occurred' },
+      status: 500
     };
   }
 }
@@ -60,61 +81,47 @@ export async function registerUser(formData: RegisterFormData): Promise<AuthResp
 // Function to log in a user
 export async function loginUser(email: string, password: string): Promise<AuthResponse> {
   try {
-    // Make a POST request to your backend login endpoint
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/login`, { email, password }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await axios.post(`${BACKEND_URL}/user/login`, 
+      { email, password }, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     
     // If login is successful, store the token in localStorage
     if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('authToken', response.data.token);
+      }
     }
-    console.error('Login error:', response.data);
+    
+    console.log('Login successful:', response.data);
     return {
       ok: true,
       data: response.data,
       status: response.status
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Login error:', error);
     
-    return {
-      ok: false,
-      data: error.response?.data || { message: 'Network error occurred' },
-      status: error.response?.status || 500
-    };
-  }
-}
-
-// In your @/app/lib/auth/simpleAth/Auth file
-export const createUser = async (email: string, password: string) => {
-  try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    
-    const data = await response.json();
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<AuthResponseData>;
+      return {
+        ok: false,
+        data: axiosError.response?.data || { message: 'Login failed' },
+        status: axiosError.response?.status || 500
+      };
+    }
     
     return {
-      ok: response.ok,
-      data,
-      status: response.status
-    };
-  } catch (error) {
-    console.error('Create user error:', error);
-    return {
       ok: false,
-      data: { message: 'Network error' },
+      data: { message: 'Network error occurred' },
       status: 500
     };
   }
-};
+}
 
 // Helper function to get auth token (for authenticated requests)
 export function getAuthToken(): string | null {
@@ -122,4 +129,227 @@ export function getAuthToken(): string | null {
     return localStorage.getItem('authToken');
   }
   return null;
+}
+
+function decodeJWT(token: string) {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) {
+      throw new Error('Invalid token format');
+    }
+    
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+}
+
+// Helper function to check if token is expired
+function isTokenExpired(token: string): boolean {
+  try {
+    const decoded = decodeJWT(token);
+    if (!decoded || !decoded.exp) return true;
+    
+    const currentTime = Date.now() / 1000;
+    return decoded.exp < currentTime;
+  } catch (error) {
+    console.error('Error checking token expiration:', error);
+    return true;
+  }
+}
+
+// Main function to get current session data
+export function getSession(): SessionData {
+  if (typeof window === 'undefined') {
+    // Server-side rendering - no localStorage access
+    return {
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isExpired: false
+    };
+  }
+
+  const token = getAuthToken();
+  
+  if (!token) {
+    return {
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isExpired: false
+    };
+  }
+
+  const isExpired = isTokenExpired(token);
+  
+  if (isExpired) {
+    // Clean up expired token
+    localStorage.removeItem('authToken');
+    return {
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isExpired: true
+    };
+  }
+
+  // Decode token to get user data
+  const decoded = decodeJWT(token);
+  
+  if (!decoded) {
+    // Invalid token
+    localStorage.removeItem('authToken');
+    return {
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isExpired: false
+    };
+  }
+
+  return {
+    user: {
+      id: decoded.id || decoded.userId || decoded._id,
+      firstName: decoded.firstName,
+      lastName: decoded.lastName,
+      email: decoded.email,
+      role: decoded.role,
+    },
+    token,
+    isAuthenticated: true,
+    isExpired: false
+  };
+}
+
+// Function to logout user
+export function logoutUser(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('authToken');
+  }
+}
+
+// Function to check if user is authenticated
+export function isAuthenticated(): boolean {
+  const session = getSession();
+  return session.isAuthenticated;
+}
+
+// Function to get user info only
+export function getCurrentUser() {
+  const session = getSession();
+  return session.user;
+}
+
+// Create axios instance with base configuration
+const apiClient = axios.create({
+  baseURL: BACKEND_URL,
+  timeout: 10000, // 10 seconds timeout
+});
+
+// Axios interceptor to automatically add auth token to requests
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token && !isTokenExpired(token)) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Axios interceptor to handle token expiration
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('authToken');
+        // Optionally redirect to login page
+        // window.location.href = '/auth/Login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Export the configured axios instance
+export { apiClient };
+
+// Alternative functions using the configured axios instance
+export async function registerUserWithClient(formData: RegisterFormData): Promise<AuthResponse> {
+  try {
+    const response = await apiClient.post('/user/register', formData);
+    
+    console.log('Registration successful:', response.data);
+    return {
+      ok: true,
+      data: response.data,
+      status: response.status
+    };
+  } catch (error) {
+    console.error('Registration error:', error);
+    
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<AuthResponseData>;
+      return {
+        ok: false,
+        data: axiosError.response?.data || { message: 'Registration failed' },
+        status: axiosError.response?.status || 500
+      };
+    }
+    
+    return {
+      ok: false,
+      data: { message: 'Network error occurred' },
+      status: 500
+    };
+  }
+}
+
+export async function loginUserWithClient(email: string, password: string): Promise<AuthResponse> {
+  try {
+    const response = await apiClient.post('/user/login', { email, password });
+    
+    // If login is successful, store the token in localStorage
+    if (response.data.token && typeof window !== 'undefined') {
+      localStorage.setItem('authToken', response.data.token);
+    }
+    
+    console.log('Login successful:', response.data);
+    return {
+      ok: true,
+      data: response.data,
+      status: response.status
+    };
+  } catch (error) {
+    console.error('Login error:', error);
+    
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<AuthResponseData>;
+      return {
+        ok: false,
+        data: axiosError.response?.data || { message: 'Login failed' },
+        status: axiosError.response?.status || 500
+      };
+    }
+    
+    return {
+      ok: false,
+      data: { message: 'Network error occurred' },
+      status: 500
+    };
+  }
 }

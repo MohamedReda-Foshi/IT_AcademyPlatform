@@ -28,7 +28,7 @@ export default function About() {
             <p className="mb-4">
               Founded in 2020, TechLearn began with a simple mission: to make high-quality IT education accessible to everyone, regardless of their background or location.
             </p>
-            <p className="mb-4">
+            <p >
               What started as a small collection of programming tutorials has grown into a comprehensive platform offering over 500 courses across various IT disciplines, from web development and cybersecurity to cloud computing and artificial intelligence.
             </p>
             <p>

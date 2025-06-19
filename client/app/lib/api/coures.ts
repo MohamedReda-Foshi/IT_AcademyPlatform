@@ -3,6 +3,8 @@
 import { CourseData } from '@/app/types/course'
 import { LessonData } from '@/app/types/lesson';
 
+
+
 ///this get all courses card from the database
 export async function fetchAllCourseFromExpr(): Promise<CourseData[]> {
     try {
@@ -38,7 +40,12 @@ export async function fetchHomeCourseFromExpr(): Promise<CourseData[]> {
 export async function fetchCourseById(id: string): Promise<CourseData[]> {
   console.log('Fetching course with id:', id)
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     if (!res.ok) {
       throw new Error(`Network response was not ok course (${res.status})`)
     }

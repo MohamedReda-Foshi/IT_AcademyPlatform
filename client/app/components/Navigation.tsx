@@ -15,6 +15,7 @@ function Navigation() {
 
   };
 
+
   return (
     <>
       <nav className="bg-black border-b border-red-700 fixed w-full z-50">
@@ -38,6 +39,7 @@ function Navigation() {
                 <Link href="/Courses" className="text-white hover:text-red-500 transition">Courses</Link>
                 <Link href="/About" className="text-white hover:text-red-600 transition">About</Link>
                 <Link href="/Contact" className="text-white hover:text-red-500 transition">Contact</Link>
+                
              
               </div>
             </div>

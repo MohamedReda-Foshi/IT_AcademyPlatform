@@ -20,15 +20,40 @@ const DataTable = ({
   }
 
   // If no columns are provided, automatically generate them from the first item
-  const tableColumns = columns.length > 0 
-    ? columns 
-    : data.length > 0 
-      ? Object.keys(data[0]).map(key => ({
-          key,
-          header: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-          render: (item) => item[key]
-        }))
-      : [];
+  interface Column<T> {
+    key: string;
+    header: string;
+    render?: (item: T) => React.ReactNode;
+  }
+
+  interface DataTableProps<T> {
+    data?: T[];
+    title?: string;
+    columns?: Column<T>[];
+    emptyMessage?: string;
+  }
+
+  const DataTable = <T extends Record<string, any>>({ 
+    data = [], 
+    title = "Data Table",
+    columns = [],
+    emptyMessage = "No data available"
+  }: DataTableProps<T>) => {
+
+    // Early return code...
+
+    const tableColumns: Column<T>[] = columns.length > 0 
+      ? columns 
+      : data.length > 0 
+        ? Object.keys(data[0]).map(key => ({
+            key,
+            header: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+            render: (item: T) => item[key]
+          }))
+        : [];
+
+    // Return JSX code...
+  };
 
   return (
     <div className="container mx-auto py-8">
