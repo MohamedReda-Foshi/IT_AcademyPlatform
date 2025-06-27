@@ -21,10 +21,7 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
                             controls
                             height={600}
                             width={950}
-
                             className="mx-auto rounded-lg shadow-md"
-
-
                         />
                     </div>
                 )}

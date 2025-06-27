@@ -29,8 +29,17 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+      const token = localStorage.getItem("token"); // or however you store the token
     axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`)
+      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
+         {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+           'Content-Type': 'application/json',
+        },
+        withCredentials:true,
+      }
+      )
 
       .then((res) => {
         setChaptersData(res.data);
@@ -63,13 +72,6 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         contentData = chapter.videoUrl;
         break;
     }
-
-
-
-
-
-
-
     setContentData(contentData)
     console.log(`Selected chapter ${chapter} with type: ${type}`);
     console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);

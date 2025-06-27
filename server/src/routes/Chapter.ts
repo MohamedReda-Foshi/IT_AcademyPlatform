@@ -12,8 +12,7 @@ const router = Router();
  * GET /getChapter/:courseId
  * Fetch all chapters associated with a specific course
  */
-router.get("/getChapter/:courseId",
- 
+router.get("/getChapter/:courseId",auth,role("admin","user"),
    async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
 

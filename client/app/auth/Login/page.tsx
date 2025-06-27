@@ -28,7 +28,11 @@ export default function LoginPage() {
         setError("Invalid email or password");
         return;
       }
-      
+      if(res?.ok){
+      const session = await fetch("/api/auth/session").then(r => r.json());
+      localStorage.setItem("token", session.user.token);
+      localStorage.setItem("this is session user:", session.user);
+      }
       // Successful login - you can add navigation here if needed
       window.location.href = "/Profile"; // Redirect to home page after successful login
     } catch {

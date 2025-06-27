@@ -13,9 +13,9 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
+      name: string ;
+      email: string ;
+      image: string;
       role: string;
        _id?: string;
        plan:string;
@@ -31,35 +31,35 @@ export const authOptions: NextAuthOptions = {
   providers: [
     Credentials({
       name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
+      credentials: {email: {},password:{}},
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         try {
-          const res = await fetch(`http://localhost:8000/user/login`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/login`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               email: credentials.email,
               password: credentials.password
+
             }),
             
           });
+        
 
 
           const data = await res.json();
-
+//          localStorage.setItem('token',data)
           if (data?.data) {
             // This means login failed: backend returned { data: "error" }
             throw new Error(data.data);
           }
 
           const decoded = jwtDecode(data) as { id: string; email: string;name:string; role: string };
+          console.log('Decoded token:', decoded);
           return {
             id: decoded.id,
             name: decoded.name,
@@ -67,13 +67,12 @@ export const authOptions: NextAuthOptions = {
             role: decoded.role,
             token: data,
           };
+
         } catch (err) {
-          console.error("Authorize error:", err);
+          console.log("Authorize error:", err);
           throw new Error("Invalid email or password");
         }
-          
-          return null;
-        }
+            }
       }
     ),
 
@@ -127,6 +126,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.token = user.token;
       }
+
       return token;
     },
     async session({ session, token }) {
@@ -139,6 +139,7 @@ export const authOptions: NextAuthOptions = {
         token: token.token as string,
         plan: "free"
       };
+      console.log("this is session:",session.user)
       return session;
     },
   },

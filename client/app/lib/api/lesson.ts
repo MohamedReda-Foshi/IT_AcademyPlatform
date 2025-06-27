@@ -2,21 +2,10 @@
 
 
 
-  const getToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('token') || '';
-  }
-  return '';
-};
+ 
 
 // Helper function to create headers with auth
-const createAuthHeaders = () => {
-  const token = getToken();
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` })
-  };
-};
+
 
   export async function fetchLessonById(id: string): Promise<LessonData[]> {
     try {
