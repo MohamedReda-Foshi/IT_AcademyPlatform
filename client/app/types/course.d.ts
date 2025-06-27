@@ -1,5 +1,5 @@
 // types/course.d.ts
-export interface CourseData {
+export interface Course {
   _id: number;
   
   Namecourse: string;
@@ -34,6 +34,8 @@ export interface CourseData {
   videoUrl?: Types.ObjectId[]; // video URL of the lesson
   text?: Types.ObjectId[];
   quize?: Types.ObjectId[];
+  InstructorInformation: string;
+  Instructor: string;
   o:number
   i:number
   }

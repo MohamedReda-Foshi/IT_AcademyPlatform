@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 import DataTable from '../../components/DataTable';
 
@@ -101,3 +102,4 @@ interface DataTableProps<T> {
   );
 };
 export default DataTable;
+*/

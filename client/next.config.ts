@@ -23,10 +23,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'lh3.amazon.com',
         pathname: '**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.amazon.com',
+        pathname: '**',
+      },
     ],
     // Optional: only needed if using older image config
-    domains: ['m.media-amazon.com', 'lh3.googleusercontent.com','amazon.com'],
   },
 };
 

@@ -11,8 +11,6 @@ export interface Ichapter extends Document {
   filename:string;
   filedata:string;// text content of the chapter;
   courseId?: Types.ObjectId; // Reference to the course this chapter belongs to
-
-  
 }
 
 const courseSchema = new Schema<Ichapter>({
@@ -25,8 +23,7 @@ const courseSchema = new Schema<Ichapter>({
     quize: { type: String, default: null }, // Optional quiz content
     filename: { type: String, default: null },
     filedata: { type: String, default: null },
-    courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true }, // Reference to the course
-    
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true }, // Reference to the course 
 });
 
 export const chapterModel = mongoose.model<Ichapter>('Chapter', courseSchema);

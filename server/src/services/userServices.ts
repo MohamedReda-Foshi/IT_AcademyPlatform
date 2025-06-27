@@ -47,26 +47,20 @@ interface LoginParams{
 
 export const login =async ({email,password}: LoginParams)=>{
     const findUser =await userModel.findOne({email});
-
     if(!findUser) return {
         data:"User is not found"
     };
-    
     const passwordMatch = await bcrypt.compare(password,findUser.password);
     if(passwordMatch) {
         const token =generateJWT({id:findUser._id,role:findUser.role})
         return token;
     }
-    return {data:"Iconract password"}
-    
+    return {data:"Iconract password"}    
 };
-
 
 const generateJWT=(payload:any)=>{
     return jwt.sign(payload,process.env.JWT_SECRET_KEY as string,{
         expiresIn:"1d"});
-
-
 } 
 export const verifyJWT = (token: string) => {
     return jwt.verify(token, process.env.JWT_SECRET_KEY as string);

@@ -19,7 +19,7 @@ function About() {
             width={300}
             height={400}
             alt="Front-end Development"
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
           />
         </div>
         <div>

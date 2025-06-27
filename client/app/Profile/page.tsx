@@ -9,7 +9,7 @@ export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
 
     const defaultAvatar = "/avatar.png";
-    console.log(session)
+    console.log("this is session in profile",session?.user)
 
     return (
         <div className='flex p-9'>
@@ -26,11 +26,10 @@ export default async function ProfilePage() {
                                 priority
                             />
                         </div>
-
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Full Name:</h1>
                             <h1 className='text-xl'>{session?.user?.name || 'Not provided'}</h1>
-                                                  </div>
+                        </div>
 
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Email:</h1>

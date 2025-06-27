@@ -25,10 +25,7 @@ export interface Icourse extends Document {
   videoUrl:string[]
   text:string[]
   quize:string[]
-
-  
 }
-
 const courseSchema = new Schema<Icourse>({
   Namecourse: { type: String, required: true, trim: true },
   DescriptionCourse: { type: String, required: true },
@@ -38,8 +35,7 @@ const courseSchema = new Schema<Icourse>({
     type: String,
     required: true,
     enum: ["Beginner", "Intermediate", "Advanced"],
-    index: true
-  },
+    index: true},
   imageUrl: { type: String, required: true },
   duration: { type: Number, default: 0 },
   modules: [{ type: Schema.Types.ObjectId, ref: "Module" }],
@@ -57,10 +53,8 @@ const courseSchema = new Schema<Icourse>({
   videoUrl:[{ type: String }],
   text:[{ type: String }],
   quize:[{ type: String }],
-    
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
-
 });
 
 export const courseModel = mongoose.model<Icourse>('Course', courseSchema);
