@@ -1,5 +1,6 @@
+"use client"
 import React from 'react';
-import Button from './Button';
+
 
 // Type definitions
 type PricingTier = 'free' | 'most' | 'pro';
@@ -11,6 +12,7 @@ interface FeatureItemProps {
 interface PricingCardProps {
   title: string;
   price: string;
+  priceId:string;
   features: string[];
   isMost?: boolean;
   buttonText?: string;
@@ -21,6 +23,35 @@ interface PricingSectionProps {
   className?: string;
 }
 
+interface HandleSubscribeParams {
+  priceIdBa: string;
+}
+
+const handleSubscribe = async ({ priceIdBa }: HandleSubscribeParams): Promise<void> => {
+  try {
+
+    // Get token from storage
+        const token = localStorage.getItem('token');
+        
+        // Check if token exists
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/subscribe/stripe`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ priceIdBa }),
+    });
+    const session = await response.json();
+    window.location.href = session.url;
+  } catch (err: unknown) {
+    console.log("this is a POST FRONT",err);
+  }
+};
+
 // Reusable check icon component
 const CheckIcon: React.FC = () => (
   <svg
@@ -29,7 +60,7 @@ const CheckIcon: React.FC = () => (
     viewBox="0 0 24 24"
     strokeWidth="1.5"
     stroke="currentColor"
-    className="size-5 text-red-600 mt-0.5 flex-shrink-0"
+    className="w-5 h-5  text-red-600 mt-0.5 flex-shrink-0"
   >
     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
   </svg>
@@ -47,6 +78,7 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ text }) => (
 const PricingCard: React.FC<PricingCardProps> = ({
   title,
   price,
+  priceId,
   features,
   isMost = false,
   buttonText = "Get Started",
@@ -77,7 +109,13 @@ const PricingCard: React.FC<PricingCardProps> = ({
         ))}
       </ul>
       <div className="mt-8">
-        <Button button={buttonText} />
+        
+        <button
+        className='bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition' 
+          onClick={() => handleSubscribe({ priceIdBa: priceId })}>
+          {buttonText}
+        </button>
+       
       </div>
     </div>
   );
@@ -85,37 +123,41 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
 const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
   // Feature data
-  const pricingData: Record<PricingTier, { title: string; price: string; features: string[] }> = {
+  const pricingData: Record<PricingTier, { title: string; 
+    price: string; 
+    features: string[];
+    priceId:string }> = {
     free: {
       title: "Free",
       price: "Free",
+      priceId:"price_1Ri8TxFyLYskgycBDaZ9jGnQ",
       features: [
-        "10 users included",
-        "2GB of storage",
+        "Users can browse and watch course introductions only.",
+        "Read-only access to public discussion threads.",
         "Email support",
         "Help center access"
       ]
     },
     most: {
-      title: "Starter",
-      price: "15$",
+      title: "Most Used",
+      priceId:"price_1Ri8UNFyLYskgycB4JMtmM2L",
+      price: "20$",
       features: [
-        "10 users included",
-        "2GB of storage",
-        "Email support",
-        "Help center access"
+        "Full access to all course videos, lectures.",
+        "Email support with 24-hour turnaround on weekdays.",
+        "Access to our IT-related e-book library (PDFs).",
       ]
     },
     pro: {
       title: "Pro",
       price: "30$",
+      priceId:"price_1Ri8UoFyLYskgycBd1xHSMwJ",
       features: [
-        "20 users included",
-        "5GB of storage",
-        "Email support",
-        "Help center access",
-        "Phone support",
-        "Community access"
+        "Full access to all course videos, lectures.",
+        "Email support with 24-hour turnaround on weekdays.",
+        "Access to our IT-related e-book library (PDFs, ePubs).",
+        "24/7 live chat support and priority email response.",
+        "Monthly live Q&A/webinar sessions with instructors. "
       ]
     },
   };
@@ -130,17 +172,19 @@ const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
           Simple, transparent pricing for teams of all sizes.
         </p>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className='flex flex-col  md:flex md:flex-row gap-6'>
+
         <PricingCard
           title={pricingData.free.title}
           price={pricingData.free.price}
+          priceId={pricingData.free.priceId}
           features={pricingData.free.features}
           tier="free"
-        />
+          />
         <PricingCard
           title={pricingData.most.title}
           price={pricingData.most.price}
+          priceId={pricingData.most.priceId}
           features={pricingData.most.features}
           tier="most"
           isMost={true}
@@ -148,11 +192,14 @@ const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
         <PricingCard
           title={pricingData.pro.title}
           price={pricingData.pro.price}
+          priceId={pricingData.pro.priceId}
           features={pricingData.pro.features}
           tier="pro"
-        />
+          />
+        </div>
       </div>
-    </div>
+   
+  
   );
 };
 

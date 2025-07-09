@@ -1,15 +1,15 @@
-/*
+
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
-import { type Course } from '../../../types/course';
+import { type CourseData } from '../../../types/course';
 
 interface CreateCourseFormProps {
-  formData: Omit<Course, '_id'>;
-  errors: Partial<Record<keyof Course, string>>;
-  onInputChange: (field: keyof Course, value: string | number | boolean) => void;
-  onArrayChange: (field: keyof Course, index: number, value: string) => void;
-  onAddArrayItem: (field: keyof Course) => void;
-  onRemoveArrayItem: (field: keyof Course, index: number) => void;
+  formData: Omit<CourseData, '_id'>;
+  errors: Partial<Record<keyof CourseData, string>>;
+  onInputChange: (field: keyof CourseData, value: string | number | boolean) => void;
+  onArrayChange: (field: keyof CourseData, index: number, value: string) => void;
+  onAddArrayItem: (field: keyof CourseData) => void;
+  onRemoveArrayItem: (field: keyof CourseData, index: number) => void;
   onSubmit: () => void;
   onReset: () => void;
   isEditing: boolean;
@@ -205,7 +205,7 @@ const page: React.FC<CreateCourseFormProps> = ({
         />
         <ArrayInputField 
           label="Video URLs"
-          placeholder="https://example.com/video"
+          placeholder=""
           values={formData.videoUrl ?? []}
           onChange={(i, v) => onArrayChange('videoUrl', i, v)}
           onAdd={() => onAddArrayItem('videoUrl')}
@@ -353,4 +353,3 @@ const CheckboxField: React.FC<{
 
 export default page;
 
-*/

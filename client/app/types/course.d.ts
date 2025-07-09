@@ -1,5 +1,5 @@
 // types/course.d.ts
-export interface Course {
+export interface CourseData {
   _id: number;
   
   Namecourse: string;

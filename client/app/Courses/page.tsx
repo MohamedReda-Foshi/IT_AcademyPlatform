@@ -9,7 +9,7 @@ export default async function CoursesPage() {
   try {
     courses = await fetchAllCourseFromExpr()
   } catch (err) {
-    console.error(err)
+    console.log("error in courses page",err)
     // You could render an error state here
   }
 

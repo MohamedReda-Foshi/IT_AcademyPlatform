@@ -3,6 +3,7 @@ import {connection} from '../config/database';
 import admin from './routes/adminRoute';
 import user from './routes/userRoute';
 import course from './routes/courseRoute';
+import stripe from './routes/stripe';
 import chapter from './routes/Chapter';
 import dotenv from "dotenv";
 import { auth } from './middlewares/auth';
@@ -12,6 +13,11 @@ dotenv.config();
 
 const app = express();
 connection();
+
+
+
+
+
 app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Home page!");
@@ -22,9 +28,13 @@ app.use(cors({
     credentials: true
   }));
 
+
 app.use('/dashboard', admin);
 app.use('/chapter', chapter);
 app.use('/user', user);
 app.use('/course', course);
+app.use('/subscribe',stripe)
+
+
 
 export default app;

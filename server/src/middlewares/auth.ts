@@ -37,12 +37,21 @@ export const auth = (req: Request, res: Response, next: NextFunction): void => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any ;
-    req.user = decoded;
+    req.user = decoded; 
     console.log(decoded)
    
 
     next();
-  } catch (err) {
-    res.status(401).json(console.log(err));
+  } catch (error) {
+  if (error.name === 'TokenExpiredError') {
+    res.status(401).json({ 
+      error: 'Token expired', 
+      code: 'TOKEN_EXPIRED' 
+    });
+    return;
   }
+  // Handle other JWT errors
+  res.status(401).json({ error: 'Invalid token' });
+  return;
+}
 };
