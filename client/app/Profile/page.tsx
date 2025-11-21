@@ -4,12 +4,16 @@ import { authOptions } from '../lib/nextAuth';
 import SingnOut from '../_components/SingnOut';
 import Image from 'next/image'
 import Button from '../components/Button';
+import { redirect } from 'next/navigation';
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
-
+  if (!session) {
+    // auto-redirect to /api/auth/signin with callback back here
+    const returnTo = encodeURIComponent(`/Profile`);
+    redirect(`/auth/Login?returnTo=${returnTo}`);
+  }
     const defaultAvatar = "/avatar.png";
-    console.log("this is session in profile",session?.user)
 
     return (
         <div className='flex p-9'>
@@ -54,9 +58,16 @@ export default async function ProfilePage() {
                                 <a href="Adminpage">
                                 <Button button='Admin Panel' /></a>)
                             }
+                            
                         </div>
-
-
+                        <div>
+                           {session ? (
+                            <a href="Book" >
+                            <Button button="Book" />
+                            </a>
+                        ) : null}
+                            
+                        </div>
 
                         <SingnOut />
                     </div>

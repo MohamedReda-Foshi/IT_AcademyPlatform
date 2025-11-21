@@ -3,9 +3,10 @@ import Link from 'next/link'
 import Button from '@/app/components/Button'
 import  {fetchCourseById}  from '@/app/lib/api/coures'
 import { Types } from 'mongoose';
-
-
-
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../lib/nextAuth"; // adjust your path
+import { redirect } from 'next/navigation';
+import type { NextAuthOptions } from "next-auth";
 
 export interface CourseData {
   id:               Types.ObjectId
@@ -33,8 +34,22 @@ export interface CourseData {
 
 
 
-export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
+
+
+export default async function CoursePage(
+  { params }: 
+  { params: Promise<{ courseId: string }>
+ }) {
   const  {courseId}  = await params
+
+    const session = await getServerSession(authOptions as NextAuthOptions);
+  if (!session) {
+    // auto-redirect to /api/auth/signin with callback back here
+    const returnTo = encodeURIComponent(`/Courses/${courseId}`);
+    redirect(`/auth/Login?returnTo=${returnTo}`);
+  }
+
+
   let datacourse: CourseData | null = null 
   console.log('Course Page - courseId:', courseId); 
 

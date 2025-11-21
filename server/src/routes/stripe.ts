@@ -1,9 +1,8 @@
 import { Router } from "express";
 import express from "express";
-import { auth } from "../middlewares/auth";
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
-
+import { auth } from "../middlewares/auth";
 dotenv.config();
 
 const route = Router();
@@ -12,21 +11,21 @@ const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
     apiVersion: "2025-06-30.basil"
 });
 
-route.post('/stripe', async (req, res) => {
+route.post('/stripe',async (req, res) => {
     try {
-        const { priceIdBa } = req.body;
+        const { priceId } = req.body;
 
         
         const session = await stripe.checkout.sessions.create({
             mode: 'subscription',
             payment_method_types: ['card'],
             line_items: [{
-                price: priceIdBa,
-                quantity: 1,
-            }],
-
+                price: priceId,
+                quantity: 1,}],
             success_url: `${process.env.FRONT_END_PORT}/Success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.FRONT_END_PORT}/Cancel`,
+            
+          
         });
 
         res.json({  url: session.url  });
@@ -35,6 +34,10 @@ route.post('/stripe', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+
+
 
 // Define your Stripe webhook secret, usually from environment variables
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

@@ -8,6 +8,8 @@ import ViewChapter from './ViewChapter';
 import { BookOpen, Star } from 'lucide-react';
 //import Quiz from 'react-quiz-component';
 import Link from 'next/link';
+import { useSession } from "next-auth/react";
+
 
 import {
   Accordion,
@@ -16,7 +18,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import Button from './Button';
-
 
 
 export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -31,9 +32,14 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
   const [contentData, setContentData] = useState<string | string[] >()
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
+  const { data: session } = useSession();
 
   useEffect(() => {
-      const token = localStorage.getItem("token"); // or however you store the token
+      if (session?.user?.token) {
+      const token = session.user.token;
+      console.log("✅ Token from NextAuth session:", token);
+      
+
     axios
       .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
          {
@@ -53,7 +59,8 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
       .catch((error) => {
         console.log(error);
       })
-  }, [params]);
+    }
+  }, [session,params]);
 
 
   function onSelect(
@@ -122,7 +129,6 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
               >
                 {chapter.videoTitle}
               </button>
-
               {chapter.filedata && (
                 <button
                   className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition"

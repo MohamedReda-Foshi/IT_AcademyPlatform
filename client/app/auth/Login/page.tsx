@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Button from '../../components/Button';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+import { signIn, getSession } from 'next-auth/react';
 import SingninWithGoogle from '../../_components/SingninWithGoogle';
 import SingninWithGitHub from '../../_components/SingninWithGitHub';
 
@@ -28,13 +28,15 @@ export default function LoginPage() {
         setError("Invalid email or password");
         return;
       }
-      if(res?.ok){
-      const session = await fetch("/api/auth/session").then(r => r.json());
-      localStorage.setItem("token", session.user.token);
-      localStorage.setItem("this is session user:", session.user);
+
+      const session = await getSession();
+      console.log("Session after login:", session);
+
+      if (session?.user?.token) {
+        localStorage.setItem("auth_token", session.user.token);
       }
-      // Successful login - you can add navigation here if needed
-      window.location.href = "/Profile"; // Redirect to home page after successful login
+
+      window.location.href = "/Profile";
     } catch {
       setError("An error occurred. Please try again.");
     } finally {
@@ -46,7 +48,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen py-32 items-center justify-start bg-gradient-to-b from-gray-900 to-black">
       <div className="mx-auto w-full max-w-lg bg-black/50 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-gray-800">
         <h1 className="text-4xl font-bold text-white mb-8 text-center">Welcome Back</h1>
-        
+
         <div className="flex flex-row gap-4 justify-center mb-8">
           <SingninWithGoogle />
           <SingninWithGitHub />
@@ -73,6 +75,7 @@ export default function LoginPage() {
               Email
             </label>
           </div>
+
           <div className="relative z-0 group">
             <input
               type="password"
@@ -87,6 +90,7 @@ export default function LoginPage() {
               Password
             </label>
           </div>
+
           <Button button={isLoading ? 'Logging in...' : 'Login'} />
         </form>
 
@@ -96,6 +100,7 @@ export default function LoginPage() {
             Register
           </Link>
         </p>
+
         <div className="mt-4 text-center">
           <Link href="/ForgotPassword" className="text-sm text-gray-400 hover:text-gray-300 transition-colors duration-200 hover:underline">
             Forgot your password?

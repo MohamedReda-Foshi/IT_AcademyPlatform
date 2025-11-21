@@ -1,355 +1,351 @@
+"use client"
 
-import React from 'react';
-import { Plus, Minus } from 'lucide-react';
-import { type CourseData } from '../../../types/course';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 
-interface CreateCourseFormProps {
-  formData: Omit<CourseData, '_id'>;
-  errors: Partial<Record<keyof CourseData, string>>;
-  onInputChange: (field: keyof CourseData, value: string | number | boolean) => void;
-  onArrayChange: (field: keyof CourseData, index: number, value: string) => void;
-  onAddArrayItem: (field: keyof CourseData) => void;
-  onRemoveArrayItem: (field: keyof CourseData, index: number) => void;
-  onSubmit: () => void;
-  onReset: () => void;
-  isEditing: boolean;
+type Level = "Beginner" | "Intermediate" | "Advanced";
+type PriceType = "Free" | "Paid";
+
+interface CourseForm {
+  Namecourse: string;
+  DescriptionCourse: string;
+  shortDescription: string;
+  category: string;
+  level: Level;
+  imageUrl: string;
+  duration: number;
+  rating: number;
+  modules: string;
+  prerequisites: string;
+  learningOutcomes: string;
+  price: PriceType;
+  Instructor: string;
+  InstructorInformation: string;
+  videoUrl: string;
+  text: string;
+  quize: string;
+  isPublished: boolean;
 }
 
-const inputBase = "w-full px-3 py-2 bg-black text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600";
-const errStyle = "border-red-500";
-const okStyle = "border-gray-600";
+const cleanArray = (raw: string): string[] =>
+  raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => !!s);
 
-const ArrayInputField: React.FC<{
-  label: string;
-  placeholder: string;
-  values: string[];
-  onChange: (i: number, val: string) => void;
-  onAdd: () => void;
-  onRemove: (i: number) => void;
-}> = ({ label, placeholder, values, onChange, onAdd, onRemove }) => (
-  <div className="space-y-2">
-    <label className="block text-sm text-gray-200">{label}</label>
-    {values.map((value, i) => (
-      <div key={i} className="flex gap-2">
-        <input
-          type="text"
-          value={value}
-          placeholder={placeholder}
-          onChange={(e) => onChange(i, e.target.value)}
-          className={`${inputBase} ${okStyle}`}
-        />
-        <button 
-          onClick={() => onRemove(i)} 
-          className="px-2 text-red-500 hover:text-red-400 transition-colors"
-          aria-label="Remove item"
-        >
-          <Minus size={16} />
-        </button>
+function CreateCoursePage() {
+  const router = useRouter();
+  const [form, setForm] = useState<CourseForm>({
+    Namecourse: "",
+    DescriptionCourse: "",
+    shortDescription: "",
+    category: "",
+    level: "Beginner",
+    imageUrl: "",
+    duration: 0,
+    rating: 0,
+    modules: "",
+    prerequisites: "",
+    learningOutcomes: "",
+    price: "Free",
+    Instructor: "",
+    InstructorInformation: "",
+    videoUrl: "",
+    text: "",
+    quize: "",
+    isPublished: false,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const session = await getSession();
+
+      if (!session?.user?.token || session.user.role !== "admin") {
+        const returnTo = encodeURIComponent("/");
+        router.push(`/auth/Login?returnTo=${returnTo}`);
+        return;
+      }
+
+      const payload = {
+        Namecourse: form.Namecourse,
+        DescriptionCourse: form.DescriptionCourse,
+        shortDescription: form.shortDescription,
+        category: form.category,
+        level: form.level,
+        imageUrl: form.imageUrl,
+        duration: Number(form.duration),
+        rating: Number(form.rating),
+        modules: cleanArray(form.modules),
+        prerequisites: cleanArray(form.prerequisites),
+        learningOutcomes: cleanArray(form.learningOutcomes),
+        price: form.price,
+        isPublished: form.isPublished,
+        Instructor: form.Instructor,
+        InstructorInformation: form.InstructorInformation,
+        videoUrl: cleanArray(form.videoUrl),
+        text: cleanArray(form.text),
+        quize: cleanArray(form.quize),
+      };
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/AddCourse`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.user.token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || response.statusText);
+      }
+
+      const createdCourse = await response.json();
+      router.push(`/Courses/${createdCourse._id}`);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="py-20">
+      <div className="max-w-2xl mx-auto p-6 bg-black rounded shadow">
+        <h1 className="text-2xl mb-4 text-white">Create New Course</h1>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block font-medium text-white mb-1">Course Name</label>
+            <input
+              name="Namecourse"
+              value={form.Namecourse}
+              onChange={handleChange}
+              required
+              className="w-full border px-3 py-2 rounded text-black"
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">
+              Short Description (≤200 chars)
+            </label>
+            <textarea
+              name="shortDescription"
+              value={form.shortDescription}
+              onChange={handleChange}
+              maxLength={200}
+              required
+              className="w-full border px-3 py-2 rounded text-black"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">Full Description</label>
+            <textarea
+              name="DescriptionCourse"
+              value={form.DescriptionCourse}
+              onChange={handleChange}
+              required
+              className="w-full border px-3 py-2 rounded text-black"
+              rows={4}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium text-white mb-1">Category</label>
+              <input
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                required
+                className="w-full border px-3 py-2 rounded text-black"
+              />
+            </div>
+            <div>
+              <label className="block font-medium text-white mb-1">Level</label>
+              <select
+                name="level"
+                value={form.level}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded text-black"
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">Image URL</label>
+            <input
+              name="imageUrl"
+              type="url"
+              value={form.imageUrl}
+              onChange={handleChange}
+              required
+              className="w-full border px-3 py-2 rounded text-black"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium text-white mb-1">Duration (minutes)</label>
+              <input
+                name="duration"
+                type="number"
+                min="0"
+                value={form.duration}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded text-black"
+              />
+            </div>
+            <div>
+              <label className="block font-medium text-white mb-1">Price</label>
+              <select
+                name="price"
+                value={form.price}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded text-black"
+              >
+                <option value="Free">Free</option>
+                <option value="Paid">Paid</option>
+              </select>
+            </div>
+            <div>
+              <label className="block font-medium text-white mb-1">rating</label>
+              <select
+                name="Rating"
+                value={form.rating}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded text-black"
+              >
+              <option value="Free">1</option>
+              <option value="Paid">2</option>
+              <option value="Paid">3</option>
+              <option value="Paid">4</option>
+              <option value="Paid">5</option>
+            </select>
+            </div>
+
+
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">Prerequisites</label>
+            <input
+              name="prerequisites"
+              value={form.prerequisites}
+              onChange={handleChange}
+              placeholder="JavaScript, HTML, CSS"
+              className="w-full border px-3 py-2 rounded text-black"
+            />
+          </div>
+
+
+          <div>
+            <label className="block font-medium text-white mb-1">Learning Outcomes</label>
+            <input
+              name="learningOutcomes"
+              value={form.learningOutcomes}
+              onChange={handleChange}
+              placeholder="Understand state management, Build components"
+              className="w-full border px-3 py-2 rounded text-black"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium text-white mb-1">Instructor</label>
+              <input
+                name="Instructor"
+                value={form.Instructor}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded text-black"
+              />
+            </div>
+            <div className="flex items-center">
+              <label className="inline-flex items-center text-white">
+                <input
+                  name="isPublished"
+                  type="checkbox"
+                  checked={form.isPublished}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Published
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">Instructor Information</label>
+            <textarea
+              name="InstructorInformation"
+              value={form.InstructorInformation}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded text-black"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium text-white mb-1">
+              Video URLs (comma-separated)
+            </label>
+            <input
+              name="videoUrl"
+              value={form.videoUrl}
+              onChange={handleChange}
+              placeholder="https://example.com/video1, https://example.com/video2"
+              className="w-full border px-3 py-2 rounded text-black"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? "Creating…" : "Create Course"}
+          </button>
+        </form>
       </div>
-    ))}
-    <button 
-      onClick={onAdd}
-      className="flex items-center px-2 text-green-500 hover:text-green-400 transition-colors"
-    >
-      <Plus size={16} className="mr-1" /> Add
-    </button>
-  </div>
-);
-
-const page: React.FC<CreateCourseFormProps> = ({
-  formData,
-  errors,
-  onInputChange,
-  onArrayChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onSubmit,
-  onReset,
-  isEditing
-}) => (
-  <div className="space-y-6">
-  
-    <Section title="Basic Information">
-      <div className="grid md:grid-cols-2 gap-4">
-        <InputField 
-          label="Name *"
-          value={formData.Namecourse}
-          error={errors.Namecourse}
-          onChange={(v) => onInputChange('Namecourse', v)}
-        />
-        <InputField 
-          label="Category *"
-          value={formData.category}
-          error={errors.category}
-          onChange={(v) => onInputChange('category', v)}
-        />
-        <SelectField 
-          label="Level *"
-          value={formData.level}
-          options={['Beginner', 'Intermediate', 'Advanced']}
-          onChange={(v) => onInputChange('level', v)}
-        />
-        <SelectField 
-          label="Price"
-          value={formData.price}
-          options={['Free', 'Paid']}
-          onChange={(v) => onInputChange('price', v)}
-        />
-      </div>
-      <InputField 
-        label="Short Description *"
-        value={formData.shortDescription ?? ""}
-        error={errors.shortDescription}
-        onChange={(v) => onInputChange('shortDescription', v)}
-      />
-      <TextAreaField 
-        label="Full Description *"
-        value={formData.DescriptionCourse}
-        error={errors.DescriptionCourse}
-        onChange={(v) => onInputChange('DescriptionCourse', v)}
-        rows={3}
-      />
-    </Section>
-
-   
-    <Section title="Instructor Information">
-      <InputField 
-        label="Instructor *"
-        value={formData.Instructor}
-        error={errors.Instructor}
-        onChange={(v) => onInputChange('Instructor', v)}
-      />
-      <TextAreaField 
-        label="Bio"
-        value={formData.InstructorInformation}
-        onChange={(v) => onInputChange('InstructorInformation', v)}
-        rows={2}
-      />
-    </Section>
-
-   
-    <Section title="Course Metrics">
-      <div className="grid md:grid-cols-4 gap-4">
-        <NumberInput 
-          label="Duration (minutes) *"
-          value={formData.duration ?? 0}
-          error={errors.duration}
-          onChange={(v) => onInputChange('duration', v)}
-        />
-        <NumberInput 
-          label="Lessons"
-          value={formData.totalLessons ?? 0}
-          onChange={(v) => onInputChange('totalLessons', v)}
-        />
-        <NumberInput 
-          label="Quizzes"
-          value={formData.totalQuizzes ?? 0}
-          onChange={(v) => onInputChange('totalQuizzes', v)}
-        />
-        <NumberInput 
-          label="XP"
-          value={formData.XpNumber ?? 0}
-          onChange={(v) => onInputChange('XpNumber', v)}
-        />
-        <NumberInput 
-          label="Rating"
-          value={formData.rating ?? 0}
-          step={0.1}
-          error={errors.rating}
-          onChange={(v) => onInputChange('rating', v)}
-        />
-        <InputField 
-          label="Enrollments"
-          value={formData.enrollments ?? 0}
-          disabled
-        />
-        <InputField 
-          label="Image URL"
-          value={formData.imageUrl ?? ''}
-          onChange={(v) => onInputChange('imageUrl', v)}
-        />
-        <CheckboxField 
-          label="Published"
-          checked={!!formData.isPublished}
-          onChange={(v) => onInputChange('isPublished', v)}
-        />
-      </div>
-    </Section>
-
-   
-    <Section title="Course Content">
-      <div className="grid md:grid-cols-2 gap-4">
-        <ArrayInputField 
-          label="Prerequisites"
-          placeholder="e.g. JavaScript basics"
-          values={formData.prerequisites ?? []}
-          onChange={(i, v) => onArrayChange('prerequisites', i, v)}
-          onAdd={() => onAddArrayItem('prerequisites')}
-          onRemove={(i) => onRemoveArrayItem('prerequisites', i)}
-        />
-        <ArrayInputField 
-          label="Learning Outcomes"
-          placeholder="e.g. Build responsive UI"
-          values={formData.learningOutcomes ?? []}
-          onChange={(i, v) => onArrayChange('learningOutcomes', i, v)}
-          onAdd={() => onAddArrayItem('learningOutcomes')}
-          onRemove={(i) => onRemoveArrayItem('learningOutcomes', i)}
-        />
-        <ArrayInputField 
-          label="Module IDs"
-          placeholder="Module ID"
-          values={formData.modules ?? []}
-          onChange={(i, v) => onArrayChange('modules', i, v)}
-          onAdd={() => onAddArrayItem('modules')}
-          onRemove={(i) => onRemoveArrayItem('modules', i)}
-        />
-        <ArrayInputField 
-          label="Video URLs"
-          placeholder=""
-          values={formData.videoUrl ?? []}
-          onChange={(i, v) => onArrayChange('videoUrl', i, v)}
-          onAdd={() => onAddArrayItem('videoUrl')}
-          onRemove={(i) => onRemoveArrayItem('videoUrl', i)}
-        />
-        <ArrayInputField 
-          label="Text Blocks"
-          placeholder="Text content"
-          values={formData.text ?? []}
-          onChange={(i, v) => onArrayChange('text', i, v)}
-          onAdd={() => onAddArrayItem('text')}
-          onRemove={(i) => onRemoveArrayItem('text', i)}
-        />
-        <ArrayInputField 
-          label="Quiz IDs"
-          placeholder="Quiz ID"
-          values={formData.quize ?? []}
-          onChange={(i, v) => onArrayChange('quize', i, v)}
-          onAdd={() => onAddArrayItem('quize')}
-          onRemove={(i) => onRemoveArrayItem('quize', i)}
-        />
-      </div>
-    </Section>
-
-  
-    <div className="flex justify-end gap-4">
-      <button
-        onClick={onReset}
-        className="px-4 py-2 border border-gray-600 rounded hover:bg-gray-800 transition-colors"
-      >
-        Reset Form
-      </button>
-      <button
-        onClick={onSubmit}
-        className="px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition-colors"
-      >
-        {isEditing ? 'Update Course' : 'Create Course'}
-      </button>
     </div>
-  </div>
-);
+  );
+}
 
-// Helper components
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="bg-black border border-red-600 p-4 rounded">
-    <h2 className="text-xl font-semibold text-red-500 mb-4">{title}</h2>
-    {children}
-  </div>
-);
-
-const InputField: React.FC<{
-  label: string;
-  value: string | number;
-  error?: string;
-  disabled?: boolean;
-  onChange?: (value: string) => void;
-}> = ({ label, value, error, disabled = false, onChange }) => (
-  <div>
-    <label className="block text-gray-200 mb-1">{label}</label>
-    <input
-      type="text"
-      value={value}
-      disabled={disabled}
-      onChange={(e) => onChange?.(e.target.value)}
-      className={`${inputBase} ${error ? errStyle : okStyle} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-    />
-    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-  </div>
-);
-
-const TextAreaField: React.FC<{
-  label: string;
-  value: string;
-  error?: string;
-  rows?: number;
-  onChange: (value: string) => void;
-}> = ({ label, value, error, rows = 3, onChange }) => (
-  <div>
-    <label className="block text-gray-200 mb-1">{label}</label>
-    <textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      rows={rows}
-      className={`${inputBase} ${error ? errStyle : okStyle}`}
-    />
-    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-  </div>
-);
-
-const NumberInput: React.FC<{
-  label: string;
-  value: number;
-  error?: string;
-  step?: number;
-  onChange: (value: number) => void;
-}> = ({ label, value, error, step = 1, onChange }) => (
-  <div>
-    <label className="block text-gray-200 mb-1">{label}</label>
-    <input
-      type="number"
-      value={value}
-      step={step}
-      onChange={(e) => onChange(Number(e.target.value))}
-      className={`${inputBase} ${error ? errStyle : okStyle}`}
-    />
-    {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-  </div>
-);
-
-const SelectField: React.FC<{
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
-}> = ({ label, value, options, onChange }) => (
-  <div>
-    <label className="block text-gray-200 mb-1">{label}</label>
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={`${inputBase} ${okStyle}`}
-    >
-      {options.map(option => (
-        <option key={option} value={option}>{option}</option>
-      ))}
-    </select>
-  </div>
-);
-
-const CheckboxField: React.FC<{
-  label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}> = ({ label, checked, onChange }) => (
-  <div className="flex items-center mt-6">
-    <input
-      type="checkbox"
-      checked={checked}
-      onChange={(e) => onChange(e.target.checked)}
-      className="mr-2 h-5 w-5 text-red-600 rounded focus:ring-red-500"
-    />
-    <label className="text-gray-200">{label}</label>
-  </div>
-);
-
-export default page;
-
+export default CreateCoursePage;

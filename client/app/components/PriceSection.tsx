@@ -1,13 +1,18 @@
 "use client"
 import React from 'react';
-
-
+import type{ 
+  HandleSubscribeParams,
+  FeatureItemProps
+} from './../types/PricingCard'
+/*import { redirect } from 'next/navigation';
+import type { NextAuthOptions } from "next-auth";
+import { authOptions } from "../lib/nextAuth"; // adjust your path
+import { getServerSession } from "next-auth/next";
+*/
 // Type definitions
 type PricingTier = 'free' | 'most' | 'pro';
 
-interface FeatureItemProps {
-  text: string;
-}
+
 
 interface PricingCardProps {
   title: string;
@@ -19,36 +24,27 @@ interface PricingCardProps {
   tier: PricingTier;
 }
 
-interface PricingSectionProps {
-  className?: string;
-}
 
-interface HandleSubscribeParams {
-  priceIdBa: string;
-}
 
-const handleSubscribe = async ({ priceIdBa }: HandleSubscribeParams): Promise<void> => {
+
+
+const handleSubscribe = async ({ priceId }: HandleSubscribeParams): Promise<void> => {
   try {
-
-    // Get token from storage
-        const token = localStorage.getItem('token');
-        
-        // Check if token exists
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
+    
     const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/subscribe/stripe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        
       },
-      body: JSON.stringify({ priceIdBa }),
+      body: JSON.stringify({ priceId }),
     });
-    const session = await response.json();
-    window.location.href = session.url;
+    const sessionData = await response.json();
+    if (sessionData.url) {
+      window.location.href = sessionData.url;
+    }
   } catch (err: unknown) {
-    console.log("this is a POST FRONT",err);
+    console.log("Subscription error POST FRONT",err);
   }
 };
 
@@ -112,7 +108,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
         
         <button
         className='bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition' 
-          onClick={() => handleSubscribe({ priceIdBa: priceId })}>
+          onClick={() => handleSubscribe({priceId})}>
           {buttonText}
         </button>
        
@@ -121,12 +117,13 @@ const PricingCard: React.FC<PricingCardProps> = ({
   );
 };
 
-const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
+const PricingSection: React.FC = () => {
   // Feature data
   const pricingData: Record<PricingTier, { title: string; 
     price: string; 
     features: string[];
-    priceId:string }> = {
+    priceId:string
+   }> = {
     free: {
       title: "Free",
       price: "Free",
@@ -163,7 +160,7 @@ const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
   };
   
   return (
-    <div className={`mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 ${className}`}>
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold text-white">
           <span className="text-red-600">Our</span> Pricing

@@ -10,13 +10,11 @@ const router = express.Router();
 
 router.get(
   "/getuser",
-  auth,
-  role("admin"),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const Userdata = await userModel
         .find()
-        .select("firstName lastName email role");
+        .select("firstName lastName email role provider ImageURL about Pyament");
       res.status(200).json(Userdata);
     } catch (err) {
       res.status(404).send(err);

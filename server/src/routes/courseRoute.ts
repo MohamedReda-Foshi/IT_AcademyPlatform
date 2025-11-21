@@ -23,12 +23,12 @@ router.get("/CourseCard", async(req, res) => {
 });
 
 
-router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+router.get("/AllCourse", async (req: Request, res: Response):Promise<void> => {
     try{
         const courses = await courseModel
         .find()
-        res.status(200).send(courses);
-        next();
+        res.status(200)
+        .json(courses);
     }catch (error) {
       
         console.error("Failed to fetch courses", error);
@@ -43,7 +43,7 @@ router.get("/course/CourseCard", async(req, res) => {
       const courses = await courseModel
       .find()
       .limit(1)
-      .select('_id Namecourse category shortDescription imageUrl duration level rating');
+      .select('_id Namecourse category shortDescription imageUrl duration level rating price');
       res.status(200).send(courses);
   }catch (error) {
     
@@ -247,10 +247,15 @@ router.get("/:id",
             duration,
             modules,
             prerequisites,
-            learningOutcomes,
             price,
+            rating,
+            learningOutcomes,
+            totalLessons,
+            totalQuizzes,
             isPublished,
             XpNumber,
+            Instructor,
+            InstructorInformation,
             videoUrl,
             text,
             quize,
@@ -258,19 +263,24 @@ router.get("/:id",
         } = req.body;
 
          const course = new courseModel({
-             Namecourse, 
-             DescriptionCourse,
-              shortDescription,
+                         Namecourse,
+            DescriptionCourse,
+            shortDescription,
             category,
             level,
             imageUrl,
             duration,
             modules,
             prerequisites,
-            learningOutcomes,
             price,
+            rating,
+            learningOutcomes,
+            totalLessons,
+            totalQuizzes,
             isPublished,
             XpNumber,
+            Instructor,
+            InstructorInformation,
             videoUrl,
             text,
             quize,
