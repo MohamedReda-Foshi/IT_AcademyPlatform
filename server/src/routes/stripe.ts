@@ -8,7 +8,7 @@ dotenv.config();
 const route = Router();
 
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY!, {
-    apiVersion: "2025-06-30.basil"
+    apiVersion: "2025-08-27.basil"
 });
 
 route.post('/stripe',async (req, res) => {

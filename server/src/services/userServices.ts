@@ -68,7 +68,7 @@ export const login = async ({ email, password }: LoginParams) => {
       },
     };
   }
-  return { data: "Iconract password" };
+  return { data: "Inconract password" };
 };
 
 const generateJWT = (payload: any) => {

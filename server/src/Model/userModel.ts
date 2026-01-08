@@ -19,7 +19,7 @@ export interface IUser extends Document{
     enum: ['google', 'github','website'],
     default:'website'},
     role: { type: String, enum: ['user', 'admin'], required: true },
-    Pyament: { type: String, enum: ['free', 'Pay'], required: true },
+    Pyament: { type: String, enum: ['free', 'Pay'], required: false },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
       about: { type: String, default: '' },
