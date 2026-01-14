@@ -36,7 +36,6 @@ const AnimationCounter = ({
         
     }, [start, end, ,inView, animationOptions])
     
-   
   return <span ref={ref} />
 }
 

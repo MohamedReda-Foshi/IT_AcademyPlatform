@@ -1,6 +1,6 @@
-import Quiz from 'react-quiz-component';
+// import Quiz from 'react-quiz-component';
 
-const quiz = {
+export const quiz = {
   quizTitle: "JavaScript Fundamentals Quiz",
   quizSynopsis: "Test your knowledge of core JavaScript concepts, syntax, and behaviors.",
   nrOfQuestions: "5",

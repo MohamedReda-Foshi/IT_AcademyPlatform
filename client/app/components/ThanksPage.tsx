@@ -12,7 +12,7 @@ function ThanksPage() {
           Your email has been sent successfully. We will get back to you shortly.
         </p>
         <Link href="/">
-          <Button button="go to home page" />
+          <Button button="go to home page" type="button" disabled={false}/>
         </Link>
       </div>
     </div>

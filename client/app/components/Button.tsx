@@ -1,8 +1,11 @@
 import React from 'react'
 
-
+// re define the struct of the button interface 
 interface ButtonProps {
   button: string;
+  type: "button" | "submit" | "reset" | undefined;
+  disabled: boolean
+  className?: string
 }
 
 function Button(props: ButtonProps) {
@@ -13,6 +16,7 @@ function Button(props: ButtonProps) {
         className={`bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition ${
           props.disabled ? 'opacity-50 cursor-not-allowed' : ''
         }`}
+        type={props.type}
       >
         {props.button}
       </button>
