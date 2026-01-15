@@ -1,5 +1,6 @@
 import React from 'react'
-import Cardt from '../components/Cardt'
+// import CardT from '../components/CardT'
+import CardT from "../components/Cardt"
 
 function page() {
   return (
@@ -9,27 +10,27 @@ function page() {
           <div><h1 className='text-4xl font-bold pb-8'>Books</h1></div>
           <div className='flex flex-row gap-9'>
 
-            <Cardt
+            <CardT
               books="The C Programming Language"
               category="Programming"
               imageUrl="https://upload.wikimedia.org/wikipedia/commons/0/0e/The_C_Programming_Language%2C_First_Edition_Cover.svg"
-              altimg="C Programming Book Cover"
+              altImg="C Programming Book Cover"
               auth="Brian W. Kernighan and Dennis M. Ritchie"
               href='https://www.cimat.mx/ciencia_para_jovenes/bachillerato/libros/%5BKernighan-Ritchie%5DThe_C_Programming_Language.pdf'
             />
-            <Cardt
+            <CardT
               books="Operating System Concepts"
               category="Programming"
               imageUrl="https://www.amazon.com/Operating-System-Concepts-Abraham-Silberschatz/dp/1118063333"
-              altimg="Operating System Concepts"
+              altImg="Operating System Concepts"
               auth=" Peter Baer Galvin, Greg Gagne, Abraham Silberschatz"
               href='https://os.ecci.ucr.ac.cr/slides/Abraham-Silberschatz-Operating-System-Concepts-10th-2018.pdf'
             />
-            <Cardt
+            <CardT
               books="The C Programming Language"
               category="Programming"
               imageUrl="https://upload.wikimedia.org/wikipedia/commons/0/0e/The_C_Programming_Language%2C_First_Edition_Cover.svg"
-              altimg="C Programming Book Cover"
+              altImg="C Programming Book Cover"
               auth="Brian W. Kernighan and Dennis M. Ritchie"
               href='https://www.cimat.mx/ciencia_para_jovenes/bachillerato/libros/%5BKernighan-Ritchie%5DThe_C_Programming_Language.pdf'
             />
@@ -38,27 +39,27 @@ function page() {
 
           </div>
           <div className='flex flex-row p-11 gap-9'>
-                      <Cardt
+                      <CardT
               books="The C Programming Language"
               category="Programming"
               imageUrl="https://upload.wikimedia.org/wikipedia/commons/0/0e/The_C_Programming_Language%2C_First_Edition_Cover.svg"
-              altimg="C Programming Book Cover"
+              altImg="C Programming Book Cover"
               auth="Brian W. Kernighan and Dennis M. Ritchie"
               href='https://www.cimat.mx/ciencia_para_jovenes/bachillerato/libros/%5BKernighan-Ritchie%5DThe_C_Programming_Language.pdf'
             />
-            <Cardt
+            <CardT
               books="The C Programming Language"
               category="Programming"
               imageUrl="https://upload.wikimedia.org/wikipedia/commons/0/0e/The_C_Programming_Language%2C_First_Edition_Cover.svg"
-              altimg="C Programming Book Cover"
+              altImg="C Programming Book Cover"
               auth="Brian W. Kernighan and Dennis M. Ritchie"
               href='https://www.cimat.mx/ciencia_para_jovenes/bachillerato/libros/%5BKernighan-Ritchie%5DThe_C_Programming_Language.pdf'
             />
-            <Cardt
+            <CardT
               books="The C Programming Language"
               category="Programming"
               imageUrl="https://upload.wikimedia.org/wikipedia/commons/0/0e/The_C_Programming_Language%2C_First_Edition_Cover.svg"
-              altimg="C Programming Book Cover"
+              altImg="C Programming Book Cover"
               auth="Brian W. Kernighan and Dennis M. Ritchie"
               href='https://www.cimat.mx/ciencia_para_jovenes/bachillerato/libros/%5BKernighan-Ritchie%5DThe_C_Programming_Language.pdf'
             />

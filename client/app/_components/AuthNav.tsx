@@ -17,10 +17,10 @@ export default function AuthNav() {
     ) : (
     <div className="flex space-x-4">
       <Link href="/auth/Login">
-           <Button button="Login"/>
+          <Button button="Login" type={"button"}/>
       </Link>
       <Link href="/auth/Register">
-          <Button button="Register"/>
+          <Button button="Register" type={"button"}/>
       </Link>
     </div>
   )

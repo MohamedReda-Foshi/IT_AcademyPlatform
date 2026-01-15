@@ -4,23 +4,23 @@ import { Card, CardHeader, CardBody } from "@heroui/card";
 import Image from "next/image";
 import Link from "next/link";
 
-interface CardtProps {
+interface CardTProps {
   auth: string;
   books: string;
   category: string;
   imageUrl: string;
-  altimg: string;
+  altImg: string;
   href: string; 
 }
 
-export default function Cardt({
+export default function CardT({
   auth,
   books,
   category,
   imageUrl,
-  altimg,
+  altImg,
   href,
-}: CardtProps) {
+}: CardTProps) {
 
 
   return (
@@ -35,7 +35,7 @@ export default function Cardt({
       <Link href={href}>
       <CardBody className="p-3">
         <Image
-          alt={altimg}
+          alt={altImg}
           src={imageUrl}
           width={240}
           height={140}
