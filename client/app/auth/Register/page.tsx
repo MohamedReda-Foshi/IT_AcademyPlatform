@@ -5,8 +5,8 @@ import Button from '../../components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import SingninWithGoogle from '../../_components/SingninWithGoogle';
-import SingninWithGitHub from '../../_components/SingninWithGitHub';
+import SingninWithGoogle from '../../_components/SignInWithGoogle';
+import SingninWithGitHub from '../../_components/SignInWithGitHub';
 
 export default function RegisterForm() {
   const router = useRouter();

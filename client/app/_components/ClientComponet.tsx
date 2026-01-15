@@ -1,7 +1,7 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import SingninWithGoogle from "./SingninWithGoogle"
+import SingninWithGoogle from "./SignInWithGoogle"
 // import Avatar from "../components/Avatar"
 
 
