@@ -5,8 +5,9 @@ import Button from '../../components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import SingninWithGoogle from '../../_components/SignInWithGoogle';
-import SingninWithGitHub from '../../_components/SignInWithGitHub';
+import { inputUserSanitizer } from '@/app/utils/inputSanitizer';
+import SignInWithGoogle from '../../_components/SignInWithGoogle';
+import SignInWithGitHub from '../../_components/SignInWithGitHub';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -22,8 +23,10 @@ export default function RegisterForm() {
   const [success, setSuccess] = useState<string | null>(null);
   const [accountExists, setAccountExists] = useState<boolean>(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const cleanInput = inputUserSanitizer(e.target.value);
+      setForm(prev => ({ ...prev, [e.target.name]: cleanInput }));
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,8 +74,8 @@ export default function RegisterForm() {
         <h1 className="text-4xl font-bold text-white mb-8 text-center">Create Account</h1>
         
         <div className="flex flex-row gap-4 justify-center mb-8">
-          <SingninWithGoogle />
-          <SingninWithGitHub />
+          <SignInWithGoogle />
+          <SignInWithGitHub />
         </div>
         
         {error && (
@@ -155,7 +158,7 @@ export default function RegisterForm() {
             </label>
           </div>
 
-          <Button button={loading ? 'Registering...' : 'Register'} />
+          <Button button={loading ? 'Registering...' : 'Register'} type={"button"} />
         </form>
 
         <p className="mt-6 text-center text-gray-400">

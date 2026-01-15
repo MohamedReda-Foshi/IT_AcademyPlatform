@@ -44,12 +44,11 @@ export default function LoginPage() {
   };
 
   const handleFields = (value: string, type: string) => {
-    inputUserSanitizer( value );
 
     if(type === "email") {
-      setEmail(value);
+      setEmail(inputUserSanitizer(value));
     } else if(type === "password") {
-      setPassword(value);
+      setPassword(inputUserSanitizer(value));
     }
 
   }
