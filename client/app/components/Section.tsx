@@ -6,7 +6,7 @@ import {
   faUsers,
   faCertificate,
 } from "@fortawesome/free-solid-svg-icons";
-
+import Image from 'next/image'
 const Hero = () => {
   return (
     <div className="relative bg-black text-white pt-32 pb-20">
@@ -63,11 +63,15 @@ const Hero = () => {
           {/* Right Column - Image */}
           <div className="relative">
             <div className="relative z-10">
-              <img
-                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                alt="Student learning"
-                className="rounded-lg shadow-2xl"
+
+              <Image
+              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+              alt="Student learning"
+              className="rounded-lg shadow-2xl"
+              width={2070}
+              height={1380}
               />
+              
             </div>
             <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-techred rounded-lg transform rotate-12"></div>
             <div className="absolute -top-6 -right-6 w-32 h-32 bg-techgray rounded-lg transform -rotate-12"></div>

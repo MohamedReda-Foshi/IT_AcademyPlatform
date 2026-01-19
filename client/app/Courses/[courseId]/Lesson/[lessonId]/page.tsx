@@ -23,14 +23,14 @@ export default async function LessonPage({ params }: { params: { lessonId: strin
 
 
 
-  let lesson: LessonData | null = null
+  let lesson: LessonData  | null = null
   
  try {
-  lesson = await fetchLessonById(lessonId) 
-  
+  const lessons = await fetchLessonById(lessonId) 
+  lesson=lessons[0] || null
   
  } catch (error) {
-   console.log('Failed to fetch lesson:', error)
+   console.error('Failed to fetch lesson:', error)
 
  }
 
@@ -123,8 +123,6 @@ export default async function LessonPage({ params }: { params: { lessonId: strin
           {/* Learning Outcomes */}
           <div className="bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden">
 
-
-             
              <Chapter params={ lesson.id }/>
 
               <div className="p-6">
