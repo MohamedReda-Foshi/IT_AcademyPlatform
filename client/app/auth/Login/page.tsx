@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import Button from '../../components/Button';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
-import SingninWithGoogle from '../../_components/SingninWithGoogle';
-import SingninWithGitHub from '../../_components/SingninWithGitHub';
+import SignInWithGoogle from '../../_components/SignInWithGoogle';
+import SignInWithGitHub from '../../_components/SignInWithGitHub';
+import { inputUserSanitizer } from '@/app/utils/inputSanitizer';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -42,14 +43,24 @@ export default function LoginPage() {
     }
   };
 
+  const handleFields = (value: string, type: string) => {
+
+    if(type === "email") {
+      setEmail(inputUserSanitizer(value));
+    } else if(type === "password") {
+      setPassword(inputUserSanitizer(value));
+    }
+
+  }
+
   return (
     <div className="flex min-h-screen py-32 items-center justify-start bg-gradient-to-b from-gray-900 to-black">
       <div className="mx-auto w-full max-w-lg bg-black/50 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-gray-800">
         <h1 className="text-4xl font-bold text-white mb-8 text-center">Welcome Back</h1>
         
         <div className="flex flex-row gap-4 justify-center mb-8">
-          <SingninWithGoogle />
-          <SingninWithGitHub />
+          <SignInWithGoogle />
+          <SignInWithGitHub />
         </div>
 
         {error && (
@@ -64,7 +75,7 @@ export default function LoginPage() {
               type="email"
               name="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => handleFields(e.target.value, e.target.type.toLocaleLowerCase())}
               required
               disabled={isLoading}
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
@@ -78,7 +89,7 @@ export default function LoginPage() {
               type="password"
               name="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={e => handleFields(e.target.value, e.target.type.toLocaleLowerCase())}
               required
               disabled={isLoading}
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
@@ -87,7 +98,7 @@ export default function LoginPage() {
               Password
             </label>
           </div>
-          <Button button={isLoading ? 'Logging in...' : 'Login'} />
+          <Button button={isLoading ? 'Logging in...' : 'Login'} type={'button'} />
         </form>
 
         <p className="mt-6 text-center text-gray-400">
