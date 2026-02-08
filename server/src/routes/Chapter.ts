@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { chapterModel } from '../Model/chapter';
-import {role} from '../middlewares/roleauth';
+import {role} from '../middlewares/role_auth';
 import { auth } from '../middlewares/auth';
 
 
@@ -24,7 +24,7 @@ router.get("/getChapter/:courseId",auth,role("admin","user"),
   try {
     const chapters = await chapterModel
       .find({ courseId })
-      .populate('courseId', ' ChapterTitile videoUrl text quize ')
+      .populate('courseId', ' ChapterTitle videoUrl text quiz ')
       .sort({ order: 1 }); // Sort chapters by order
 
     res.json(chapters);
@@ -45,7 +45,7 @@ router.post("/addChapter" ,auth, role ("admin"), async (req: Request, res: Respo
       videoTitle,
       textTitle,
       text, 
-      quize,
+      quiz,
       filesname,
       filedata, 
       courseId 
@@ -63,7 +63,7 @@ router.post("/addChapter" ,auth, role ("admin"), async (req: Request, res: Respo
       videoUrl,
       textTitle,
       text,
-      quize,
+      quiz,
       courseId,
       videoTitle,
       filesname,

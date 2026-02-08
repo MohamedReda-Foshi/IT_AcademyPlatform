@@ -3,18 +3,20 @@ import { login } from "../services/userServices";
 import { registerUser } from "../services/userServices";
 import { userModel } from "../Model/userModel";
 import { Request, Response, NextFunction } from "express";
-import { role } from "../middlewares/roleauth";
+import { role } from "../middlewares/role_auth";
 import { auth } from "../middlewares/auth";
 
 const router = express.Router();
 
 router.get(
-  "/getuser",
+  "/getUser",
+  auth,
+  role("admin"),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const Userdata = await userModel
         .find()
-        .select("firstName lastName email role provider ImageURL about Pyament");
+        .select("firstName lastName email role");
       res.status(200).json(Userdata);
     } catch (err) {
       res.status(404).send(err);
@@ -23,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/getusername/:id",
+  "/getUsername/:id",
   auth,
   role("admin"),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -40,7 +42,7 @@ router.get(
   }
 );
 
-//Authoniocation
+//Authentication
 router.post("/register", async (req, res, next) => {
   try {
     const { firstName, lastName, role, email, password } = req.body;

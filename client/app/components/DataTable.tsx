@@ -1,26 +1,13 @@
+// DataTable.jsx
 import React from 'react';
 
-interface Column<T> {
-  key: string;
-  header: string;
-  render?: (item: T) => React.ReactNode;
-}
-
-interface DataTableProps<T> {
-  data?: T[];
-  title?: string;
-  columns?: Column<T>[];
-  emptyMessage?: string;
-}
-
-// 1. Changed Record<string, any> to Record<string, unknown>
-const DataTable = <T extends Record<string, unknown>>({
-  data = [],
+const DataTable = ({ 
+  data = [], 
   title = "Data Table",
   columns = [],
   emptyMessage = "No data available"
-}: DataTableProps<T>) => {
-  
+}) => {
+  // Early return if no data and no columns specified
   if (data.length === 0 && columns.length === 0) {
     return (
       <div className="container mx-auto py-8">
@@ -32,16 +19,41 @@ const DataTable = <T extends Record<string, unknown>>({
     );
   }
 
-  const tableColumns: Column<T>[] = columns.length > 0
-    ? columns
-    : data.length > 0
-      ? Object.keys(data[0] as object).map(key => ({
-          key,
-          header: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
-          // 2. Wrap in String() to ensure 'unknown' data is renderable
-          render: (item: T) => String(item[key]) 
-        }))
-      : [];
+  // If no columns are provided, automatically generate them from the first item
+  interface Column<T> {
+    key: string;
+    header: string;
+    render?: (item: T) => React.ReactNode;
+  }
+
+  interface DataTableProps<T> {
+    data?: T[];
+    title?: string;
+    columns?: Column<T>[];
+    emptyMessage?: string;
+  }
+
+  const DataTable = <T extends Record<string, any>>({ 
+    data = [], 
+    title = "Data Table",
+    columns = [],
+    emptyMessage = "No data available"
+  }: DataTableProps<T>) => {
+
+    // Early return code...
+
+    const tableColumns: Column<T>[] = columns.length > 0 
+      ? columns 
+      : data.length > 0 
+        ? Object.keys(data[0]).map(key => ({
+            key,
+            header: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+            render: (item: T) => item[key]
+          }))
+        : [];
+
+    // Return JSX code...
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -51,8 +63,8 @@ const DataTable = <T extends Record<string, unknown>>({
           <thead>
             <tr className="bg-gray-100">
               {tableColumns.map((column, index) => (
-                <th
-                  key={index}
+                <th 
+                  key={index} 
                   className="py-2 px-4 border-b border-gray-200 text-left font-semibold text-gray-600"
                 >
                   {column.header}
@@ -66,18 +78,15 @@ const DataTable = <T extends Record<string, unknown>>({
                 <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                   {tableColumns.map((column, colIndex) => (
                     <td key={colIndex} className="py-2 px-4 border-b border-gray-200">
-                      {/* 3. Cast item[column.key] to ReactNode so TS allows it */}
-                      {column.render 
-                        ? column.render(item) 
-                        : (item[column.key] as React.ReactNode)}
+                      {column.render ? column.render(item) : item[column.key]}
                     </td>
                   ))}
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={tableColumns.length}
+                <td 
+                  colSpan={tableColumns.length} 
                   className="py-4 px-4 text-center text-gray-500 border-b border-gray-200"
                 >
                   {emptyMessage}

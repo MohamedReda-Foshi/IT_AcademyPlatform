@@ -3,9 +3,6 @@ import {login} from "../services/userServices"
 import { registerUser } from '../services/userServices';
 const router = express.Router();
 
-
-
-
 router.post('/register',async(req,res,next)=>{
   try{
     const {firstName, lastName,role, email, password} = req.body

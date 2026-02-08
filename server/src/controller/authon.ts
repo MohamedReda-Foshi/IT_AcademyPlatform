@@ -5,7 +5,7 @@ interface RegisterParams {
   lastName: string;
   email: string;
   password: string;
-  adminname: string;
+  adminName: string;
 }
 
 export const register = asyncHandler(async (req, res) => {
@@ -15,7 +15,7 @@ export const register = asyncHandler(async (req, res) => {
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
-      adminname: req.body.adminname,
+      adminName: req.body.adminName,
     };
 
     console.log(req.body);

@@ -20,8 +20,6 @@ export async function fetchAllCourseFromExpr(): Promise<CourseData[]> {
   }
 
 
-
-
 export async function fetchHomeCourseFromExpr(): Promise<CourseData[]> {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/CourseCardHomepage`);
@@ -79,8 +77,6 @@ export async function fetchLessonById(id: string): Promise<LessonData[]> {
     console.error(`Fetch lesson error for id: ${id}`, error)
     return []
   }
-
-  
 }
 
 

@@ -1,40 +1,36 @@
 import { Router, Request, Response,NextFunction} from 'express';
-import {courseModel,Icourse } from '../Model/course';
+import {courseModel,ICourse } from '../Model/course';
 import mongoose from 'mongoose';
 import { auth } from '../middlewares/auth';
-import { role } from '../middlewares/roleauth';
+import { role } from '../middlewares/role_auth';
 
 // this is a cart course 
 
 const router =Router();
 
 router.get("/CourseCard", async(req, res) => {
-    try{
+    try {
         const courses = await courseModel
         .find()
-        .select('_id Namecourse category shortDescription imageUrl duration level rating');
+        .select('_id NameCourse category shortDescription imageUrl duration level rating');
         res.status(200).send(courses);
-    }catch (error) {
-      
+    } catch (error) {
         console.error("Failed to fetch courses", error);
         res.status(500).json({ message: "Internal server error" });
-      }
-
+    }
 });
 
 
-router.get("/AllCourse", async (req: Request, res: Response):Promise<void> => {
+router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try{
         const courses = await courseModel
         .find()
-        res.status(200)
-        .json(courses);
-    }catch (error) {
-      
+        res.status(200).send(courses);
+        next();
+      }catch (error) {
         console.error("Failed to fetch courses", error);
         res.status(500).json({ message: "Internal server error" });
       }
-
 });
 
 // all user courses
@@ -43,14 +39,13 @@ router.get("/course/CourseCard", async(req, res) => {
       const courses = await courseModel
       .find()
       .limit(1)
-      .select('_id Namecourse category shortDescription imageUrl duration level rating price');
+      .select('_id NameCourse category shortDescription imageUrl duration level rating');
       res.status(200).send(courses);
   }catch (error) {
     
       console.error("Failed to fetch courses", error);
       res.status(500).json({ message: "Internal server error" });
     }
-
 });
 
 
@@ -79,7 +74,7 @@ router.get("/:id",
         
         const {
             _id,
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             category,
             level,
@@ -95,14 +90,14 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quize,
+            quiz,
             createdAt,
             updatedAt
-          } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
+          } = Course.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
       
           res.status(200).json({
             id: _id,
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             category,
             level,
@@ -118,7 +113,7 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quize,
+            quiz,
             createdAt,
             updatedAt
           });
@@ -132,54 +127,50 @@ router.get("/:id",
 
     router.get("/lesson/:id",
 
-       async (req: Request, res: Response):Promise<any> => {
+      async (req: Request, res: Response):Promise<any> => {
 
-    const { id } = req.params;
-    if (!id) {
-        return res.status(400).json({ message: "Course ID is required" });
+      const { id } = req.params;
+      if (!id) {
+          return res.status(400).json({ message: "Course ID is required" });
+      }
 
-    }if (!mongoose.Types.ObjectId.isValid(id)) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'Invalid course ID format' });
       }
 
-    try{
-        const Lesson = await courseModel
-        .findById(id)
-        .select('-__v'); // Exclude __v field from the response
-        if(!Lesson) {
+      try{
+          const Lesson = await courseModel
+          .findById(id)
+          .select('-__v'); // Exclude __v field from the response
+          if(!Lesson) {
             return res.status(404).json({ message: "Lesson not found" });
         }
 
-        
         const {
             _id,   
-            Namecourse,
+            NameCourse,
             videoUrl,
             text,
-            quize,
+            quiz,
             totalLessons,
             totalQuizzes,
             enrollments,
             XpNumber,
-            duration
-                        
-            
-          } = Lesson.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
+            duration,  
+          } = Lesson.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
       
           res.status(200).json({
             id: _id,
-            Namecourse,
+            NameCourse,
             videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [], // Convert ObjectId to string
             // Convert ObjectId to string for each field
             text: text ? text.map((t: any) => t.toString()) : [],
-            quize: quize ? quize.map((q: any) => q.toString()) : [],
+            quiz: quiz ? quiz.map((q: any) => q.toString()) : [],
             totalLessons,
             totalQuizzes,
             enrollments,
-            XpNumber ,
-            duration
-
-            
+            XpNumber,
+            duration,
           });
         } catch (err) {
           console.error('Failed to fetch lesson', err);
@@ -197,10 +188,6 @@ router.get("/:id",
 
 
 
-
-
-
-
 // Method 2: Get all lessons for a specific course
 
 
@@ -208,37 +195,15 @@ router.get("/:id",
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  //auth,role("admin")
-// add onlie admin can add a course
+// add online admin can add a course
  router.post("/AddCourse",
     auth,
     role("admin"),
    async(req, res) => {
      try{
         const {
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             shortDescription,
             category,
@@ -247,44 +212,32 @@ router.get("/:id",
             duration,
             modules,
             prerequisites,
-            price,
-            rating,
             learningOutcomes,
-            totalLessons,
-            totalQuizzes,
+            price,
             isPublished,
             XpNumber,
-            Instructor,
-            InstructorInformation,
             videoUrl,
             text,
-            quize,
-            
+            quiz,
         } = req.body;
 
          const course = new courseModel({
-                         Namecourse,
-            DescriptionCourse,
-            shortDescription,
+              NameCourse, 
+              DescriptionCourse,
+              shortDescription,
             category,
             level,
             imageUrl,
             duration,
             modules,
             prerequisites,
-            price,
-            rating,
             learningOutcomes,
-            totalLessons,
-            totalQuizzes,
+            price,
             isPublished,
             XpNumber,
-            Instructor,
-            InstructorInformation,
             videoUrl,
             text,
-            quize,
-            
+            quiz,       
          });
          const data = await course.save();
          res.status(201).json(data);
@@ -292,17 +245,15 @@ router.get("/:id",
          res.status(404).json(err);
      };
  });
-// update course
 
-
-
+ // update course
 /*
 router.put("/UpdateCourse/:id", auth, role("admin"), async(req: Request, res: Response): Promise<void> =>{
   try{
     const id = req.params.id;
-    const {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse} = req.body;
+    const {NameCourse, DescriptionCourse, TypeCourse, levelCourse, imageCourse} = req.body;
     const updatedCourse = await courseModel.findByIdAndUpdate
-    (id, {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse},
+    (id, {NameCourse, DescriptionCourse, TypeCourse, levelCourse, imageCourse},
       { new: true, runValidators: true });
     if (!updatedCourse) {
       return res.status(404).json({ message: "Course not found" });
@@ -312,12 +263,8 @@ router.put("/UpdateCourse/:id", auth, role("admin"), async(req: Request, res: Re
     console.error("Failed to update course", err);
     res.status(500).json({ message: "Internal server error" });
   }
-
 });
 */
-
-
-
 
 // delete course
 /*

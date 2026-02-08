@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-export interface Icourse extends Document {
-  Namecourse: string; // name of the course
+export interface ICourse extends Document {
+  NameCourse: string; // name of the course
   DescriptionCourse: string; // description of the course
   shortDescription: string; // short description of the course
   category: string; // category of the course
@@ -24,12 +24,12 @@ export interface Icourse extends Document {
   InstructorInformation:string;
   videoUrl:string[]
   text:string[]
-  quize:string[]
+  quiz:string[]
 }
-const courseSchema = new Schema<Icourse>({
-  Namecourse: { type: String, required: true, trim: true },
+const courseSchema = new Schema<ICourse>({
+  NameCourse: { type: String, required: true, trim: true },
   DescriptionCourse: { type: String, required: true },
-  shortDescription: { type: String, required: true, maxlength: 200 },
+  shortDescription: { type: String, required: true, maxLength: 200 },
   category: { type: String, required: true, index: true },
   level: {
     type: String,
@@ -52,9 +52,9 @@ const courseSchema = new Schema<Icourse>({
   InstructorInformation:{type:String},
   videoUrl:[{ type: String }],
   text:[{ type: String }],
-  quize:[{ type: String }],
+  quiz:[{ type: String }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
-export const courseModel = mongoose.model<Icourse>('Course', courseSchema);
+export const courseModel = mongoose.model<ICourse>('Course', courseSchema);
