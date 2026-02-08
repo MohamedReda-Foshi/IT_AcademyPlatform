@@ -4,8 +4,6 @@ import { chapterModel } from '../Model/chapter';
 import {role} from '../middlewares/role_auth';
 import { auth } from '../middlewares/auth';
 
-
-
 const router = Router();
 
 /**
