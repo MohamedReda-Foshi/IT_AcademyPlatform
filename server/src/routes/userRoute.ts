@@ -1,5 +1,5 @@
 import express from "express";
-import { login } from "../services/userServices";
+import { login, verifyJWT } from "../services/userServices";
 import { registerUser } from "../services/userServices";
 import { userModel } from "../Model/userModel";
 import { Request, Response, NextFunction } from "express";
@@ -64,6 +64,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const data = await login({ email, password });
     res.status(200).json(data);
+    // console.log(res);
   } catch {
     res.status(500).send("Something went wrong!");
   }

@@ -158,7 +158,7 @@ export default function RegisterForm() {
             </label>
           </div>
 
-          <Button button={loading ? 'Registering...' : 'Register'} type={"button"} />
+          <Button button={loading ? 'Registering...' : 'Register'} type={"submit"} />
         </form>
 
         <p className="mt-6 text-center text-gray-400">

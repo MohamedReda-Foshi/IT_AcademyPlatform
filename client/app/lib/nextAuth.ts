@@ -17,22 +17,21 @@ declare module "next-auth" {
       email: string ;
       image: string;
       role: string;
-       _id?: string;
-       plan:string;
-       token:string;
-
+      _id?: string;
+      plan:string;
+      token:string;
     }
   }
 }
-
 
 export const authOptions: NextAuthOptions = {
   // adapter: MongoDBAdapter(client),
   providers: [
     Credentials({
       name: "credentials",
-      credentials: {email: {},password:{}},
+      credentials: {email: {}, password:{}},
       async authorize(credentials) {
+        
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -44,37 +43,31 @@ export const authOptions: NextAuthOptions = {
             body: JSON.stringify({
               email: credentials.email,
               password: credentials.password
-
             }),
-            
           });
-        
-
 
           const data = await res.json();
-//          localStorage.setItem('token',data)
           if (data?.data) {
             // This means login failed: backend returned { data: "error" }
-            throw new Error(data.data);
+            throw new Error("Invalid email or password");
           }
 
-          const decoded = jwtDecode(data) as { id: string; email: string;name:string; role: string };
-          console.log('Decoded token:', decoded);
+          const decoded = jwtDecode(data) as { id: string; email: string; name: string; role: string };
           return {
             id: decoded.id,
             name: decoded.name,
             email: decoded.email,
             role: decoded.role,
-            token: data,
+            token: data.data,
           };
 
         } catch (err) {
           console.log("Authorize error:", err);
           throw new Error("Invalid email or password");
         }
-            }
       }
-    ),
+    }
+  ),
 
     Google({
       profile(profile) {
@@ -95,6 +88,7 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
+
     Github({
       profile(profile) {
         console.log("GitHub Profile", profile);
@@ -110,13 +104,13 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
-
-
   ],
+
   session: {
     strategy: "jwt",
     maxAge: 1 * 24 * 60 * 60,
   },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -126,9 +120,9 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.token = user.token;
       }
-
       return token;
     },
+
     async session({ session, token }) {
       session.user = {
         id: token.id as string,
@@ -139,9 +133,8 @@ export const authOptions: NextAuthOptions = {
         token: token.token as string,
         plan: "free"
       };
-      console.log("this is session:",session.user)
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET as string,
+  secret: process.env.NEXT_AUTH_SECRET as string,
 };

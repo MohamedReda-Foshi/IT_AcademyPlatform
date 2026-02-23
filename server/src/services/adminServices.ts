@@ -46,7 +46,7 @@ export const login= async({ email, password}: LoginParams)=>{
             token: generateJWT({email, adminName: findAdmin.adminName})
         };
     }
-    return {data:"Invalid password or email"}
+    return {data: "Invalid password or email"}
 
 }
 
@@ -60,3 +60,6 @@ const generateJWT = (data: JWTPayload) => {
     return jwt.sign(data, process.env.JWT_SECRET_KEY as string);
 }
 
+export const verifyJWT = (token: string) => {
+    return jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+};

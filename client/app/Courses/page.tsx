@@ -2,7 +2,7 @@
 // app/courses/page.tsx
 import CoursesList from '../components/CoursesList'
 import { fetchAllCourseFromExpr } from '../lib/api/coures'
-import type { CourseData } from '../types/course'
+import { CourseData } from '../types/course'
 
 export default async function CoursesPage() {
   let courses: CourseData[] = []
@@ -13,7 +13,7 @@ export default async function CoursesPage() {
     // You could render an error state here
   }
 
- 
+
 
   return (
     <div className=" py-8">

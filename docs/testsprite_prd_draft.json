@@ -1,0 +1,54 @@
+{
+  "productName": "IT Academy Platform",
+  "overview": "E-learning platform for IT courses with MERN stack and Next.js. Role-based access, pricing plans, and course content (lessons, chapters).",
+  "goals": [
+    "Provide IT course catalog and structured learning (chapters, lessons)",
+    "Support free preview and paid full access per plan",
+    "Authenticate users via Google and GitHub OAuth",
+    "Process payments and plan upgrades via Stripe"
+  ],
+  "userStories": [
+    {
+      "id": "US1",
+      "title": "User registration and login",
+      "description": "Users can sign up and sign in via Google or GitHub OAuth (NextAuth).",
+      "acceptanceCriteria": ["Login page loads", "OAuth redirect works", "Session is stored securely"]
+    },
+    {
+      "id": "US2",
+      "title": "Browse courses",
+      "description": "Users can view course list and course details; free users see introductions only.",
+      "acceptanceCriteria": ["Course list loads", "Course detail page shows intro/full content based on subscription"]
+    },
+    {
+      "id": "US3",
+      "title": "Access lessons and chapters",
+      "description": "Paid subscribers can access full lessons and chapters.",
+      "acceptanceCriteria": ["Chapters and lessons load for authorized users", "Restricted for free users"]
+    },
+    {
+      "id": "US4",
+      "title": "Pricing and payment",
+      "description": "Users can view plans (Entry, Most Used, Pro) and pay via Stripe.",
+      "acceptanceCriteria": ["Pricing page loads", "Checkout flow completes", "Plan upgrade is reflected"]
+    },
+    {
+      "id": "US5",
+      "title": "Admin and dashboard",
+      "description": "Admins can manage courses, chapters, and users via dashboard.",
+      "acceptanceCriteria": ["Admin routes protected", "CRUD for courses/chapters/users works"]
+    }
+  ],
+  "functionalRequirements": [
+    "Frontend: Next.js app on port 3000; backend: Express API on port 4000",
+    "Auth: NextAuth (Google, GitHub); API may use JWT/Bearer for protected routes",
+    "API: /user, /course, /chapter, /dashboard (admin)",
+    "Database: MongoDB; models: User, Course, Chapter, Lesson, Admin"
+  ],
+  "technicalSpecs": {
+    "frontend": "Next.js 15, React 19, Tailwind CSS",
+    "backend": "Node.js, Express, Mongoose",
+    "auth": "NextAuth.js",
+    "payments": "Stripe"
+  }
+}

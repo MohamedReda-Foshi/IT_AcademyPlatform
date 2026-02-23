@@ -1,12 +1,12 @@
-import { Router, Request, Response,NextFunction} from 'express';
-import {courseModel,ICourse } from '../Model/course';
+import { Router, Request, Response, NextFunction} from 'express';
+import {courseModel, ICourse } from '../Model/course';
 import mongoose from 'mongoose';
 import { auth } from '../middlewares/auth';
 import { role } from '../middlewares/role_auth';
 
 // this is a cart course 
 
-const router =Router();
+const router = Router();
 
 router.get("/CourseCard", async(req, res) => {
     try {
@@ -90,7 +90,7 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quiz,
+            // quiz,
             createdAt,
             updatedAt
           } = Course.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
@@ -113,7 +113,7 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quiz,
+            // quiz,
             createdAt,
             updatedAt
           });
@@ -151,7 +151,7 @@ router.get("/:id",
             NameCourse,
             videoUrl,
             text,
-            quiz,
+            // quiz,
             totalLessons,
             totalQuizzes,
             enrollments,
@@ -165,7 +165,7 @@ router.get("/:id",
             videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [], // Convert ObjectId to string
             // Convert ObjectId to string for each field
             text: text ? text.map((t: any) => t.toString()) : [],
-            quiz: quiz ? quiz.map((q: any) => q.toString()) : [],
+            // quiz: quiz ? quiz.map((q: any) => q.toString()) : [],
             totalLessons,
             totalQuizzes,
             enrollments,
@@ -197,11 +197,11 @@ router.get("/:id",
 
  //auth,role("admin")
 // add online admin can add a course
- router.post("/AddCourse",
-    auth,
-    role("admin"),
-   async(req, res) => {
-     try{
+router.post("/AddCourse",
+    // auth,
+    // role("admin"),
+  async(req, res) => {
+    try{
         const {
             NameCourse,
             DescriptionCourse,
@@ -218,10 +218,10 @@ router.get("/:id",
             XpNumber,
             videoUrl,
             text,
-            quiz,
+            // quiz,
         } = req.body;
 
-         const course = new courseModel({
+        const course = new courseModel({
               NameCourse, 
               DescriptionCourse,
               shortDescription,
@@ -237,14 +237,14 @@ router.get("/:id",
             XpNumber,
             videoUrl,
             text,
-            quiz,       
-         });
-         const data = await course.save();
-         res.status(201).json(data);
-     }catch(err){
-         res.status(404).json(err);
-     };
- });
+            // quiz,       
+        });
+        const data = await course.save();
+        res.status(201).json(data);
+    }catch(err){
+      res.status(404).json(err);
+    };
+});
 
  // update course
 /*

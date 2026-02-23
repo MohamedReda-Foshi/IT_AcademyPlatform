@@ -1,15 +1,17 @@
 import React from 'react'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../lib/nextAuth';
-import SingnOut from '../_components/SingnOut';
+import SignOut from '../_components/SignOut';
 import Image from 'next/image'
 import Button from '../components/Button';
+// import { useSession } from 'next-auth/react';
+// import { user } from '@heroui/theme';
+// import jsw from "jsonwebtoken"
 
 export default async function ProfilePage() {
-    const session = await getServerSession(authOptions);
-
+    const { user } = await getServerSession(authOptions) || {};
+    
     const defaultAvatar = "/avatar.png";
-    console.log("this is session in profile",session?.user)
 
     return (
         <div className='flex p-9'>
@@ -19,7 +21,7 @@ export default async function ProfilePage() {
                         <div className="flex justify-center">
                             <Image
                                 className="rounded-full"
-                                src={session?.user.image ?? defaultAvatar}
+                                src={user?.image ?? defaultAvatar}
                                 width={120}
                                 height={120}
                                 alt="Avatar"
@@ -28,17 +30,17 @@ export default async function ProfilePage() {
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Full Name:</h1>
-                            <h1 className='text-xl'>{session?.user?.name || 'Not provided'}</h1>
+                            <h1 className='text-xl'>{user?.name || 'Not provided'}</h1>
                         </div>
 
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Email:</h1>
-                            <p className='text-xl'>{session?.user?.email || 'Not provided'}</p>
+                            <p className='text-xl'>{user?.email || 'Not provided'}</p>
                         </div>
 
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Role:</h1>
-                            <p className='text-xl capitalize'>{session?.user?.role || 'user'}</p>
+                            <p className='text-xl capitalize'>{user?.role || 'user'}</p>
                         </div>
 
                         <div className="flex flex-col gap-2">
@@ -47,18 +49,18 @@ export default async function ProfilePage() {
                                 className='text-xl border-2 border-gray-400 rounded-md px-3 py-2 w-full text-black focus:outline-none focus:border-blue-500'
                                 placeholder='Write a message...'
                             />
-                            <Button button='button' />
+                            <Button button='button' type={"button"}/>
                         </div>
                         <div>
-                            {session?.user?.role === 'admin' && (
-                                <a href="Adminpage">
-                                <Button button='Admin Panel' /></a>)
+                            {user?.role === 'admin' && (
+                                <a href="AdminPage">
+                                <Button button='Admin Panel' type={"button"} /></a>)
                             }
                         </div>
 
 
 
-                        <SingnOut />
+                        <SignOut />
                     </div>
                 </div>
 

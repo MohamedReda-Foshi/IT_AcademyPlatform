@@ -27,15 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} bg-[#1E1E1E] text-white ${geistMono.variable} antialiased` }
-        
-      >
-
+      <body className={`${geistSans.variable} bg-[#1E1E1E] text-white ${geistMono.variable} antialiased` }>
         <NextAuthProvider>
-          <Navigation/>
-            {children}
-          <Footer/>
+            <Navigation/>
+              {children}
+            <Footer/>
         </NextAuthProvider>
       </body>
     </html>

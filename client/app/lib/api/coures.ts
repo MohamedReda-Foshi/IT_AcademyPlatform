@@ -12,6 +12,7 @@ export async function fetchAllCourseFromExpr(): Promise<CourseData[]> {
       if (!res.ok) {
         throw new Error(`Network response was not ok (${res.status})`);
       }
+      // console.log('Fetching all courses', res.json());
       return await res.json();
     } catch (error) {
       console.error('Error fetching all courses:', error);
@@ -66,7 +67,6 @@ export async function fetchLessonById(id: string): Promise<LessonData[]> {
 
     // 3) If the response isn’t “OK” (200–299), throw
     if (!res.ok) {
-     
       throw new Error(`Network response was not ok (status: ${res.status})`)
     }
 

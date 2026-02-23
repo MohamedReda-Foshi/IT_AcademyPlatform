@@ -78,6 +78,7 @@ export default function LoginPage() {
               onChange={e => handleFields(e.target.value, e.target.type.toLocaleLowerCase())}
               required
               disabled={isLoading}
+              autoComplete='email'
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />
             <label className="absolute left-0 top-3 -z-10 origin-[0] -translate-y-6 transform scale-75 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-red-600">
@@ -92,13 +93,14 @@ export default function LoginPage() {
               onChange={e => handleFields(e.target.value, e.target.type.toLocaleLowerCase())}
               required
               disabled={isLoading}
+              autoComplete='current-password'
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />
             <label className="absolute left-0 top-3 -z-10 origin-[0] -translate-y-6 transform scale-75 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-red-600">
               Password
             </label>
           </div>
-          <Button button={isLoading ? 'Logging in...' : 'Login'} type={'button'} />
+          <Button button={isLoading ? 'Logging in...' : 'Login'} type={"submit"} />
         </form>
 
         <p className="mt-6 text-center text-gray-400">
