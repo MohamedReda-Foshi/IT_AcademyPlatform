@@ -104,6 +104,7 @@ export default function RegisterForm() {
                 value={form.firstName}
                 onChange={handleChange}
                 required
+                autoComplete='current-first-name'
                 disabled={loading}
                 className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               />
@@ -119,6 +120,7 @@ export default function RegisterForm() {
                 value={form.lastName}
                 onChange={handleChange}
                 required
+                autoComplete='current-last-name'
                 disabled={loading}
                 className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               />
@@ -135,6 +137,7 @@ export default function RegisterForm() {
               value={form.email}
               onChange={handleChange}
               required
+              autoComplete='current email'
               disabled={loading}
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />
@@ -150,6 +153,7 @@ export default function RegisterForm() {
               value={form.password}
               onChange={handleChange}
               required
+              autoComplete='current-password'
               disabled={loading}
               className="peer block w-full border-0 border-b-2 border-gray-500 bg-transparent py-2.5 px-0 text-sm text-white focus:border-red-600 focus:outline-none focus:ring-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             />

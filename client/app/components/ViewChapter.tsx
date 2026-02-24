@@ -2,22 +2,24 @@ import React from 'react'
 import ReactPlayer from 'react-player';
 interface Props {
     ContentType: 'text' | 'video' | 'image' | 'file' | null;
-    ContentData: undefined;
+    ContentData:  string | string[];
 }
 
 const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
 
     console.log("ContentType:1  ", ContentType)
-    console.log("Contentdata 1:", ContentData)
+    console.log("ContentData:1 ", ContentData)
+
+    const source = Array.isArray(ContentData) ? ContentData[0] : ContentData;
 
     return (
         <div>
-            {ContentType === 'text' && <p>{ContentData}</p>}
+            {ContentType === 'text' && <p>{source}</p>}
             {ContentType === 'video' &&
                 (
                     <div className="video-container">
                         <ReactPlayer
-                            url={ContentData}
+                            url={source}
                             controls
                             height={600}
                             width={950}
@@ -25,11 +27,10 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
                         />
                     </div>
                 )}
-
             {ContentType === 'file' &&
                 <div className="p-4 bg-gray-50 rounded-lg">
                     <iframe
-                        src={ContentData}
+                        src={source}
                         width="100%"
                         height="500"
                         className="rounded-lg shadow-md border border-gray-200"
@@ -40,4 +41,4 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
         </div>
     )}
 
-export default ViewChapter
+export default ViewChapter;

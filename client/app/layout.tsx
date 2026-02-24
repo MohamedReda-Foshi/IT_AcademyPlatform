@@ -17,7 +17,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TechLearn",
-  description: "TechLearn E-learn web",
+  description: "TechLearn E-learn web: IT Platform Create to helps the beginners learning the notions of programming also adding the text editor to let's them resolving the tasks and practising the news knowledge",
+  icons: {
+    icon: "/favicon.ico",
+  }
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -26,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <body className={`${geistSans.variable} bg-[#1E1E1E] text-white ${geistMono.variable} antialiased` }>
         <NextAuthProvider>
             <Navigation/>

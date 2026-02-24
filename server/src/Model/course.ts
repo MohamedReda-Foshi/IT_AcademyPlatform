@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Types } from "mongoose";
-import { object, string } from "yup";
+import mongoose, { Schema, Document /*, Types */} from "mongoose";
+// import { object, string } from "yup";
 
 export interface ICourse extends Document {
   NameCourse: string; // name of the course

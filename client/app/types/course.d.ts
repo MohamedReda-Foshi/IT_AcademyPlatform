@@ -41,7 +41,7 @@ export interface Course {
   i:number
 };
 
-export interface CourseData {
-  courseData: [];
-}
+// export interface CourseData {
+//   courseData: Course[];
+// }
   

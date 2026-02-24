@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import {quizModel} from '../Model/quiz';
+import { auth } from '../middlewares/auth';
+import { role } from '../middlewares/role_auth';
 
 
 const router = Router();
 
-router.get("/getQuizzes", async (req, res) => {
+router.get("/getQuizzes", auth, role("admin","user"), async (req, res) => {
     try {
         const { idCourse } = req.body;
         const quizzes = await quizModel.find().where(idCourse);
@@ -15,7 +17,7 @@ router.get("/getQuizzes", async (req, res) => {
     }
 });
 
-router.post("/addQuiz", async (req, res) => {
+router.post("/addQuiz", auth, role("admin"), async (req, res) => {
     try {
         const { title, synopsis, nbrOfQuestions, questions, courseId } = req.body;
         // const newQuiz = new quizModel({

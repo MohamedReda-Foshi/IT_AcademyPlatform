@@ -5,12 +5,11 @@ import SignOut from '../_components/SignOut';
 import Image from 'next/image'
 import Button from '../components/Button';
 // import { useSession } from 'next-auth/react';
-// import { user } from '@heroui/theme';
+// import { user } from '@her-oui/theme';
 // import jsw from "jsonwebtoken"
 
 export default async function ProfilePage() {
     const { user } = await getServerSession(authOptions) || {};
-    
     const defaultAvatar = "/avatar.png";
 
     return (
@@ -26,23 +25,21 @@ export default async function ProfilePage() {
                                 height={120}
                                 alt="Avatar"
                                 priority
+                                style={{ width: 'auto', height: 'auto' }}
                             />
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Full Name:</h1>
                             <h1 className='text-xl'>{user?.name || 'Not provided'}</h1>
                         </div>
-
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Email:</h1>
                             <p className='text-xl'>{user?.email || 'Not provided'}</p>
                         </div>
-
                         <div className='flex flex-row gap-2 items-center'>
                             <h1 className='text-xl font-semibold'>Role:</h1>
                             <p className='text-xl capitalize'>{user?.role || 'user'}</p>
                         </div>
-
                         <div className="flex flex-col gap-2">
                             <input
                                 type="text"
@@ -57,13 +54,9 @@ export default async function ProfilePage() {
                                 <Button button='Admin Panel' type={"button"} /></a>)
                             }
                         </div>
-
-
-
                         <SignOut />
                     </div>
                 </div>
-
                 <div className="mt-6 p-4  rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-3">Progress</h2>
                     <div className="grid grid-cols-2 gap-4">

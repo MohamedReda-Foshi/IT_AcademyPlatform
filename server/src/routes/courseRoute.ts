@@ -182,7 +182,7 @@ router.get("/:id",
 
 
 // this is a course page all user can see
-  
+
 
 
 
@@ -195,11 +195,11 @@ router.get("/:id",
 
 
 
- //auth,role("admin")
+//auth,role("admin")
 // add online admin can add a course
 router.post("/AddCourse",
-    // auth,
-    // role("admin"),
+    auth,
+    role("admin"),
   async(req, res) => {
     try{
         const {

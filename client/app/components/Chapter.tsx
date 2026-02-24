@@ -25,29 +25,25 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
-  const [contentData, setContentData] = useState<string | string[] | undefined>()
+  const [contentData, setContentData] = useState<string | string[]>()
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
       const token = localStorage.getItem("token"); // or however you store the token
-    axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
-         {
+      axios.get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
+        {
         headers: {
           'Authorization': `Bearer ${token}`,
-           'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
         withCredentials:true,
-      }
-      )
-
+      })
       .then((res) => {
         setChaptersData(res.data);
-
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   }, [params]);
 
 
@@ -77,6 +73,7 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
     console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);
   }
 
+  const source = Array.isArray(contentData) ? contentData[0] : contentData;
 
   return (
     <div className=' grid grid-cols-3 gap-1 justify-between '>
@@ -131,10 +128,6 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         ))}
       </Accordion>
     </div>
-
-
-
-
       <div className="col-span-2 bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden grid-cols-2">
         <div className="p-6 border-b border-red-500/30 bg-red-900/20">
           <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
@@ -142,12 +135,11 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
             Lesson Content
           </h2>
         </div>
-
         <div className="p-4">
           {selectedChapter ? (
             <ViewChapter
               ContentType={contentType}
-              ContentData={contentData}
+              ContentData={`${source}`}
             />
           ) : (
             <p className="text-white">Select a chapter to view its content.</p>

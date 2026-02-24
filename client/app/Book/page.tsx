@@ -1,6 +1,6 @@
 import React from 'react'
 // import CardT from '../components/CardT'
-import CardT from "../components/Cardt"
+import CardT from "../components/Card";
 
 function page() {
   return (

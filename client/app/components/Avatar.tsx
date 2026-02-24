@@ -22,6 +22,7 @@ export default function Avatar() {
         height={50}
         alt="Avatar"
         priority
+        style={{width: 'auto', height: 'auto'}}
       />
       <p className="text-sm">{name}</p>
     </div>
