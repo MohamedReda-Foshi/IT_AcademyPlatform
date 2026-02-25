@@ -100,7 +100,7 @@ export default function LoginPage() {
               Password
             </label>
           </div>
-          <Button button={isLoading ? 'Logging in...' : 'Login'} type={"submit"} />
+          <Button button={isLoading ? 'Logging in...' : 'Login'} type={"submit"} w='' />
         </form>
 
         <p className="mt-6 text-center text-gray-400">

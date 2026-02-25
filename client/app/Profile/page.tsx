@@ -13,11 +13,11 @@ export default async function ProfilePage() {
     const defaultAvatar = "/avatar.png";
 
     return (
-        <div className='flex p-9 min-h-[100px]'>
-            <div className=" py-10 rounded-lg">
+        <div className='flex p-9'>
+            <div className="flex justify-around items-center py-10 w-full ">
                 <div className="items-center justify-center flex border-gray-400 rounded-2xl">
                     <div className='flex flex-col gap-8 rounded-lg p-6'>
-                        <div className="flex justify-center w-[90px] h-[90px] overflow-hidden">
+                        <div className="flex justify-center w-[90px] h-[90px] gap-2 overflow-hidden">
                             <Image
                                 className="rounded-full"
                                 src={user?.image ?? defaultAvatar}
@@ -29,35 +29,40 @@ export default async function ProfilePage() {
                             />
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
-                            <h1 className='text-xl font-semibold'>Full Name:</h1>
+                            <h1 className='text-xl font-bold'>Full Name:</h1>
                             <h1 className='text-xl'>{user?.name || 'Not provided'}</h1>
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
-                            <h1 className='text-xl font-semibold'>Email:</h1>
+                            <h1 className='text-xl font-bold'>Email:</h1>
                             <p className='text-xl'>{user?.email || 'Not provided'}</p>
                         </div>
                         <div className='flex flex-row gap-2 items-center'>
-                            <h1 className='text-xl font-semibold'>Role:</h1>
+                            <h1 className='text-xl font-bold'>Role:</h1>
                             <p className='text-xl capitalize'>{user?.role || 'user'}</p>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <input
-                                type="text"
+                            <textarea rows={4} cols={30} 
+                            name='message'
+                            className='text-xl border-2 border-gray-400 rounded-md px-3 py-2 w-full text-black focus:outline-none focus:border-blue-500 resize-none'
+                            placeholder='Write a message...'
+                            ></textarea>
+                                {/* type="text"
                                 className='text-xl border-2 border-gray-400 rounded-md px-3 py-2 w-full text-black focus:outline-none focus:border-blue-500'
                                 placeholder='Write a message...'
-                            />
-                            <Button button='button' type={"button"}/>
+                                
+                            /> */}
+                            <Button button='Send' type={"button"} w={'full'}/>
                         </div>
                         <div>
                             {user?.role === 'admin' && (
                                 <a href="AdminPage">
-                                <Button button='Admin Panel' type={"button"} /></a>)
+                                <Button button='Admin Panel' type={"button"} w={''} /></a>)
                             }
                         </div>
                         <SignOut />
                     </div>
                 </div>
-                <div className="mt-6 p-4  rounded-lg shadow">
+                <div className="mt-6 p-4 rounded-lg shadow">
                     <h2 className="text-lg font-semibold mb-3">Progress</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <div>

@@ -65,7 +65,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
             <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-4">{firstOne?.NameCourse}</h1>
             <p className="text-lg text-white mb-6">{firstOne?.DescriptionCourse}</p>
             <Link href={`/Courses/${firstOne?._id}/Lesson/${firstOne?._id}`}>
-              <Button button="Get Started" type={"button"} />
+              <Button button="Get Started" type={"button"} w=''/>
             </Link>
           </div>
 
