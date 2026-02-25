@@ -1,6 +1,6 @@
-// lib/api/chapter.ts
 import type { ChapterData } from '../../types/ChapterData';
 import { Types } from 'mongoose';
+// lib/api/chapter.ts
 
 
 
@@ -12,9 +12,9 @@ export async function fetchChapterById(id: Types.ObjectId | string): Promise<Cha
     return [];
   }
   try {
-    const idstring =id.toString()
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idstring}` )
-        console.log('Fetching chapters for courseId:', idstring);
+    const idString =id.toString()
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idString}` )
+        // console.log('Fetching chapters for courseId:', idString);
 
     if (!res.ok) {
       throw new Error(`Network response was not ok (${res.status})`);

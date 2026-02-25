@@ -36,7 +36,7 @@ export async function fetchHomeCourseFromExpr(): Promise<Course[]> {
 
 /// this courses by id from the database
 export async function fetchCourseById(id: string): Promise<Course[]> {
-  console.log('Fetching course with id:', id);
+  // console.log('Fetching course with id:', id);
 
   try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

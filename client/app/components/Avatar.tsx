@@ -18,13 +18,13 @@ export default function Avatar() {
       <Image
         className='rounded-full'
         src={image ?? defaultAvatar}
-        width={50}
-        height={50}
+        width={40}
+        height={40}
         alt="Avatar"
         priority
         style={{width: 'auto', height: 'auto'}}
       />
-      <p className="text-sm">{name}</p>
+      <p className="text-xl capitalize font-bold">{name}</p>
     </div>
   )
 }

@@ -13,19 +13,19 @@ export default async function ProfilePage() {
     const defaultAvatar = "/avatar.png";
 
     return (
-        <div className='flex p-9'>
+        <div className='flex p-9 min-h-[100px]'>
             <div className=" py-10 rounded-lg">
                 <div className="items-center justify-center flex border-gray-400 rounded-2xl">
                     <div className='flex flex-col gap-8 rounded-lg p-6'>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center w-[90px] h-[90px] overflow-hidden">
                             <Image
                                 className="rounded-full"
                                 src={user?.image ?? defaultAvatar}
-                                width={120}
-                                height={120}
+                                width={'100'}
+                                height={'100'}
                                 alt="Avatar"
                                 priority
-                                style={{ width: 'auto', height: 'auto' }}
+                                style={{ objectFit: 'cover', width: 80, height: 80 }}
                             />
                         </div>
                         <div className='flex flex-row gap-2 items-center'>

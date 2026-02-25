@@ -3,12 +3,9 @@
 
 
 export interface User{
-
-
-id: string;
-firstname: string;
-lasname:string
-
+    id: string;
+    firstName: string;
+    lasName:string
 }
 
 

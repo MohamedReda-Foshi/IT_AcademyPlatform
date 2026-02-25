@@ -2,36 +2,44 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
 import  {fetchCourseById}  from '@/app/lib/api/course'
-import { Types } from 'mongoose';
+import { type Course } from '@/app/types/course';
+// import { Types } from 'mongoose';
 
-export interface Course {
-  id:               Types.ObjectId
-  NameCourse:       string
-  DescriptionCourse:string
-  shortDescription: string
-  category:         string
-  level:            string
-  duration:         number
-  XpNumber:         number
-  AchievementsIcon: string
-  Icon:             string
-  modules:          string[]
-  prerequisites:    string[]
-  learningOutcomes: string[]
-  rating:           number
-  totalLessons:     number
-  totalQuizzes:      number
-  enrollments:      number
-  imageUrl?:        string
-  o:number
-  i:number
-}
+// export interface Course {
+//   id:               Types.ObjectId
+//   NameCourse:       string
+//   DescriptionCourse:string
+//   shortDescription: string
+//   category:         string
+//   level:            string
+//   duration:         number
+//   XpNumber:         number
+//   AchievementsIcon: string
+//   Icon:             string
+//   modules:          string[]
+//   prerequisites:    string[]
+//   learningOutcomes: string[]
+//   rating:           number
+//   totalLessons:     number
+//   totalQuizzes:      number
+//   enrollments:      number
+//   imageUrl?:        string
+//   o:number
+//   i:number
+// }
+/**
+ * 
+ * i'm comment that's because the  await fetchCourseById(courseId); is async and return a promise has array of course
+ * with type Course Comes from @/app/types/course
+ * and This Interface above is the type of the course but different to the outcome of the function
+ * so i need to put the dataCourse variable as the same type as the outcome of the function
+ */
 
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const  {courseId}  = await params
-  let dataCourse: Course[]  | null = null; 
-  console.log('Course Page - courseId:', courseId); 
+  let dataCourse:  Course[] | null = null;
+  // console.log('Course Page - courseId:', courseId); 
 
   try {
     dataCourse = await fetchCourseById(courseId);
@@ -56,7 +64,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-4">{firstOne?.NameCourse}</h1>
             <p className="text-lg text-white mb-6">{firstOne?.DescriptionCourse}</p>
-            <Link href={`/Courses/${firstOne?.id}/Lesson/${firstOne?.id}`}>
+            <Link href={`/Courses/${firstOne?._id}/Lesson/${firstOne?._id}`}>
               <Button button="Get Started" type={"button"} />
             </Link>
           </div>
@@ -69,7 +77,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <div className="bg-black p-6 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-red-600 mb-4">What you will learn</h2>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {firstOne?.learningOutcomes.map((o, i) => (
+              {firstOne?.learningOutcomes?.map((o, i) => (
                 <li key={i} className="flex items-start">
                   <svg className="h-5 w-5 text-red-600 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
@@ -88,6 +96,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                 src={firstOne?.imageUrl ?? '/default.png'}
                 alt={`Cover Image for ${firstOne?.NameCourse ?? 'Course'}`}
                 fill
+                priority={true}
                 sizes='100%'
                 className="object-cover"
               />
