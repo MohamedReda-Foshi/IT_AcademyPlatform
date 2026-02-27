@@ -10,9 +10,11 @@ const router = Router();
  * GET /getChapter/:courseId
  * Fetch all chapters associated with a specific course
  */
-router.get("/getChapter/:courseId",auth,role("admin","user"),
-   async (req: Request, res: Response): Promise<void> => {
+router.get("/getChapter/:courseId", /*auth, role("admin","user"),*/
+  async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
+
+  console.log(courseId);
 
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
     res.status(400).json({ message: "Invalid course ID format" });
@@ -36,9 +38,9 @@ router.get("/getChapter/:courseId",auth,role("admin","user"),
  * POST /addChapter
  * Create a new chapter
  */
-router.post("/addChapter" ,auth, role ("admin"), async (req: Request, res: Response): Promise<void> => {
+router.post("/addChapter" , auth, role ("admin"), async (req: Request, res: Response): Promise<void> => {
   const { ChapterTitle,
-     order,
+    order,
       videoUrl,
       videoTitle,
       textTitle,

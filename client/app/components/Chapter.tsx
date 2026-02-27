@@ -5,7 +5,7 @@ import type { ChapterData } from '@/app/types/ChapterData';
 import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
-import { BookOpen, Star } from 'lucide-react';
+import { BookOpen, MousePointerClick, Star } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -15,13 +15,27 @@ import {
 
 
 
-export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
+export default function ChapterPage({ params }: { params: string }) {
 
+  // const idC = Object.values(params);
+  // console.log(" this from chapter : " + params); 
 
   const [chaptersData, setChaptersData] = useState<ChapterData[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<ChapterData | null>(
     null
   );
+  // const [idChapter, setIdChapter] = useState('');
+
+  // useEffect(() => {
+  //   (async () => {
+  //     // console.log("This The chapter ID: " + (await params).chapterId);
+  //     const { id } = await params;
+  //     setIdChapter(id);
+  //   })();
+    
+  //   // console.log(idChapter);
+  // }, [params]);
+
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
@@ -68,9 +82,9 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         contentData = chapter.videoUrl;
         break;
     }
-    setContentData(contentData)
-    console.log(`Selected chapter ${chapter} with type: ${type}`);
-    console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);
+    setContentData(contentData);
+    // console.log(`Selected chapter ${chapter} with type: ${type}`);
+    // console.log(`Selected chapter ${chapter.text || chapter._id} with type: ${type} and content:`, contentData);
   }
 
   const source = Array.isArray(contentData) ? contentData[0] : contentData;
@@ -93,7 +107,8 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         onValueChange={(value) => setOpenItem(value)}
       >
         {chaptersData.map((chapter) => (
-          <AccordionItem key={chapter.id} value={`item-${chapter.id}`}>
+          
+          <AccordionItem key={chapter._id} value={`item-${chapter._id}`}>
             <AccordionTrigger>
               <span className="text-xl font-semibold text-white mb-2 px-2">
                 {chapter.order}. {chapter.ChapterTitle}
@@ -135,14 +150,14 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
             Lesson Content
           </h2>
         </div>
-        <div className="p-4">
+        <div className="p-4 flex justify-center" style={{minHeight: "calc(100% - 80px)"}}>
           {selectedChapter ? (
             <ViewChapter
               ContentType={contentType}
               ContentData={`${source}`}
             />
           ) : (
-            <p className="text-white">Select a chapter to view its content.</p>
+            <p className="text-white flex items-center justify-center gap-4 font-bold text-2xl"> <MousePointerClick/> Select a chapter to view its content.</p>
           )}
         </div>
       </div>

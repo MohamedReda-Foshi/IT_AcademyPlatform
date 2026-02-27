@@ -7,22 +7,21 @@ interface Props {
 
 const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
 
-    console.log("ContentType:1  ", ContentType)
-    console.log("ContentData:1 ", ContentData)
+    // console.log("ContentType:1  ", ContentType)
+    // console.log("ContentData:1 ", ContentData)
 
     const source = Array.isArray(ContentData) ? ContentData[0] : ContentData;
 
     return (
-        <div>
+        <div className='flex-1 basis-full'>
             {ContentType === 'text' && <p>{source}</p>}
             {ContentType === 'video' &&
                 (
-                    <div className="video-container">
+                    <div className="video-container flex min-h-full">
                         <ReactPlayer
                             url={source}
                             controls
-                            height={600}
-                            width={950}
+                            width={"100%"}
                             className="mx-auto rounded-lg shadow-md"
                         />
                     </div>

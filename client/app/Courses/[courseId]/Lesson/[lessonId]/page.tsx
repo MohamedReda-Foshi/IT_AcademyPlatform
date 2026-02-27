@@ -3,15 +3,18 @@ import { fetchLessonById } from '@/app/lib/api/lesson'
 import {  BookOpen, Clock, Users, FileText, Award, Brain, CheckCircle } from 'lucide-react'
 import type { LessonData } from '@/app/types/lesson'
 import Chapter from '@/app/components/Chapter'
+// import { Params } from 'next/dist/server/request/params'
 
 
 
-export default async function LessonPage({ params }: { params: { lessonId: string } }) {
-  const { lessonId } = params;
+export default async function LessonPage({ params }: { params: { courseId: string } }) {
+  const { courseId } = await params;
+  console.log(courseId);
+  // const idC = courseId;
   let lesson: LessonData[] | null = null;
   
 try {
-  lesson = await fetchLessonById(lessonId); 
+  lesson = await fetchLessonById(courseId); 
 } catch (error) {
   console.log('Failed to fetch lesson:', error);
 }
@@ -29,6 +32,10 @@ if (!lesson) {
   const completedCount = 0
   
   const firstLesson = Array.isArray(lesson) ? lesson[0] : lesson;
+
+  // console.log(firstLesson);
+            // const idC  = Object.values(courseId)[0];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black py py-9">
@@ -100,7 +107,7 @@ if (!lesson) {
           </div>
         </div>
 
-        <div className=" gap-8">
+        <div className="grid gap-4">
           {/* Lesson Content */}
           
 
@@ -108,7 +115,7 @@ if (!lesson) {
           <div className="bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden">
 
 
-            <Chapter params={ new Promise((resolve) => resolve({'courseId': firstLesson.ChapterId}))}/>
+            <Chapter params={courseId} />
 
               <div className="p-6">
                 <ul className="space-y-4">

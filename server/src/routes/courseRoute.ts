@@ -59,9 +59,10 @@ router.get("/:id",
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
 
-    }if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ message: 'Invalid course ID format' });
-      }
+    }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid course ID format' });
+    }
 
     try{
         const Course = await courseModel
@@ -130,6 +131,7 @@ router.get("/:id",
       async (req: Request, res: Response):Promise<any> => {
 
       const { id } = req.params;
+      // req.query
       if (!id) {
           return res.status(400).json({ message: "Course ID is required" });
       }

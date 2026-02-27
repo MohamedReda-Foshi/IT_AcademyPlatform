@@ -40,6 +40,7 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
 
   try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -47,8 +48,10 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
       });
 
     if (!res.ok) {
-      throw new Error(`Network response was not ok course (${res.status})`)
+      throw new Error(`Network response was not ok course (${res.status})`);
     }
+
+    // console.log('Fetching course with id:', await res.json());
 
     return  res.json();
 
@@ -61,21 +64,21 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
 
 
 export async function fetchLessonById(id: string): Promise<LessonData[]> {
-  console.log('Fetching lesson with id:', id)
+  // console.log('Fetching lesson with id:', id);
   try {
     // 2) Call your Express endpoint (replace host/port as needed)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/lesson/${id}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/lesson/${id}`);
 
     // 3) If the response isn’t “OK” (200–299), throw
     if (!res.ok) {
-      throw new Error(`Network response was not ok (status: ${res.status})`)
+      throw new Error(`Network response was not ok (status: ${res.status})`);
     }
 
     // 4) Parse JSON and assert it matches LessonData[]
     
     return res.json()
   } catch (error) {
-    console.error(`Fetch lesson error for id: ${id}`, error)
+    console.error(`Fetch lesson error for id: ${id}`, error);
     return []
   }
 }
@@ -83,8 +86,3 @@ export async function fetchLessonById(id: string): Promise<LessonData[]> {
 
 
 //// this is a lesson page 
-
-
-
-
-

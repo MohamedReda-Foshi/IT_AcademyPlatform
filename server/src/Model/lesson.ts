@@ -23,7 +23,7 @@
 //   video: [{ type: Schema.Types.ObjectId, ref: "Video" }],
 //   quiz: [{ type: Schema.Types.ObjectId, ref: "Quiz" }],
 //   price: { type: String, enum: ["Free", "Paid"], default: "Free" },
-  
+
 // }, {
 //   timestamps: true
 // });

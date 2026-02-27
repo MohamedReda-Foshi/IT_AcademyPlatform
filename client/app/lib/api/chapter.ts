@@ -3,8 +3,6 @@ import { Types } from 'mongoose';
 // lib/api/chapter.ts
 
 
-
-
 export async function fetchChapterById(id: Types.ObjectId | string): Promise<ChapterData[]> {
   
   if(!id){
@@ -12,7 +10,7 @@ export async function fetchChapterById(id: Types.ObjectId | string): Promise<Cha
     return [];
   }
   try {
-    const idString =id.toString()
+    const idString =id.toString();
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idString}` )
         // console.log('Fetching chapters for courseId:', idString);
 
@@ -26,6 +24,3 @@ export async function fetchChapterById(id: Types.ObjectId | string): Promise<Cha
     return [];
   }
 }
-
-
-
