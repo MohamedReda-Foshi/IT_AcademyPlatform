@@ -7,7 +7,7 @@ export default function Avatar() {
   const { data: session, status } = useSession()
 
   if (status === 'loading' || !session?.user) {
-    return null
+    return null;
   }
 
   const { name, image } = session.user

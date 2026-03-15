@@ -38,9 +38,9 @@ export default function CoursesList({ courses }: CoursesListProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {Array.isArray(courses) && courses.map((course) => (
+          {Array.isArray(courses) && courses.map((course, index) => (
             <div 
-              key={course._id} 
+              key={course._id && index} 
               className="group relative bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-2xl hover:shadow-red-500/20 transition-all duration-700 overflow-hidden border border-gray-800 hover:border-red-500/50 hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Animated border effect */}

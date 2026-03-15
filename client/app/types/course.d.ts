@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 // types/course.d.ts
 export interface Course {
-  id: number;
+  _id: number;
   NameCourse: string;
   DescriptionCourse: string;
   shortDescription?: string;

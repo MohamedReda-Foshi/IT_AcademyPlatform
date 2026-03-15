@@ -6,10 +6,10 @@ import { role } from '../middlewares/role_auth';
 
 const router = Router();
 
-router.get("/getQuizzes", auth, role("admin","user"), async (req, res) => {
+router.get("/getQuizzes/:idCourse", async (req, res) => {
     try {
-        const { idCourse } = req.body;
-        const quizzes = await quizModel.find().where(idCourse);
+        const { idCourse } = req.params;
+        const quizzes = (await quizModel.find().populate("questions").where(idCourse));
         res.status(200).send(quizzes);
     } catch (error) {
         console.error("Failed to fetch quizzes", error);

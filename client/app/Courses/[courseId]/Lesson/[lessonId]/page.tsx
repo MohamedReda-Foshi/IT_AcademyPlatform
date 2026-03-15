@@ -3,14 +3,11 @@ import { fetchLessonById } from '@/app/lib/api/lesson'
 import {  BookOpen, Clock, Users, FileText, Award, Brain, CheckCircle } from 'lucide-react'
 import type { LessonData } from '@/app/types/lesson'
 import Chapter from '@/app/components/Chapter'
-// import { Params } from 'next/dist/server/request/params'
-
+import Quizzes from '@/app/components/Quizzes'
 
 
 export default async function LessonPage({ params }: { params: { courseId: string } }) {
   const { courseId } = await params;
-  console.log(courseId);
-  // const idC = courseId;
   let lesson: LessonData[] | null = null;
   
 try {
@@ -28,14 +25,9 @@ if (!lesson) {
 }
 
  //Since this is SSR, we render progress and completed state as 0 and 0-of-total.
-  const progress = 0
-  const completedCount = 0
-  
+  const progress = 0;
+  const completedCount = 0;
   const firstLesson = Array.isArray(lesson) ? lesson[0] : lesson;
-
-  // console.log(firstLesson);
-            // const idC  = Object.values(courseId)[0];
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black py py-9">
@@ -87,7 +79,7 @@ if (!lesson) {
               <div className="bg-red-900/20 rounded-xl p-6 border border-red-500/30">
                 <div className="text-center mb-4">
                   <div className="text-2xl font-bold text-white mb-1">
-                    {Math.round(progress)}%
+                    {Math.round(progress * 100) / firstLesson.totalLessons}%
                   </div>
                   <div className="text-gray-400 text-sm">Course Progress</div>
                 </div>
@@ -95,8 +87,9 @@ if (!lesson) {
                 <div className="w-full h-2 bg-gray-800 rounded-full mb-4">
                   <div
                     className="h-full bg-gradient-to-r from-red-600 to-red-400 rounded-full"
-                    style={{ width: `${progress}%` }}
-                  />
+                    style={{ width: `${(progress / firstLesson.totalLessons) * 100}%` }}
+                  >
+                  </div>
                 </div>
 
                 <div className="text-center text-gray-300 text-sm">
@@ -117,11 +110,11 @@ if (!lesson) {
 
             <Chapter params={courseId} />
 
-              <div className="p-6">
-                <ul className="space-y-4">
+              <div className="p-6 mt-6">
+                <ul className="space-y-4 flex items-center justify-between gap-4 flex-wrap">
                   {firstLesson.learningOutcomes?.map((outcome, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-red-400 mt-1 flex-shrink-0" />
+                    <li key={index} className="flex items-start gap-3" style={{margin: 0}}>
+                      <CheckCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
                       <span className="text-gray-300">{outcome}</span>
                     </li>
                   ))}
@@ -130,6 +123,11 @@ if (!lesson) {
             
           </div>
 
+          {/* Quizzes section */}
+          <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+              {/* <h3 className="font-semibold text-white mb-4">Take Quiz: </h3> */}
+                  <Quizzes idCourse={`${courseId}`} />
+          </section>
 
           <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
               <h3 className="font-semibold text-white mb-4">Your Instructor</h3>

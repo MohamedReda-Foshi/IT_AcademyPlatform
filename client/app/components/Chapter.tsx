@@ -5,37 +5,24 @@ import type { ChapterData } from '@/app/types/ChapterData';
 import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
-import { BookOpen, MousePointerClick, Star } from 'lucide-react';
+import { BookOpen, /*LockOpenIcon,*/ MousePointerClick,/* PlusCircle,*/ Star } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+// import Button from './Button';
+// import Link from 'next/link';
+// import Quizzes from '@/app/components/Quizzes';
 
 
 
 export default function ChapterPage({ params }: { params: string }) {
-
-  // const idC = Object.values(params);
-  // console.log(" this from chapter : " + params); 
-
   const [chaptersData, setChaptersData] = useState<ChapterData[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<ChapterData | null>(
     null
   );
-  // const [idChapter, setIdChapter] = useState('');
-
-  // useEffect(() => {
-  //   (async () => {
-  //     // console.log("This The chapter ID: " + (await params).chapterId);
-  //     const { id } = await params;
-  //     setIdChapter(id);
-  //   })();
-    
-  //   // console.log(idChapter);
-  // }, [params]);
-
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
@@ -44,6 +31,11 @@ export default function ChapterPage({ params }: { params: string }) {
 
   useEffect(() => {
       const token = localStorage.getItem("token"); // or however you store the token
+      // const sect = process.env.AUTH_SECRET || "";
+      // const dataToken = jwtDecode(token, { header: true});
+      // console.log(dataToken);
+      // console.log(cookies);
+
       axios.get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
         {
         headers: {
@@ -61,14 +53,10 @@ export default function ChapterPage({ params }: { params: string }) {
   }, [params]);
 
 
-  function onSelect(
-    chapter: ChapterData,
-    type: "text" | "file" | "video",
 
-  ) {
+  function onSelect(chapter: ChapterData, type: "text" | "file" | "video") {
     setSelectedChapter(chapter);
     setContentType(type);
-
 
     let contentData;
     switch (type) {
@@ -110,7 +98,7 @@ export default function ChapterPage({ params }: { params: string }) {
           
           <AccordionItem key={chapter._id} value={`item-${chapter._id}`}>
             <AccordionTrigger>
-              <span className="text-xl font-semibold text-white mb-2 px-2">
+              <span className="text-xl font-semibold text-white mb-2 px-4">
                 {chapter.order}. {chapter.ChapterTitle}
               </span>
             </AccordionTrigger>
@@ -141,6 +129,13 @@ export default function ChapterPage({ params }: { params: string }) {
             </AccordionContent>
           </AccordionItem>
         ))}
+        {/* this button must be appear just to the admin */}
+        {/* <Link href={`/quizzes`}> */}
+        {/* Take Quiz */}
+          {/* <Button button={`Start Quiz`} type={"button"} w={''} className={'flex ml-auto mr-4 gap-2 transition-all bg-slate-600 [&:hover>*]:scale-125 uppercase items-center font-bold'}><LockOpenIcon className='size-3 transition-all' /></Button> */}
+        {/* </Link> */}
+        {/* <Quizzes /> */}
+        {/* <Button button={`Add Chapter`} type={"button"} w={''} className={'flex ml-auto mr-4 gap-2 transition-all [&:hover>*]:scale-125 uppercase items-center font-bold'}><PlusCircle className='size-3 transition-all' /></Button> */}
       </Accordion>
     </div>
       <div className="col-span-2 bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden grid-cols-2">

@@ -33,18 +33,17 @@ export default function CardT({
         <p className="text-xs text-gray-400">{auth}</p>
       </CardHeader>
       <Link href={href}>
-      <CardBody className="p-3">
-        <Image
-          alt={altImg}
-          src={imageUrl}
-          width={240}
-          height={140}
-          className="object-cover rounded-md"
-          style={{ objectFit: "cover", width: "auto", height: "auto" }}
-          />
-
-      </CardBody>
-          </Link>
+        <CardBody className="p-3">
+          <Image
+            alt={altImg}
+            src={imageUrl}
+            width={240}
+            height={140}
+            className="object-cover rounded-md"
+            style={{ objectFit: "cover", width: "auto", height: "auto" }}
+            />
+        </CardBody>
+      </Link>
     </Card>
   );
 }

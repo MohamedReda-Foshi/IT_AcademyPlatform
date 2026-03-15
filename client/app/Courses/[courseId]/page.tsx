@@ -39,7 +39,7 @@ import { type Course } from '@/app/types/course';
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const  {courseId}  = await params
   let dataCourse:  Course[] | null = null;
-  // console.log('Course Page - courseId:', courseId); 
+  // console.log('Course Page - courseId:', await params); 
 
   try {
     dataCourse = await fetchCourseById(courseId);
@@ -64,7 +64,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-4">{firstOne?.NameCourse}</h1>
             <p className="text-lg text-white mb-6">{firstOne?.DescriptionCourse}</p>
-            <Link href={`/Courses/${firstOne?.id}/Lesson/${firstOne?.id}`}>
+            <Link href={`/Courses/${courseId}/Lesson/${courseId}`}>
               <Button button="Get Started" type={"button"} w=''/>
             </Link>
           </div>

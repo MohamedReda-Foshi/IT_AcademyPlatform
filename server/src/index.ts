@@ -30,6 +30,6 @@ app.use('/chapter', chapter);
 app.use('/user', user);
 app.use('/course', course);
 app.use('/quizzes', quiz);
-app.use('/questions', question)
+app.use('/questions', question);
 
 export default app;

@@ -14,7 +14,7 @@ function CoursePage({ courses }: { courses: Course[] }) {
             {/* Course List */}
             <div className="flex-1 space-y-10">
               {courses.map((course) => (
-                <div key={course._id} className="border rounded-lg p-6">
+                <div key={course.id} className="border rounded-lg p-6">
                   {/* Title */}
                   {course.NameCourse && (
                     <h2 className="text-3xl uppercase font-bold lg:hidden">
@@ -41,7 +41,7 @@ function CoursePage({ courses }: { courses: Course[] }) {
                       </h3>
                     )}
                     <p>{course.DescriptionCourse}</p>
-                    <Button button="Get Started" type={'button'} />
+                    <Button button="Get Started" type={'button'} w='' />
                   </div>
     
                   {/* Overview */}

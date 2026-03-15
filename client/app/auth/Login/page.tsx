@@ -25,14 +25,17 @@ export default function LoginPage() {
         password,
       });
 
+      console.log("i'm sign In fun res: "+ res);
+
       if (!res?.ok) {
         setError("Invalid email or password");
         return;
       }
       if(res?.ok){
       const session = await fetch("/api/auth/session").then(r => r.json());
+      console.log("come from here /api/auth/session : "+ session);
       localStorage.setItem("token", session.user.token);
-      localStorage.setItem("this is session user:", session.user);
+      localStorage.setItem("session_user:", JSON.stringify(session.user));
       }
       // Successful login - you can add navigation here if needed
       window.location.href = "/Profile"; // Redirect to home page after successful login

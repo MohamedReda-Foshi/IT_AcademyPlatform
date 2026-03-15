@@ -41,6 +41,8 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
   try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
+      // console.log("from get started: " + localStorage.getItem('token'));
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
