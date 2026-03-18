@@ -2,7 +2,7 @@
 
 import Type from "mongoose";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
-import { quiz } from "./quiz/js";
+// import { quiz } from "./quiz/js";
 import { FaQuestion } from "react-icons/fa";
 import Button from "./Button";
 import { CheckCircleIcon, CircleCheck } from "lucide-react";
@@ -67,18 +67,21 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
     }, [quizNb]);
 
     const handleNextQuiz = () => {
+        setAnswer("");
         setNbQuestion(0);
         setNbQuiz( prv =>  prv <= quizzes.length - 1 ? prv + 1 : prv);
     }
 
     const handleNextQuestion = () => {
+        setAnswer("");
         setNbQuestion( prv =>  prv < quizzes[quizNb]?.questions.length - 1 ? prv + 1 : prv);
     }
 
     const handleCheck = (e: BaseSyntheticEvent) => {
         // console.log(listAnswers?.current?.style.pointerEvents.concat(" none"));
-        setAnswer(e.target.dataset.answer);
-        console.log(e.target.dataset.answer);
+        console.log(e.target.dataset.answer === quizzes[quizNb]?.questions[questionNb]?.correctAnswer);
+        setAnswer(quizzes[quizNb]?.questions[questionNb]?.correctAnswer);
+        // console.log(e.target.dataset.answer);
     }
 
     return  <section className="w-full min-h-full bg-gray-600/10 shadow-md p-4 shadow-gray">
@@ -96,7 +99,7 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
                                                 {  
                                                     quest.answers.map((ans, index) => {
                                                         return <li key={index} className="flex items-center gap-4 text-lg">
-                                                                    <input type="checkbox" name="answer" onChange={handleCheck} data-answer={ans} className="w-[18px] h-[18px]" id={`${index} answer`} />
+                                                                    <input type="checkbox" name="answer" className={`w-[18px] h-[18px] ${answer != ans ? "bg-red-600 accent-red-700" : "bg-green-600 accent-green-700"}`} onChange={handleCheck} data-answer={ans} id={`${index} answer`} />
                                                                     <label htmlFor={`${index} answer`}>{ans}</label>
                                                                 </li>
                                                     })
@@ -106,7 +109,7 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
                                     })
                                 }
                                 <div className="flex flex-col">
-                                    {
+                                {
                                     answer ? <span className="text-xl font-bold capitalize p-4 text-green-500">{quiz.questions[questionNb].correctAnswer}</span> : null
                                 }
                                 {
