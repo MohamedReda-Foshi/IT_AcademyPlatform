@@ -53,12 +53,14 @@ export const authOptions: NextAuthOptions = {
           }
 
           const decoded = jwtDecode(data) as { id: string; email: string; name: string; role: string };
+          
           return {
             id: decoded.id,
             name: decoded.name,
             email: decoded.email,
             role: decoded.role,
-            token: data.data,
+            // this is come from backend response and it's the token not object has properties with name token
+            token: data,
           };
 
         } catch (err) {

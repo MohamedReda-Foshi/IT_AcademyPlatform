@@ -53,7 +53,7 @@ export const login = async ({email,password}: LoginParams)=>{
     const passwordMatch = await bcrypt.compare(password, findUser.password);
 
     if(passwordMatch) {
-        const token = generateJWT({id:findUser._id, name: `${findUser.firstName} ${findUser.lastName}`, email: findUser.email, role: findUser.role});
+        const token = await generateJWT({id:findUser._id, name: `${findUser.firstName} ${findUser.lastName}`, email: findUser.email, role: findUser.role});
         // const token = generateJWT({...findUser});
 
         return token;

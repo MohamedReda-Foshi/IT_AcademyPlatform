@@ -1,4 +1,3 @@
-// app/Courses/[courseId]/Chapters/page.tsx
 "use client"
 import { useState, useEffect } from 'react';
 import type { ChapterData } from '@/app/types/ChapterData';
@@ -12,9 +11,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-// import Button from './Button';
-// import Link from 'next/link';
-// import Quizzes from '@/app/components/Quizzes';
 
 
 
@@ -31,10 +27,6 @@ export default function ChapterPage({ params }: { params: string }) {
 
   useEffect(() => {
       const token = localStorage.getItem("token"); // or however you store the token
-      // const sect = process.env.AUTH_SECRET || "";
-      // const dataToken = jwtDecode(token, { header: true});
-      // console.log(dataToken);
-      // console.log(cookies);
 
       axios.get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
         {
@@ -71,8 +63,6 @@ export default function ChapterPage({ params }: { params: string }) {
         break;
     }
     setContentData(contentData);
-    // console.log(`Selected chapter ${chapter} with type: ${type}`);
-    // console.log(`Selected chapter ${chapter.text || chapter._id} with type: ${type} and content:`, contentData);
   }
 
   const source = Array.isArray(contentData) ? contentData[0] : contentData;
@@ -129,14 +119,7 @@ export default function ChapterPage({ params }: { params: string }) {
             </AccordionContent>
           </AccordionItem>
         ))}
-        {/* this button must be appear just to the admin */}
-        {/* <Link href={`/quizzes`}> */}
-        {/* Take Quiz */}
-          {/* <Button button={`Start Quiz`} type={"button"} w={''} className={'flex ml-auto mr-4 gap-2 transition-all bg-slate-600 [&:hover>*]:scale-125 uppercase items-center font-bold'}><LockOpenIcon className='size-3 transition-all' /></Button> */}
-        {/* </Link> */}
-        {/* <Quizzes /> */}
-        {/* <Button button={`Add Chapter`} type={"button"} w={''} className={'flex ml-auto mr-4 gap-2 transition-all [&:hover>*]:scale-125 uppercase items-center font-bold'}><PlusCircle className='size-3 transition-all' /></Button> */}
-      </Accordion>
+        </Accordion>
     </div>
       <div className="col-span-2 bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden grid-cols-2">
         <div className="p-6 border-b border-red-500/30 bg-red-900/20">

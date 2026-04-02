@@ -10,7 +10,7 @@ const router = Router();
  * GET /getChapter/:courseId
  * Fetch all chapters associated with a specific course
  */
-router.get("/getChapter/:courseId", /*auth, role("admin","user"),*/
+router.get("/getChapter/:courseId", auth,/* role("admin","user"), */
   async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
 
@@ -38,7 +38,7 @@ router.get("/getChapter/:courseId", /*auth, role("admin","user"),*/
  * POST /addChapter
  * Create a new chapter
  */
-router.post("/addChapter" , auth, role ("admin"), async (req: Request, res: Response): Promise<void> => {
+router.post("/addChapter" , auth, role("admin"), async (req: Request, res: Response): Promise<void> => {
   const { ChapterTitle,
     order,
       videoUrl,

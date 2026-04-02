@@ -129,7 +129,7 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
                                 <Button type={"button"} w="" 
                                     className={`rounded-full p-2 text-white opacity-30 hover:opacity-100 flex items-center justify-center gap-2 [&:hover>*]:scale-105 ${answer ? "opacity-90" : ""}`}
                                     handleClick={handleNextQuestion}
-                                    button="Check Answer"
+                                    button="Next Question"
                                     >
                                         <CircleCheck className="transition-all"/>
                                 </Button>

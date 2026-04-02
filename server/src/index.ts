@@ -1,6 +1,6 @@
 import express from 'express';
 import {connection} from '../config/database';
-import admin from './routes/adminRoute';
+// import admin from './routes/adminRoute';
 import user from './routes/userRoute';
 import course from './routes/courseRoute';
 import chapter from './routes/Chapter';
@@ -25,7 +25,7 @@ app.use(cors({
     credentials: true
   }));
 
-app.use('/dashboard', admin);
+// app.use('/dashboard', admin);
 app.use('/chapter', chapter);
 app.use('/user', user);
 app.use('/course', course);

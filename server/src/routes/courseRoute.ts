@@ -5,10 +5,10 @@ import { auth } from '../middlewares/auth';
 import { role } from '../middlewares/role_auth';
 
 // this is a cart course 
-
 const router = Router();
 
-router.get("/CourseCard", async(req, res) => {
+router.get("/CourseCard", 
+  async(req, res) => {
     try {
         const courses = await courseModel
         .find()
@@ -20,8 +20,8 @@ router.get("/CourseCard", async(req, res) => {
     }
 });
 
-
-router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+router.get("/AllCourse",
+  async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try{
         const courses = await courseModel
         .find()
@@ -34,7 +34,8 @@ router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction)
 });
 
 // all user courses
-router.get("/course/CourseCard", async(req, res) => {
+router.get("/course/CourseCard",
+  async(req, res) => {
   try{
       const courses = await courseModel
       .find()
@@ -53,26 +54,27 @@ router.get("/course/CourseCard", async(req, res) => {
 
 // this is a course page all user can see
 router.get("/:id", 
-  
+  auth,
+  role("admin", "user"),
   async (req: Request, res: Response):Promise<any> => {
     const { id } = req.params;
-    if (!id) {
-        return res.status(400).json({ message: "Course ID is required" });
 
+    
+    if (!id) {
+      return res.status(400).json({ message: "Course ID is required" });
     }
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid course ID format' });
     }
-
+    
     try{
-        const Course = await courseModel
-        .findById(id)
-        .select('-__v'); // Exclude __v field from the response
-        if(!Course) {
-            return res.status(404).json({ message: "Lesson not found" });
-        }
-
-        
+      const Course = await courseModel
+      .findById(id)
+      .select('-__v'); // Exclude __v field from the response
+      if(!Course) {
+        return res.status(404).json({ message: "Lesson not found" });
+      }
+      
         const {
             _id,
             NameCourse,
@@ -91,7 +93,6 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            // quiz,
             createdAt,
             updatedAt
           } = Course.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
@@ -114,7 +115,6 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            // quiz,
             createdAt,
             updatedAt
           });
@@ -127,11 +127,11 @@ router.get("/:id",
 
 
     router.get("/lesson/:id",
-
+      auth,
+      role("admin", "user"), 
       async (req: Request, res: Response):Promise<any> => {
 
       const { id } = req.params;
-      // req.query
       if (!id) {
           return res.status(400).json({ message: "Course ID is required" });
       }

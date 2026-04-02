@@ -1,6 +1,3 @@
-// lib/api.js
-
-// import { CourseData } from '@/app/types/course'
 import { LessonData } from '@/app/types/lesson';
 import { type Course } from '@/app/types/course';
 
@@ -40,9 +37,7 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
 
   try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
-      // console.log("from get started: " + localStorage.getItem('token'));
-
+    
       const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -52,8 +47,6 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
     if (!res.ok) {
       throw new Error(`Network response was not ok course (${res.status})`);
     }
-
-    // console.log('Fetching course with id:', await res.json());
 
     return  res.json();
 
@@ -66,7 +59,6 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
 
 
 export async function fetchLessonById(id: string): Promise<LessonData[]> {
-  // console.log('Fetching lesson with id:', id);
   try {
     // 2) Call your Express endpoint (replace host/port as needed)
     const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/lesson/${id}`);
@@ -84,7 +76,6 @@ export async function fetchLessonById(id: string): Promise<LessonData[]> {
     return []
   }
 }
-
 
 
 //// this is a lesson page 
