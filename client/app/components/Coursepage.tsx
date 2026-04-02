@@ -1,9 +1,13 @@
 import React from 'react'
 import Image from 'next/image'
 import Button from '@/app/components/Button'
-import FAQSection from '@/app/components/FAQSection'
+import FAQSection from '@/app/components/FAQSection';
+import { type Course } from "../types/course"
 
-function Coursepage() {
+
+function CoursePage({ courses }: { courses: Course[] }) {
+  const defaultImage = 'https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg';
+
   return (
         <div className="py-20 px-10">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -12,31 +16,32 @@ function Coursepage() {
               {courses.map((course) => (
                 <div key={course.id} className="border rounded-lg p-6">
                   {/* Title */}
-                  {Namecourse && (
+                  {course.NameCourse && (
                     <h2 className="text-3xl uppercase font-bold lg:hidden">
-                      {course.Namecourse}
+                      {course.NameCourse}
                     </h2>
                   )}
     
                   {/* Hero Image */}
                   <Image
                     className="rounded-lg lg:hidden mb-4"
-                    src={course.imageUrl||defaultImage}
+                    // src={course.imageUrl||defaultImage}
+                    src={defaultImage}
                     width={600}
                     height={400}
-                    alt={course.Namecourse}
-                    style={{ objectFit: 'cover' }}
+                    alt={course.NameCourse}
+                    style={{ objectFit: 'cover', width: 'auto', height: 'auto' }}
                   />
     
                   {/* Description & Button */}
                   <div className="space-y-4 mb-6">
-                    {Namecourse && (
+                    {course.NameCourse && (
                       <h3 className="text-3xl uppercase font-bold hidden sm:block">
-                        {course.Namecourse}
+                        {course.NameCourse}
                       </h3>
                     )}
                     <p>{course.DescriptionCourse}</p>
-                    <Button button="Get Started" />
+                    <Button button="Get Started" type={'button'} w='' />
                   </div>
     
                   {/* Overview */}
@@ -63,8 +68,8 @@ function Coursepage() {
                 }
                 width={600}
                 height={400}
-                alt={courses[0]?.Namecourse || 'Course image'}
-                style={{ objectFit: 'cover' }}
+                alt={courses[0]?.NameCourse || 'Course image'}
+                style={{ objectFit: 'cover', width: 'auto', height: 'auto' }}
               />
     
               <div className="space-y-2">
@@ -99,4 +104,4 @@ function Coursepage() {
   )
 }
 
-export default Coursepage
+export default CoursePage;

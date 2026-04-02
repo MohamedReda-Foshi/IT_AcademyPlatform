@@ -16,10 +16,10 @@ function About() {
           <Image
             className='rounded-lg hover:scale-110 transition'
             src="https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg"
-            width={300}
-            height={400}
+            width={400}
+            height={300}
             alt="Front-end Development"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', width: 'auto', height: 'auto' }}
           />
         </div>
         <div>
@@ -33,4 +33,4 @@ function About() {
   )
 }
 
-export default About
+export default About;

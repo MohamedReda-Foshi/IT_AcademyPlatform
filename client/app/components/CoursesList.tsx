@@ -2,15 +2,14 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Clock, Users, TrendingUp, Play, BookOpen, Award } from 'lucide-react'
-import { type CourseData } from "../types/course"
+import { type Course } from "../types/course"
 
 interface CoursesListProps {
-  courses: CourseData[];          
+  courses: Course[];          
 }
 
 export default function CoursesList({ courses }: CoursesListProps) {
-  const defaultImage =
-    'https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg'
+  const defaultImage = 'https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg';
   
   const getLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
@@ -39,9 +38,9 @@ export default function CoursesList({ courses }: CoursesListProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {courses.map((course) => (
+          {Array.isArray(courses) && courses.map((course, index) => (
             <div 
-              key={course._id} 
+              key={course._id && index} 
               className="group relative bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-2xl hover:shadow-red-500/20 transition-all duration-700 overflow-hidden border border-gray-800 hover:border-red-500/50 hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Animated border effect */}
@@ -51,11 +50,13 @@ export default function CoursesList({ courses }: CoursesListProps) {
               <div className="relative h-56 overflow-hidden">
                 <Image
                   className="group-hover:scale-110 transition-transform duration-700 ease-out"
-                  src={course.imageUrl ?? defaultImage}
+                  // src={course.imageUrl.replace("jpg", "com") ?? defaultImage}
+                  src={defaultImage}
                   fill
+                  sizes='100%'
                   priority
-                  alt={course.Namecourse}
-                  style={{ objectFit: 'cover' }}
+                  alt={course.NameCourse}
+                  style={{ objectFit: 'cover'}}
                 />
                 {/* Enhanced gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70 group-hover:opacity-60 transition-opacity duration-500" />
@@ -86,7 +87,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
               <div className="p-8 space-y-6">
                 {/* Title with Gradient */}
                 <h3 className="text-2xl font-bold text-white leading-tight group-hover:bg-gradient-to-r group-hover:from-red-400 group-hover:to-red-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
-                  {course.Namecourse}
+                  {course.NameCourse}
                 </h3>
 
                 {/* Description */}
@@ -164,7 +165,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
         </div>
 
         {/* Enhanced Empty State */}
-        {courses.length === 0 && (
+        {Array.isArray(courses) && courses.length === 0 && (
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-2xl">

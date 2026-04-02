@@ -1,23 +1,20 @@
-// app/Courses/[courseId]/Chapters/page.tsx
 "use client"
 import { useState, useEffect } from 'react';
 import type { ChapterData } from '@/app/types/ChapterData';
 import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
-import { BookOpen, Star } from 'lucide-react';
+import { BookOpen, /*LockOpenIcon,*/ MousePointerClick,/* PlusCircle,*/ Star } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
 
 
-export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
-
-
+export default function ChapterPage({ params }: { params: string }) {
   const [chaptersData, setChaptersData] = useState<ChapterData[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<ChapterData | null>(
     null
@@ -25,40 +22,33 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
-  const [contentData, setContentData] = useState<string | string[] | undefined>()
+  const [contentData, setContentData] = useState<string | string[]>()
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
       const token = localStorage.getItem("token"); // or however you store the token
-    axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
-         {
+
+      axios.get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
+        {
         headers: {
           'Authorization': `Bearer ${token}`,
-           'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
         withCredentials:true,
-      }
-      )
-
+      })
       .then((res) => {
         setChaptersData(res.data);
-
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   }, [params]);
 
 
-  function onSelect(
-    chapter: ChapterData,
-    type: "text" | "file" | "video",
 
-  ) {
+  function onSelect(chapter: ChapterData, type: "text" | "file" | "video") {
     setSelectedChapter(chapter);
     setContentType(type);
-
 
     let contentData;
     switch (type) {
@@ -72,11 +62,10 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         contentData = chapter.videoUrl;
         break;
     }
-    setContentData(contentData)
-    console.log(`Selected chapter ${chapter} with type: ${type}`);
-    console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);
+    setContentData(contentData);
   }
 
+  const source = Array.isArray(contentData) ? contentData[0] : contentData;
 
   return (
     <div className=' grid grid-cols-3 gap-1 justify-between '>
@@ -96,9 +85,10 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         onValueChange={(value) => setOpenItem(value)}
       >
         {chaptersData.map((chapter) => (
-          <AccordionItem key={chapter.id} value={`item-${chapter.id}`}>
+          
+          <AccordionItem key={chapter._id} value={`item-${chapter._id}`}>
             <AccordionTrigger>
-              <span className="text-xl font-semibold text-white mb-2 px-2">
+              <span className="text-xl font-semibold text-white mb-2 px-4">
                 {chapter.order}. {chapter.ChapterTitle}
               </span>
             </AccordionTrigger>
@@ -129,12 +119,8 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
             </AccordionContent>
           </AccordionItem>
         ))}
-      </Accordion>
+        </Accordion>
     </div>
-
-
-
-
       <div className="col-span-2 bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden grid-cols-2">
         <div className="p-6 border-b border-red-500/30 bg-red-900/20">
           <h2 className="text-2xl font-semibold text-white flex items-center gap-3">
@@ -142,15 +128,14 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
             Lesson Content
           </h2>
         </div>
-
-        <div className="p-4">
+        <div className="p-4 flex justify-center" style={{minHeight: "calc(100% - 80px)"}}>
           {selectedChapter ? (
             <ViewChapter
               ContentType={contentType}
-              ContentData={contentData}
+              ContentData={`${source}`}
             />
           ) : (
-            <p className="text-white">Select a chapter to view its content.</p>
+            <p className="text-white flex items-center justify-center gap-4 font-bold text-2xl"> <MousePointerClick/> Select a chapter to view its content.</p>
           )}
         </div>
       </div>

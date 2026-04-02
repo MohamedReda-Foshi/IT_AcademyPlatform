@@ -7,8 +7,7 @@ import Avatar from "../components/Avatar"
 export default function AuthNav() {
   const { data: session } = useSession({
     required: false,
-
-  })
+  });
 
   return session ? (
     <Link href="/Profile" >
@@ -17,10 +16,10 @@ export default function AuthNav() {
     ) : (
     <div className="flex space-x-4">
       <Link href="/auth/Login">
-          <Button button="Login" type={"button"}/>
+          <Button button="Login" type={"button"} w={""}/>
       </Link>
       <Link href="/auth/Register">
-          <Button button="Register" type={"button"}/>
+          <Button button="Register" type={"button"} w={""}/>
       </Link>
     </div>
   )
