@@ -1,4 +1,4 @@
-import { AdminModel } from "../Model/adminModel";
+import { AdminModel } from "../models/adminModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";

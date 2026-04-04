@@ -1,5 +1,5 @@
 import { Router, Request, Response,NextFunction} from 'express';
-import {courseModel,Icourse } from '../Model/course';
+import {courseModel,Icourse } from '../models/course';
 import mongoose from 'mongoose';
 import { auth } from '../middlewares/auth';
 import { role } from '../middlewares/roleauth';
@@ -64,7 +64,7 @@ router.get("/:id",
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
 
-    }if (!mongoose.Types.ObjectId.isValid(id)) {
+    }if (!mongoose.Types.ObjectId.isValid(`id`)) {
         return res.status(400).json({ message: 'Invalid course ID format' });
       }
 
@@ -138,7 +138,7 @@ router.get("/:id",
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
 
-    }if (!mongoose.Types.ObjectId.isValid(id)) {
+    }if (!mongoose.Types.ObjectId.isValid(`id`)) {
         return res.status(400).json({ message: 'Invalid course ID format' });
       }
 

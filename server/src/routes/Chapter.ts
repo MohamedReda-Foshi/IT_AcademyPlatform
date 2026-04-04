@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { chapterModel } from '../Model/chapter';
+import { chapterModel } from '../models/chapter';
 import {role} from '../middlewares/roleauth';
 import { auth } from '../middlewares/auth';
 
@@ -16,7 +16,7 @@ router.get("/getChapter/:courseId",auth,role("admin","user"),
    async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+  if (!mongoose.Types.ObjectId.isValid(`courseId`)) {
     res.status(400).json({ message: "Invalid course ID format" });
     return;
   }

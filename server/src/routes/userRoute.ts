@@ -1,7 +1,7 @@
 import express from "express";
 import { login } from "../services/userServices";
 import { registerUser } from "../services/userServices";
-import { userModel } from "../Model/userModel";
+import { userModel } from "../models/userModel";
 import { Request, Response, NextFunction } from "express";
 import { role } from "../middlewares/roleauth";
 import { auth } from "../middlewares/auth";
