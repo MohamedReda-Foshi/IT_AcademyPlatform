@@ -6,7 +6,7 @@ export default function NotFound() {
       <div className='flex flex-col p-10'>
         <h1>Not found - 404!</h1>
         <div>
-                <Link href="/"><Button button="Go back to Home"/></Link>
+                <Link href="/"><Button button="Go back to Home" w='' type='button'/></Link>
             
         </div>
       </div>
