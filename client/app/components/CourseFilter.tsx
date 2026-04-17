@@ -4,7 +4,7 @@
 // // Define CourseData and Filters interfaces
 // export interface CourseData {
 //   _id: string;
-//   NameCourse: string;
+//   Namecourse: string;
 //   DescriptionCourse: string;
 //   shortDescription?: string;
 //   category: string;

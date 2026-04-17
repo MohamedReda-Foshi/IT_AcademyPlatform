@@ -2,7 +2,7 @@ import React from "react";
 import { FaHeart, FaComment } from "react-icons/fa";
 import Link from "next/link";
 
-function Comments({ name, tComment, comments, n_comment, n_like }) {
+function Comments({ name, tComment, comments, ncomment, nlike }) {
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md max-w-screen-lg mx-auto mb-4">
       {/* Comment Section */}
@@ -21,13 +21,13 @@ function Comments({ name, tComment, comments, n_comment, n_like }) {
         <div className="flex items-center justify-between text-gray-600 text-lg">
           <div className="flex items-center space-x-2">
             <FaHeart className="text-gray-500" />
-            <span>{n_like}</span>
+            <span>{nlike}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Link href="CommentsPage">
               <span>
                 <FaComment className="text-gray-500" />
-                <span className="text-gray-500">{n_comment}</span>
+                <span className="text-gray-500">{ncomment}</span>
               </span>
             </Link>
           </div>

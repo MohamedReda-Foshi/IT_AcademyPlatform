@@ -1,8 +1,10 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { chapterModel } from '../Model/chapter';
-import {role} from '../middlewares/role_auth';
-import { auth } from '../middlewares/auth';
+import { chapterModel } from '../models/chapter';
+// import {role} from '../middlewares/role_auth';
+// import { auth } from '../middlewares/auth';
+
+
 
 const router = Router();
 
@@ -10,13 +12,11 @@ const router = Router();
  * GET /getChapter/:courseId
  * Fetch all chapters associated with a specific course
  */
-router.get("/getChapter/:courseId", auth,/* role("admin","user"), */
+router.get("/getChapter/:courseId",
   async (req: Request, res: Response): Promise<void> => {
   const { courseId } = req.params;
 
-  // console.log(courseId);
-
-  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+  if (!mongoose.Types.ObjectId.isValid(`${courseId}`)) {
     res.status(400).json({ message: "Invalid course ID format" });
     return;
   }
@@ -24,9 +24,10 @@ router.get("/getChapter/:courseId", auth,/* role("admin","user"), */
   try {
     const chapters = await chapterModel
       .find({ courseId })
-      .populate('courseId', ' ChapterTitle videoUrl text quiz ')
+      // .populate('courseId', ' ChapterTitle videoUrl text quiz ')
+      .populate('courseId')
       .sort({ order: 1 }); // Sort chapters by order
-
+      // console.log(chapters[0]._id);
     res.json(chapters);
   } catch (error) {
     console.error("Error fetching chapters:", error);
@@ -38,9 +39,9 @@ router.get("/getChapter/:courseId", auth,/* role("admin","user"), */
  * POST /addChapter
  * Create a new chapter
  */
-router.post("/addChapter" , auth, role("admin"), async (req: Request, res: Response): Promise<void> => {
+router.post("/addChapter", async (req: Request, res: Response): Promise<void> => {
   const { ChapterTitle,
-    order,
+      order,
       videoUrl,
       videoTitle,
       textTitle,

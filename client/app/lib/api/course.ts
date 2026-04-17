@@ -33,10 +33,11 @@ export async function fetchHomeCourseFromExpr(): Promise<Course[]> {
 
 /// this courses by id from the database
 export async function fetchCourseById(id: string): Promise<Course[]> {
-  // console.log('Fetching course with id:', id);
+  console.log('Fetching course with id:', id);
 
   try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
     
       const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
         headers: {
@@ -51,7 +52,7 @@ export async function fetchCourseById(id: string): Promise<Course[]> {
     return  res.json();
 
   } catch (error) {
-    console.error(`Error fetching course with id  ${id}:`, error);
+    console.log(`Error fetching course with id  ${id}:`, error);
     return [];
   }
 }

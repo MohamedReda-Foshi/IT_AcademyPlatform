@@ -1,8 +1,23 @@
+
+
+
+
 export interface User{
-    id: string;
-    firstName: string;
-    lasName:string
+
+
+id: string;
+firstname: string;
+lasname:string
+
 }
+
+
+
+
+
+
+
+
 
 
 export async function fetchLessonById(id: string): Promise<User[]> {

@@ -3,7 +3,7 @@ import { fetchLessonById } from '@/app/lib/api/lesson'
 import {  BookOpen, Clock, Users, FileText, Award, Brain, CheckCircle } from 'lucide-react'
 import type { LessonData } from '@/app/types/lesson'
 import Chapter from '@/app/components/Chapter'
-import Quizzes from '@/app/components/Quizzes'
+// import Quizzes from '@/app/components/Quizzes'
 
 
 export default async function LessonPage({ params }: { params: { courseId: string } }) {
@@ -29,6 +29,8 @@ if (!lesson) {
   const completedCount = 0;
   const firstLesson = Array.isArray(lesson) ? lesson[0] : lesson;
 
+  // console.log(firstLesson, lesson)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black py py-9">
       <div className="container mx-auto px-4 py-8">
@@ -44,7 +46,6 @@ if (!lesson) {
                 {firstLesson.NameCourse}
                 <br/>
               </h1>
-
               <div className="flex flex-wrap gap-6 text-sm">
                 <div className="flex items-center gap-2 text-gray-300">
                   <Clock className="w-4 h-4" />
@@ -74,7 +75,6 @@ if (!lesson) {
                 </div>
               </div>
             </div>
-
             <div className="lg:w-80">
               <div className="bg-red-900/20 rounded-xl p-6 border border-red-500/30">
                 <div className="text-center mb-4">
@@ -83,7 +83,6 @@ if (!lesson) {
                   </div>
                   <div className="text-gray-400 text-sm">Course Progress</div>
                 </div>
-
                 <div className="w-full h-2 bg-gray-800 rounded-full mb-4">
                   <div
                     className="h-full bg-gradient-to-r from-red-600 to-red-400 rounded-full"
@@ -91,7 +90,6 @@ if (!lesson) {
                   >
                   </div>
                 </div>
-
                 <div className="text-center text-gray-300 text-sm">
                   {completedCount} of {firstLesson.totalLessons} sections completed
                 </div>
@@ -120,14 +118,8 @@ if (!lesson) {
                   ))}
                 </ul>
               </div>
-            
           </div>
 
-          {/* Quizzes section */}
-          <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
-              {/* <h3 className="font-semibold text-white mb-4">Take Quiz: </h3> */}
-                  <Quizzes idCourse={`${courseId}`} />
-          </section>
 
           <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
               <h3 className="font-semibold text-white mb-4">Your Instructor</h3>
@@ -144,7 +136,6 @@ if (!lesson) {
                 Full-stack developer with 8+ years of experience building scalable web applications with React and Next.js.
               </p>
             </div>
-            
         </div>
       </div>
     </div>

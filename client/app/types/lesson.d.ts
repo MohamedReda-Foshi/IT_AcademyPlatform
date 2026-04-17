@@ -1,7 +1,8 @@
 // types/lesson.d.ts 
 import { Types } from 'mongoose';
 export interface LessonData {
-  id: Types.ObjectId; // Unique identifier for the lesson
+ 
+  id: Types.ObjectId ; // Unique identifier for the lesson
   ChapterId: string;
   NameCourse: string
   chapterTitle:string;

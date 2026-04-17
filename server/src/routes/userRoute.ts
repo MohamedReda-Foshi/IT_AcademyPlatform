@@ -1,15 +1,15 @@
 import express from "express";
-import { login, verifyJWT } from "../services/userServices";
+import { login } from "../services/userServices";
 import { registerUser } from "../services/userServices";
-import { userModel } from "../Model/userModel";
+import { userModel } from "../models/userModel";
 import { Request, Response, NextFunction } from "express";
-import { role } from "../middlewares/role_auth";
+import { role } from "../middlewares/roleauth";
 import { auth } from "../middlewares/auth";
 
 const router = express.Router();
 
 router.get(
-  "/getUser",
+  "/getuser",
   auth,
   role("admin"),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -25,7 +25,7 @@ router.get(
 );
 
 router.get(
-  "/getUsername/:id",
+  "/getusername/:id",
   auth,
   role("admin"),
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -42,7 +42,7 @@ router.get(
   }
 );
 
-//Authentication
+//Authoniocation
 router.post("/register", async (req, res, next) => {
   try {
     const { firstName, lastName, role, email, password } = req.body;
@@ -64,7 +64,6 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const data = await login({ email, password });
     res.status(200).json(data);
-    // console.log(res);
   } catch {
     res.status(500).send("Something went wrong!");
   }

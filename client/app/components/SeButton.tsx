@@ -13,8 +13,9 @@ function SeButton(props:SeButtonProps) {
             
             {props.button}
             </button>
+    
         </div>
     )
 }
 
-export default SeButton;
+export default SeButton

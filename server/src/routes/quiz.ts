@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import {quizModel} from '../Model/quiz';
-import { auth } from '../middlewares/auth';
-import { role } from '../middlewares/role_auth';
+import {quizModel} from '../models/quiz';
+// import { auth } from '../middlewares/auth';
+// import { role } from '../middlewares/role_auth';
 
 
 const router = Router();
@@ -17,7 +17,10 @@ router.get("/getQuizzes/:idCourse", async (req, res) => {
     }
 });
 
-router.post("/addQuiz", auth, role("admin"), async (req, res) => {
+router.post("/addQuiz",
+    //  auth,
+    //  role("admin"), 
+    async (req, res) => {
     try {
         const { title, synopsis, nbrOfQuestions, questions, courseId } = req.body;
         // const newQuiz = new quizModel({

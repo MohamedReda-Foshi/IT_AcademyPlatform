@@ -45,7 +45,6 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
             fetch(url).then(async (res) => {
                 return await res.json();
             }).then((res) => {
-                console.log(res);
                 setQuizzes(res);
             }).catch((rej) => {
                 console.error(rej);
@@ -62,9 +61,9 @@ export default function Quizzes({idCourse}: {idCourse: string}) {
         setGetCurrentQuiz(quizList);
     }, [quizNb, quizzes]);
 
-    useEffect(() => {
-        console.log("this is the current quiz: ", quizNb);
-    }, [quizNb]);
+    // useEffect(() => {
+    //     console.log("this is the current quiz: ", quizNb);
+    // }, [quizNb]);
 
     const handleNextQuiz = () => {
         setAnswer("");

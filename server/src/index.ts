@@ -1,16 +1,16 @@
 import express from 'express';
-import {connection} from '../config/database';
-// import admin from './routes/adminRoute';
+import {connection, client} from './config/database';
+import admin from './routes/adminRoute';
 import user from './routes/userRoute';
 import course from './routes/courseRoute';
 import chapter from './routes/Chapter';
 import quiz from './routes/quiz';
 import question from './routes/question';
 import dotenv from "dotenv";
-// import  from './Model/question';
-// import { auth } from './middlewares/auth';
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
+import cors from 'cors';
 
-const cors = require('cors');
 dotenv.config();
 
 const app = express();
@@ -18,18 +18,42 @@ connection();
 app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Home page!");
-});
+})
+
+//auth 
+// 
+// 
+// 
+// Login Post: /api/auth/sign-in/email
+// Registration: Post /api/auth/sign-up/email
+// Get Session : Get /api/auth/get-Session
+// Logout: Post /api/auth/sign-out
+
 
 app.use(cors({
-    origin: `${process.env.FRONT_END_PORT}`, // frontend URL
-    credentials: true
+    origin: `${process.env.FRONT_END_PORT}` || "http://localhost:3000" , // frontend URL
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   }));
 
-// app.use('/dashboard', admin);
+app.all("/api/auth/*", toNodeHandler(auth));
+
+app.use('/dashboard', admin);
 app.use('/chapter', chapter);
 app.use('/user', user);
 app.use('/course', course);
 app.use('/quizzes', quiz);
 app.use('/questions', question);
+
+async function bootstrap() {
+  await client.connect();     // connect native MongoClient (for better-auth)
+  await connection();         // connect Mongoose (for your models)
+
+  app.listen(process.env.PORT || 8000, () => {
+    console.log(`Server running on port ${process.env.PORT || 8000}`);
+  });
+}
+
+bootstrap();
 
 export default app;

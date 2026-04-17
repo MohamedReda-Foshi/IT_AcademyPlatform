@@ -1,14 +1,14 @@
 "use client"
+
+import { useSession } from "../lib/auth-client";
 import Link from "next/link"
-import { useSession } from "next-auth/react"
 import Button from "../components/Button"
 import Avatar from "../components/Avatar"
 
 export default function AuthNav() {
-  const { data: session } = useSession({
-    required: false,
-  });
+  const { data: session, isPending } = useSession()
 
+  if (isPending) return <p>Loading...</p>; 
   return session ? (
     <Link href="/Profile" >
       <Avatar/>
@@ -24,3 +24,4 @@ export default function AuthNav() {
     </div>
   )
 }
+

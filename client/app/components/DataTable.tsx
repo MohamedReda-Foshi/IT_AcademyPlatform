@@ -1,7 +1,12 @@
 // DataTable.jsx
 import React from 'react';
 
-const DataTable = ({data = [], title = "Data Table", columns = [], emptyMessage = "No data available"}) => {
+const DataTable = ({ 
+  data = [], 
+  title = "Data Table",
+  columns = [],
+  emptyMessage = "No data available"
+}) => {
   // Early return if no data and no columns specified
   if (data.length === 0 && columns.length === 0) {
     return (
@@ -13,14 +18,6 @@ const DataTable = ({data = [], title = "Data Table", columns = [], emptyMessage 
       </div>
     );
   }
-
-  /**
-   * Must Be ReCreate It By Readable and Scalable Way And Resole These Issus:
-   *  * 'title' is declared but its value is never read.ts(6133)
-   *  * 'emptyMessage' is declared but its value is never read.ts(6133)
-   *  * 'tableColumns' is declared but its value is never read.ts(6133)
-   *  *  Cannot find name 'tableColumns'.ts(2304)
-   */
 
   // If no columns are provided, automatically generate them from the first item
   interface Column<T> {
@@ -37,16 +34,14 @@ const DataTable = ({data = [], title = "Data Table", columns = [], emptyMessage 
   }
 
   const DataTable = <T extends Record<string, any>>({ 
-    data = [],
-    // eslint-disable-next-line
+    data = [], 
     title = "Data Table",
     columns = [],
-    // eslint-disable-next-line
     emptyMessage = "No data available"
   }: DataTableProps<T>) => {
 
     // Early return code...
-    // eslint-disable-next-line
+
     const tableColumns: Column<T>[] = columns.length > 0 
       ? columns 
       : data.length > 0 
@@ -56,7 +51,6 @@ const DataTable = ({data = [], title = "Data Table", columns = [], emptyMessage 
             render: (item: T) => item[key]
           }))
         : [];
-
 
     // Return JSX code...
   };
@@ -68,36 +62,34 @@ const DataTable = ({data = [], title = "Data Table", columns = [], emptyMessage 
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100">
-              
-              {
-                tableColumns?.map((column, index) => (
-                  <th 
-                    key={index} 
-                    className="py-2 px-4 border-b border-gray-200 text-left font-semibold text-gray-600"
-                  >
-                    {column.header}
-                  </th>
-                ))
-              }
+              {tableColumns.map((column, index) => (
+                <th 
+                  key={index} 
+                  className="py-2 px-4 border-b border-gray-200 text-left font-semibold text-gray-600"
+                >
+                  {column.header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {data.length > 0 ? (
               data.map((item, rowIndex) => (
                 <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                  {
-                    tableColumns.map((column, colIndex) => (
-                      <td key={colIndex} className="py-2 px-4 border-b border-gray-200">
-                        {column.render ? column.render(item) : item[column.key]}
-                      </td>
-                    ))
-                  }
+                  {tableColumns.map((column, colIndex) => (
+                    <td key={colIndex} className="py-2 px-4 border-b border-gray-200">
+                      {column.render ? column.render(item) : item[column.key]}
+                    </td>
+                  ))}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={tableColumns.length} className="py-4 px-4 text-center text-gray-500 border-b border-gray-200">
-                  {DataTable.emptyMessage}
+                <td 
+                  colSpan={tableColumns.length} 
+                  className="py-4 px-4 text-center text-gray-500 border-b border-gray-200"
+                >
+                  {emptyMessage}
                 </td>
               </tr>
             )}

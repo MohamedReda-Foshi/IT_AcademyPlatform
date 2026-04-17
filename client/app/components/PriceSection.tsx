@@ -77,7 +77,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
         ))}
       </ul>
       <div className="mt-8">
-        <Button button={buttonText} type={"button"} w='' />
+        <Button button={buttonText} />
       </div>
     </div>
   );

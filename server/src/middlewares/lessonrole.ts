@@ -1,7 +1,7 @@
 // import { Request, Response, NextFunction } from "express";
 
 
-// export const roleLesson  =(...allowedRoles: string[]) => {
+// export const rolelessone  =(...allowedRoles: string[]) => {
 //     return (req: Request, res: Response, next: NextFunction) : void => {
 //         const userRole = req.course.type;
 
@@ -13,4 +13,4 @@
 //     };
 // }
 
-// module.exports =roleLesson;
+// module.exports =rolelessone;

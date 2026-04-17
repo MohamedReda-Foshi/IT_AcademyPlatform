@@ -1,0 +1,24 @@
+[0;1;32m●[0m avahi-daemon.service - Avahi mDNS/DNS-SD Stack
+     Loaded: loaded (]8;;file://archlinux/usr/lib/systemd/system/avahi-daemon.service\/usr/lib/systemd/system/avahi-daemon.service]8;;\; [0;1;32menabled[0m; preset: [0;1;38:5:185mdisabled[0m)
+     Active: [0;1;32mactive (running)[0m since Sat 2026-02-21 20:14:24 +00; 19s ago
+ Invocation: 7a07fe83a71e4c93975825ba917c68fb
+TriggeredBy: [0;1;32m●[0m avahi-daemon.socket
+   Main PID: 51689 (avahi-daemon)
+     Status: "[0;1;36mavahi-daemon 0.9-rc3 starting up.[0m"
+      Tasks: 2[0;38;5;245m (limit: 28276)[0m
+     Memory: 1.1M (peak: 2.7M)
+        CPU: 40ms
+     CGroup: /system.slice/avahi-daemon.service
+             ├─[0;38;5;245m51689 "avahi-daemon: running [archlinux.local]"[0m
+             └─[0;38;5;245m51695 "avahi-daemon: chroot helper"[0m
+
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Network interface enumeration completed.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for fd7a:115c:a1e0::1701:f8b9 on tailscale0.*.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for 100.76.248.89 on tailscale0.IPv4.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for fe80::c71:d894:2b38:9d89 on wlan0.*.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for 192.168.1.62 on wlan0.IPv4.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for fe80::9728:3e6b:36f5:a81 on enp4s0.*.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for 192.168.1.219 on enp4s0.IPv4.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for ::1 on lo.*.
+Feb 21 20:14:24 archlinux avahi-daemon[51689]: Registering new address record for 127.0.0.1 on lo.IPv4.
+Feb 21 20:14:25 archlinux avahi-daemon[51689]: Server startup complete. Host name is archlinux.local. Local service cookie is 701099744.

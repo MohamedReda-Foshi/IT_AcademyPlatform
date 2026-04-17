@@ -2,14 +2,15 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Clock, Users, TrendingUp, Play, BookOpen, Award } from 'lucide-react'
-import { type Course } from "../types/course"
+// import { type CourseData } from "../types/course"
+import { Course } from "../types/course"
 
 interface CoursesListProps {
   courses: Course[];          
 }
 
 export default function CoursesList({ courses }: CoursesListProps) {
-  const defaultImage = 'https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg';
+  const defaultImage = 'https://tolustar.com/wp-content/uploads/2020/02/Front-end-Development.jpeg'
   
   const getLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
@@ -38,9 +39,9 @@ export default function CoursesList({ courses }: CoursesListProps) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {Array.isArray(courses) && courses.map((course, index) => (
+          {courses?.map((course) => (
             <div 
-              key={course._id && index} 
+              key={course._id} 
               className="group relative bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-2xl hover:shadow-red-500/20 transition-all duration-700 overflow-hidden border border-gray-800 hover:border-red-500/50 hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Animated border effect */}
@@ -50,19 +51,17 @@ export default function CoursesList({ courses }: CoursesListProps) {
               <div className="relative h-56 overflow-hidden">
                 <Image
                   className="group-hover:scale-110 transition-transform duration-700 ease-out"
-                  // src={course.imageUrl.replace("jpg", "com") ?? defaultImage}
-                  src={defaultImage}
+                  src={course?.imageUrl ?? defaultImage}
                   fill
-                  sizes='100%'
                   priority
-                  alt={course.NameCourse}
-                  style={{ objectFit: 'cover'}}
+                  alt={course?.NameCourse}
+                  style={{ objectFit: 'cover' }}
                 />
                 {/* Enhanced gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70 group-hover:opacity-60 transition-opacity duration-500" />
                 
                 {/* Popular Badge with Animation */}
-                {course.rating >= 4.5 && (
+                {course?.rating >= 4.5 && (
                   <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-xl animate-pulse">
                     <TrendingUp size={14} />
                     HOT
@@ -79,7 +78,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                 {/* Rating Badge */}
                 <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1">
                   <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                  {course.rating}
+                  {course?.rating}
                 </div>
               </div>
 
@@ -87,27 +86,27 @@ export default function CoursesList({ courses }: CoursesListProps) {
               <div className="p-8 space-y-6">
                 {/* Title with Gradient */}
                 <h3 className="text-2xl font-bold text-white leading-tight group-hover:bg-gradient-to-r group-hover:from-red-400 group-hover:to-red-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
-                  {course.NameCourse}
+                  {course?.NameCourse}
                 </h3>
 
                 {/* Description */}
                 <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 group-hover:text-gray-200 transition-colors duration-300">
-                  {course.shortDescription}
+                  {course?.shortDescription}
                 </p>
 
                 {/* Enhanced Tags */}
                 <div className="flex flex-wrap gap-3">
-                  <span className={`px-4 py-2 rounded-full text-xs font-bold ${getLevelColor(course.level)} transform hover:scale-105 transition-transform duration-200`}>
+                  <span className={`px-4 py-2 rounded-full text-xs font-bold ${getLevelColor(course?.level)} transform hover:scale-105 transition-transform duration-200`}>
                     <Award size={12} className="inline mr-1" />
-                    {course.level.toUpperCase()}
+                    {course?.level.toUpperCase()}
                   </span>
                   <span className="bg-gray-800 text-gray-300 border border-gray-700 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:bg-gray-700 transition-colors duration-200">
                     <Clock size={12} />
-                    {course.duration}h
+                    {course?.duration}h
                   </span>
                   <span className="bg-gradient-to-r from-gray-700 to-gray-800 text-white border border-gray-600 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:from-gray-600 hover:to-gray-700 transition-all duration-200">
                     <BookOpen size={12} />
-                    {course.category}
+                    {course?.category}
                   </span>
                 </div>
 
@@ -120,7 +119,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                           key={i}
                           size={16}
                           className={
-                            i < Math.round(course.rating)
+                            i < Math.round(course?.rating)
                               ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                               : 'text-gray-600'
                           }
@@ -128,7 +127,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                       ))}
                     </div>
                     <span className="text-sm font-bold text-white">
-                      {course.rating}
+                      {course?.rating}
                     </span>
                     <span className="text-xs text-gray-400">
                       (150+ reviews)
@@ -143,7 +142,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                 {/* Enhanced CTA Button */}
                 <div className="pt-6">
                   <Link
-                    href={`/Courses/${course._id}`}
+                    href={`/Courses/${course?._id}`}
                     className="block group/btn"
                   >
                     <div className="relative w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl hover:shadow-red-500/30 overflow-hidden">
@@ -165,7 +164,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
         </div>
 
         {/* Enhanced Empty State */}
-        {Array.isArray(courses) && courses.length === 0 && (
+        {courses?.length === 0 && (
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-2xl">

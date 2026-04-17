@@ -27,6 +27,7 @@ const FAQSection: FC<FAQSectionProps> = ({
 
   return (
     <section className="max-w-screen-xl mx-auto">
+ 
 
       <div className="grid divide-y max-w-xl mx-auto mt-8">
         {items.map((item, index) => (

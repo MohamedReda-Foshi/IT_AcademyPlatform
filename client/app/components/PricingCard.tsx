@@ -6,4 +6,4 @@ function PricingCard() {
   )
 }
 
-export default PricingCard;
+export default PricingCard

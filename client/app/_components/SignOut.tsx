@@ -1,19 +1,27 @@
-"use client"
+"use client";
 
-import React from 'react';
-import { signOut } from 'next-auth/react';
+import { useRouter } from "next/navigation";
+import { authClient } from "../lib/auth-client";
 
-function SignOut() {
+export default function SignOutButton() {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/Sign-up");
+        },
+      },
+    });
+  };
+
   return (
-    <div>
-        <button 
-          type='button' 
-          onClick={() => { signOut({redirect: true, callbackUrl:'/'})}}
-          className="bg-red-700 hover:bg-red-800 px-4 py-2 rounded-md transition" >
-            Sign Out
-        </button>
-    </div>
-  )
+    <button
+      onClick={handleSignOut}
+      className="px-4 py-2 rounded-md bg-red-600 text-white"
+    >
+      Sign Out
+    </button>
+  );
 }
-
-export default SignOut

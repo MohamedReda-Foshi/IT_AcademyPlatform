@@ -1,3 +1,5 @@
+// import Quiz from 'react-quiz-component';
+
 export const quiz = {
   quizTitle: "JavaScript Fundamentals Quiz",
   quizSynopsis: "Test your knowledge of core JavaScript concepts, syntax, and behaviors.",
@@ -85,3 +87,6 @@ export const quiz = {
     }
   ]
 };
+
+
+

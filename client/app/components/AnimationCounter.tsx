@@ -39,4 +39,4 @@ const AnimationCounter = ({
   return <span ref={ref} />
 }
 
-export default AnimationCounter;
+export default AnimationCounter

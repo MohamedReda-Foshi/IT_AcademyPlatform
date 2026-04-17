@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
-import  {fetchCourseById}  from '@/app/lib/api/course'
+import  {fetchCourseById}  from '../../lib/api/coures'
 import { type Course } from '@/app/types/course';
 // import { Types } from 'mongoose';
 

@@ -1,23 +1,24 @@
 import React from 'react'
 import ReactPlayer from 'react-player';
+import Quizzes from './Quizzes';
 interface Props {
     ContentType: 'text' | 'video' | 'image' | 'file' | null;
     ContentData:  string | string[];
+    chapterID: string;
+    allClicked: string[];
 }
 
-const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
-
-    // console.log("ContentType:1  ", ContentType)
-    // console.log("ContentData:1 ", ContentData)
-
+const ViewChapter: React.FC<Props> = ({ ContentType, ContentData, chapterID, allClicked }) => {
     const source = Array.isArray(ContentData) ? ContentData[0] : ContentData;
+
+    const reFormat = /text/.test(allClicked.join(" ")) && /(video)/.test(allClicked.join(" ")) && /(file)/.test(allClicked.join(" "))
 
     return (
         <div className='flex-1 basis-full'>
             {ContentType === 'text' && <p>{source}</p>}
             {ContentType === 'video' &&
                 (
-                    <div className="video-container flex min-h-full">
+                    <div className="video-container flex">
                         <ReactPlayer
                             url={source}
                             controls
@@ -36,6 +37,14 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
                         title="Document Viewer"
                     />
                 </div>
+            }
+             {/* Quizzes section */}
+            {
+                reFormat ? 
+                    <section className="mt-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+                        <Quizzes idCourse={`${chapterID}`} />
+                    </section>
+                : null
             }
         </div>
     )}
