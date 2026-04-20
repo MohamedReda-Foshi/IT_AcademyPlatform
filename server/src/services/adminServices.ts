@@ -1,32 +1,32 @@
 import { AdminModel } from "../Model/adminModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
 
 
 
 
 
-interface ResgisterParams{
-    adminname: string,
+interface RegisterParams{
+    adminName: string,
     email: string,
     password: string
 }
 
-export const registerAdmin =async ({ adminname, email, password}: ResgisterParams)=>{
+export const registerAdmin =async ({ adminName, email, password}: RegisterParams)=>{
     const findAdmin= await AdminModel.findOne({email});
     if(findAdmin){
-        return{error:{message:"admin unser already exists"}};
+        return{error:{message:"admin user already exists"}};
     }
-    const hachedPassword = await bcrypt.hash(password,10);
+    const hashedPassword = await bcrypt.hash(password,10);
     const newAdmin=new AdminModel({
-        adminname, 
+        adminName, 
         email, 
-        password:hachedPassword})
+        password: hashedPassword})
     await newAdmin.save();
     
-    return generateJWT({adminname,email});
+    return generateJWT({adminName,email});
 }
 
 
@@ -43,20 +43,23 @@ export const login= async({ email, password}: LoginParams)=>{
     const isMatch= await bcrypt.compare(password,findAdmin.password);
     if(isMatch){
         return {
-            token: generateJWT({email, adminname: findAdmin.adminname})
+            token: generateJWT({email, adminName: findAdmin.adminName})
         };
     }
-    return {data:"Iconract password"}
+    return {data: "Invalid password or email"}
 
 }
 
 
 interface JWTPayload {
     email: string;
-    adminname: string;
+    adminName: string;
 }
 
 const generateJWT = (data: JWTPayload) => {
     return jwt.sign(data, process.env.JWT_SECRET_KEY as string);
 }
 
+export const verifyJWT = (token: string) => {
+    return jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+};

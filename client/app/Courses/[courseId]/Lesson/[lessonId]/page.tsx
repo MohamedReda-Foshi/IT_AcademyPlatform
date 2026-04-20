@@ -3,34 +3,19 @@ import { fetchLessonById } from '@/app/lib/api/lesson'
 import {  BookOpen, Clock, Users, FileText, Award, Brain, CheckCircle } from 'lucide-react'
 import type { LessonData } from '@/app/types/lesson'
 import Chapter from '@/app/components/Chapter'
-import { redirect } from 'next/navigation';
-import { authOptions } from "../../../../lib/nextAuth"; // adjust your path
-import { getServerSession, type NextAuthOptions } from "next-auth";
 
 
 
 export default async function LessonPage({ params }: { params: { lessonId: string } }) {
   const { lessonId } = await params
-    const session = await getServerSession(authOptions as NextAuthOptions);
-
-    if (!session) {
-    // auto-redirect to /api/auth/signin with callback back here
-    const returnTo = encodeURIComponent(`/Courses/Lesson${params}`);
-    redirect(`/auth/Login?returnTo=${returnTo}`);
-  }
-
-
-
-
-
-  let lesson: LessonData  | null = null
+  let lesson: LessonData | null = null
   
  try {
-  const lessons = await fetchLessonById(lessonId) 
-  lesson=lessons[0] || null
+  lesson = await fetchLessonById(lessonId) 
+  
   
  } catch (error) {
-   console.error('Failed to fetch lesson:', error)
+   console.log('Failed to fetch lesson:', error)
 
  }
 
@@ -123,6 +108,8 @@ export default async function LessonPage({ params }: { params: { lessonId: strin
           {/* Learning Outcomes */}
           <div className="bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden">
 
+
+             
              <Chapter params={ lesson.id }/>
 
               <div className="p-6">

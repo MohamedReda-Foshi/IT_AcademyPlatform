@@ -6,18 +6,13 @@ import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
 import { BookOpen, Star } from 'lucide-react';
-//import Quiz from 'react-quiz-component';
-import Link from 'next/link';
-import { useSession } from "next-auth/react";
-
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import Button from './Button';
+
 
 
 export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -30,16 +25,11 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
 
   // Tracks which kind of content should be shown: "text", "video" or "quiz"
   const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
-  const [contentData, setContentData] = useState<string | string[] >()
+  const [contentData, setContentData] = useState<string | string[] | undefined>()
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
-  const { data: session } = useSession();
 
   useEffect(() => {
-      if (session?.user?.token) {
-      const token = session.user.token;
-      console.log("✅ Token from NextAuth session:", token);
-      
-
+      const token = localStorage.getItem("token"); // or however you store the token
     axios
       .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
          {
@@ -49,18 +39,16 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
         },
         withCredentials:true,
       }
-    )
-    
-    
+      )
+
       .then((res) => {
         setChaptersData(res.data);
-        console.log("chaptersData",res.data);
+
       })
       .catch((error) => {
         console.log(error);
       })
-    }
-  }, [session,params]);
+  }, [params]);
 
 
   function onSelect(
@@ -129,6 +117,7 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
               >
                 {chapter.videoTitle}
               </button>
+
               {chapter.filedata && (
                 <button
                   className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition"
@@ -139,12 +128,8 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
               )}
             </AccordionContent>
           </AccordionItem>
-        ))} 
-        <Link href={`/Quiz`}>
-          <Button button='Start Quiz'/>
-        </Link>
+        ))}
       </Accordion>
-      {/*<Quiz/>*/}
     </div>
 
 

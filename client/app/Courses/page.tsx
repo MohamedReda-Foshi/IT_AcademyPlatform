@@ -2,18 +2,18 @@
 // app/courses/page.tsx
 import CoursesList from '../components/CoursesList'
 import { fetchAllCourseFromExpr } from '../lib/api/coures'
-import type { CourseData } from '../types/course'
+import { CourseData } from '../types/course'
 
 export default async function CoursesPage() {
   let courses: CourseData[] = []
   try {
     courses = await fetchAllCourseFromExpr()
   } catch (err) {
-    console.log("error in courses page",err)
+    console.error(err)
     // You could render an error state here
   }
 
- 
+
 
   return (
     <div className=" py-8">

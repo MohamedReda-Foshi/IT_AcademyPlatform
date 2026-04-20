@@ -2,7 +2,7 @@ import React from 'react'
 import ReactPlayer from 'react-player';
 interface Props {
     ContentType: 'text' | 'video' | 'image' | 'file' | null;
-    ContentData: string;
+    ContentData: undefined;
 }
 
 const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {

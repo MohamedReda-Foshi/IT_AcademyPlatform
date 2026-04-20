@@ -11,9 +11,7 @@ function AllTeams() {
                 </span>
                 <p >
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry  
-                </p>
-       
-        
+                </p>        
         <div className='flex-col flex md:flex-row md:flex gap-20 px-10'>
             <Team fullname='reda' position='ceo' description='Lorem Ipsum is simply dummy text of the printing and typesetting industry.'/>
             <Team fullname='reda' position='ceo' description='Lorem Ipsum is simply dummy text of the printing and typesetting industry.'/>
