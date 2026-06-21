@@ -1,8 +1,8 @@
 import express from 'express';
 import {login} from "../services/adminServices"
 import { registerAdmin } from '../services/adminServices';
-import {userModel} from '../Model/userModel'
-import { AdminModel } from '../Model/adminModel';
+import {userModel} from '../models/userModel'
+import { AdminModel } from '../models/adminModel';
 import { auth } from '../middlewares/auth';
 import {role} from '../middlewares/roleauth';
 

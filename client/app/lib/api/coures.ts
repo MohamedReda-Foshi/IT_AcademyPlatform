@@ -1,89 +1,64 @@
 // lib/api.js
 
-import { CourseData } from '@/app/types/course'
+import { CourseData } from '@/app/types/course';
 import { LessonData } from '@/app/types/lesson';
 
+const API_URL = process.env.NEXT_PUBLIC_EXPRESS_URL;
 
+async function apiFetch<T>(endpoint: string): Promise<T> {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    credentials: 'include', // send cookies automatically
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-///this get all courses card from the database
-export async function fetchAllCourseFromExpr(): Promise<CourseData[]> {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/CourseCard`);
-      if (!res.ok) {
-        throw new Error(`Network response was not ok (${res.status})`);
-      }
-      return await res.json();
-    } catch (error) {
-      console.error('Error fetching all courses:', error);
-      return [];
-    }
+  if (!res.ok) {
+    throw new Error(`Network response was not ok (${res.status})`);
   }
 
+  return res.json();
+}
+
+/// get all courses card from the database
+export async function fetchAllCourseFromExpr(): Promise<CourseData[]> {
+  try {
+    return await apiFetch<CourseData[]>('/course/CourseCard');
+  } catch (error) {
+    console.error('Error fetching all courses:', error);
+    return [];
+  }
+}
 
 export async function fetchHomeCourseFromExpr(): Promise<CourseData[]> {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/CourseCardHomepage`);
-      if (!res.ok) {
-        throw new Error(`Network response was not ok (${res.status})`);
-      }
-      return await res.json();
-    } catch (error) {
-      console.error('Error fetching all courses:', error);
-      return [];
-    }
+  try {
+    return await apiFetch<CourseData[]>('/course/CourseCardHomepage');
+  } catch (error) {
+    console.error('Error fetching homepage courses:', error);
+    return [];
   }
+}
 
-
-
-
-/// this courses by id from the database
+/// get course by id
 export async function fetchCourseById(id: string): Promise<CourseData[]> {
-  console.log('Fetching course with id:', id)
+  console.log('Fetching course with id:', id);
+
   try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    if (!res.ok) {
-      throw new Error(`Network response was not ok course (${res.status})`)
-    }
-    return  res.json()
+    return await apiFetch<CourseData[]>(`/course/${id}`);
   } catch (error) {
-    console.error(`Error fetching course with id  ${id}:`, error)
-    return []
+    console.error(`Error fetching course with id ${id}:`, error);
+    return [];
   }
 }
 
-
-
+/// get lesson by id
 export async function fetchLessonById(id: string): Promise<LessonData[]> {
-  console.log('Fetching lesson with id:', id)
+  console.log('Fetching lesson with id:', id);
+
   try {
-    // 2) Call your Express endpoint (replace host/port as needed)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/lesson/${id}`)
-
-    // 3) If the response isn’t “OK” (200–299), throw
-    if (!res.ok) {
-     
-      throw new Error(`Network response was not ok (status: ${res.status})`)
-    }
-
-    // 4) Parse JSON and assert it matches LessonData[]
-    
-    return res.json()
+    return await apiFetch<LessonData[]>(`/course/lesson/${id}`);
   } catch (error) {
-    console.error(`Fetch lesson error for id: ${id}`, error)
-    return []
+    console.error(`Fetch lesson error for id: ${id}`, error);
+    return [];
   }
 }
-
-
-
-//// this is a lesson page 
-
-
-
-
-

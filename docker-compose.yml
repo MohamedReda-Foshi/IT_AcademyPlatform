@@ -1,0 +1,49 @@
+name: It_academy
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mern_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"          # ✅ Moved out of environment; added quotes
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mern_network
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: mern_api   # ✅ Added
+    restart: unless-stopped
+    env_file: ./server/.env
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/elearn  # ✅ localhost → mongodb (service name)
+    ports:
+      - "5000:8000"
+    depends_on:                # ✅ Added
+      - mongodb
+    networks:                  # ✅ Added
+      - mern_network
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: mern_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api                    # ✅ Was "backend", corrected to "api"
+    networks:
+      - mern_network
+
+volumes:                       # ✅ Added top-level declaration
+  mongo_data:
+
+networks:                      # ✅ Added top-level declaration
+  mern_network:
+    driver: bridge
