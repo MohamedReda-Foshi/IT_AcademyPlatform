@@ -2,6 +2,8 @@ import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+
   experimental: {
     turbo: {},
   },
@@ -12,6 +14,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
       { protocol: "https", hostname: "lh3.amazon.com", pathname: "/**" },
       { protocol: "https", hostname: "www.amazon.com", pathname: "/**" },
+      { protocol: "https", hostname: "www.images.unsplash.com", pathname: "/**" },      
     ],
   },
 };

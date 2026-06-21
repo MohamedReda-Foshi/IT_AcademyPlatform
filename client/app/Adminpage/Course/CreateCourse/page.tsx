@@ -1,4 +1,4 @@
-/*
+import CreateCourseForm from '../../../components/Ctr';
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { type Course } from '../../../types/course';
@@ -353,4 +353,3 @@ const CheckboxField: React.FC<{
 
 export default page;
 
-*/
