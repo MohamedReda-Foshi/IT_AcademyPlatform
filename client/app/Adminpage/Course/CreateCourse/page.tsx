@@ -1,23 +1,42 @@
-import CreateCourseForm from '../../../components/Ctr';
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
 import { type Course } from '../../../types/course';
-
-interface CreateCourseFormProps {
-  formData: Omit<Course, '_id'>;
-  errors: Partial<Record<keyof Course, string>>;
-  onInputChange: (field: keyof Course, value: string | number | boolean) => void;
-  onArrayChange: (field: keyof Course, index: number, value: string) => void;
-  onAddArrayItem: (field: keyof Course) => void;
-  onRemoveArrayItem: (field: keyof Course, index: number) => void;
-  onSubmit: () => void;
-  onReset: () => void;
-  isEditing: boolean;
-}
 
 const inputBase = "w-full px-3 py-2 bg-black text-white border rounded-md focus:outline-none focus:ring-2 focus:ring-red-600";
 const errStyle = "border-red-500";
 const okStyle = "border-gray-600";
+
+const defaultFormData: Omit<Course, '_id'> = {
+  Namecourse: '',
+  DescriptionCourse: '',
+  shortDescription: '',
+  category: '',
+  level: 'Beginner',
+  duration: 0,
+  XpNumber: 0,
+  rating: 0,
+  imageUrl: '',
+  prerequisites: [],
+  learningOutcomes: [],
+  totalLessons: 0,
+  totalQuizzes: 0,
+  enrollments: 0,
+  filters: '',
+  modules: [],
+  price: 'Free',
+  createdAt: '',
+  updatedAt: '',
+  isPublished: false,
+  videoUrl: [],
+  text: [],
+  quize: [],
+  InstructorInformation: '',
+  Instructor: '',
+  o: 0,
+  i: 0,
+};
 
 const ArrayInputField: React.FC<{
   label: string;
@@ -56,18 +75,66 @@ const ArrayInputField: React.FC<{
   </div>
 );
 
-const page: React.FC<CreateCourseFormProps> = ({
-  formData,
-  errors,
-  onInputChange,
-  onArrayChange,
-  onAddArrayItem,
-  onRemoveArrayItem,
-  onSubmit,
-  onReset,
-  isEditing
-}) => (
-  <div className="space-y-6">
+const CreateCoursePage: React.FC = () => {
+  const [formData, setFormData] = useState<Omit<Course, '_id'>>(defaultFormData);
+  type FormField = keyof Omit<Course, '_id'>;
+  const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
+  const [isEditing, setIsEditing] = useState(false);
+
+
+  const onInputChange = (field: FormField, value: string | number | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: undefined }));
+  };
+
+  const onArrayChange = (field: FormField, index: number, value: string) => {
+    setFormData(prev => {
+      const arr = [...(prev[field] as unknown as string[] || [])];
+      arr[index] = value;
+      return { ...prev, [field]: arr };
+    });
+  };
+
+  const onAddArrayItem = (field: FormField) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: [...(prev[field] as unknown as string[] || []), ''],
+    }));
+  };
+
+  const onRemoveArrayItem = (field: FormField, index: number) => {
+    setFormData(prev => {
+      const arr = [...(prev[field] as unknown as string[] || [])];
+      arr.splice(index, 1);
+      return { ...prev, [field]: arr };
+    });
+  };
+
+  const onReset = () => {
+    setFormData(defaultFormData);
+    setErrors({});
+    setIsEditing(false);
+  };
+
+  const onSubmit = () => {
+    const newErrors: Partial<Record<FormField, string>> = {};
+    if (!formData.Namecourse) newErrors.Namecourse = 'Name is required';
+    if (!formData.category) newErrors.category = 'Category is required';
+    if (!formData.level) newErrors.level = 'Level is required';
+    if (!formData.DescriptionCourse) newErrors.DescriptionCourse = 'Description is required';
+    if (!formData.Instructor) newErrors.Instructor = 'Instructor is required';
+    if (!formData.duration) newErrors.duration = 'Duration is required';
+    if (formData.rating < 0 || formData.rating > 5) newErrors.rating = 'Rating must be between 0 and 5';
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    // TODO: submit to API
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+  <div className="space-y-6 py-20">
   
     <Section title="Basic Information">
       <div className="grid md:grid-cols-2 gap-4">
@@ -248,6 +315,8 @@ const page: React.FC<CreateCourseFormProps> = ({
   </div>
 );
 
+}
+
 // Helper components
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <div className="bg-black border border-red-600 p-4 rounded">
@@ -351,5 +420,5 @@ const CheckboxField: React.FC<{
   </div>
 );
 
-export default page;
+export default CreateCoursePage;
 

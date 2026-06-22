@@ -20,6 +20,7 @@ export interface Icourse extends Document {
   totalQuizzes: number; // Total number of quizzes in the course
   enrollments: number; // number of enrollments
   XpNumber: number; // XP number for the course
+  instructorId: string;
   Instructor:string;
   InstructorInformation:string;
   videoUrl:string[]
@@ -48,6 +49,7 @@ const courseSchema = new Schema<Icourse>({
   totalQuizzes: { type: Number, default: 0 },
   enrollments: { type: Number, default: 0 },
   XpNumber: { type: Number, default: 0 },
+  instructorId: { type: String, index: true },
   Instructor:{type:String},
   InstructorInformation:{type:String},
   videoUrl:[{ type: String }],

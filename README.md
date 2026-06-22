@@ -1,116 +1,154 @@
-# IT\_ElearnPlatform
+# IT Academy Platform
 
-A no-nonsense e-learning platform for IT courses, built with the MERN stack and Next.js. Supports server-side and client-side rendering, role-based access, and flexible pricing plans.
-
-## Features
-
-* **Authentication**: Google OAuth for beginners, GitHub OAuth for intermediate/advanced users (via NextAuth).
-* **Course Access**: Free users see only course introductions; paid subscribers unlock full lessons.
-* **Pricing Plans**:
-
-  * **Entry**: Basic access to introduction course.
-  * **Most Used**: Access to top 5 courses.
-  * **Pro**:Access All courses, Full library, 24/7 support, and access to IT-related e-book collection.
-* **Payment Processing**: Powered by Stripe for seamless billing and plan upgrades.
-* **Tech Stack**: Next.js, React, Node.js, Express, MongoDB, LearnStack integration, Tailwind CSS.
-* **Rendering**: Hybrid SSR/CSR for performance and SEO.
-* **Modular Architecture**: `Lesson` and `Chapter` models to structure course content.
+An e-learning platform for IT courses, built with Next.js 15, Express, MongoDB, and better-auth.
 
 ## Tech Stack
 
-* **Frontend**: Next.js, React, Tailwind CSS
-* **Backend**: Node.js, Express.js
-* **Database**: MongoDB (via Mongoose)
-* **Auth**: NextAuth.js (Google & GitHub providers)
-* **Payments**: Stripe
-* **E-learning**: LearnStack integration
+- **Frontend**: Next.js 15 (App Router), React 19, Tailwind CSS
+- **Backend**: Node.js, Express, TypeScript
+- **Database**: MongoDB (via Mongoose + native driver)
+- **Auth**: better-auth (email/password + JWT)
+- **Payments**: Stripe
+
+## Prerequisites
+
+- Node.js v18+
+- Docker (for MongoDB)
+- Stripe account (for payment features)
 
 ## Getting Started
 
-### Prerequisites
+### 1. Start MongoDB
 
-* Node.js v16+ and npm or Yarn
-* MongoDB Atlas account or local MongoDB
-* Stripe account with API keys
+MongoDB runs in Docker. Start it from the project root:
 
-### Installation
+```bash
+docker compose up -d mongodb
+```
 
-1. Clone the repo:
+### 2. Configure environment
 
-   ```bash
-   git clone https://github.com/MohamedReda-Foshi/IT_AcademyPlatform.git
-   ```
+Create `server/.env`:
 
-2. Install dependencies:
+```env
+PORT=8000
+DATAURL=mongodb://localhost:27017/elearn
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=your-secret-here
+JWT_SECRET_KEY=your-jwt-secret
+FRONT_END_PORT=http://localhost:3000
+BACK_END_PORT=http://localhost:8000
+STRIPE_PRIVATE_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
 
-   ```bash
-   npm install
-   # or yarn install
-   ```
+Create `client/.env.local`:
 
-3. Create a `.env.local` in the project root and define required environment variables (see prerequisites).
+```env
+NEXT_PUBLIC_EXPRESS_URL=http://localhost:8000
+```
 
-## Running the App
+### 3. Install dependencies
 
-Depending on your setup, you can run both front-end and back-end together or separately:
+```bash
+cd server && npm install
+cd ../client && npm install
+```
 
-* **Full-stack (monorepo)**:
+### 4. Start the backend (port 8000)
 
-  ```bash
-  npm run dev
-  # or yarn dev
-  ```
+```bash
+cd server
+npm start
+```
 
-  This starts Next.js (front-end + API routes) on [http://localhost:3000](http://localhost:3000).
+### 5. Start the frontend (port 3000)
 
-* **Separate Front-end & Back-end**:
+```bash
+cd client
+npm run dev
+```
 
-  1. **Back-end (Express API)**:
+### 6. Open the app
 
-     ```bash
-     npm run dev:backend
-     # or yarn dev:backend
-     ```
+Visit **http://localhost:3000**
 
-     * Starts the Express server on port 4000 by default.
+## Seed Data
 
-  2. **Front-end (Next.js)**:
+The DB already has an admin account:
 
-     ```bash
-     npm run dev:frontend
-     # or yarn dev:frontend
-     ```
+| Email | Password | Role |
+|---|---|---|
+| test@gmail.com | 123456789 | admin |
 
-     * Starts Next.js on port 3000. Make sure `NEXTAUTH_URL` and API base URLs point to `http://localhost:4000` if split.
+## Running everything with Docker
 
-Visit the respective ports in your browser to verify the services are running.
+```bash
+docker compose up --build
+```
+
+- Express API runs on port **5000** (mapped to container port 8000)
+- Next.js runs on port **3000**
+- MongoDB runs on port **27017**
+
+## API Endpoints
+
+### Auth (via better-auth)
+- `POST /api/auth/sign-up/email` — Register
+- `POST /api/auth/sign-in/email` — Login
+- `GET /api/auth/get-session` — Get current session
+- `POST /api/auth/sign-out` — Logout
+
+### Courses
+- `GET /course/CourseCard` — All courses
+- `GET /course/CourseCardHomepage` — Homepage courses (max 6)
+- `GET /course/:id` — Single course
+- `POST /course/AddCourse` — Create course (admin/instrator)
+- `PUT /course/UpdateCourse/:id` — Update course (owner/admin)
+- `DELETE /course/DeleteCourse/:id` — Delete course (owner/admin)
+
+### Chapters
+- `GET /chapter/getChapter/:courseId` — Chapters for a course
+- `POST /chapter/addChapter` — Create chapter (admin)
+
+### Admin
+- `GET /dashboard/AdminUser` — List admins
+- `DELETE /dashboard/deleuser` — Delete user
+
+### Instructor
+- `GET /instructor/my-courses` — My courses (instrator)
+- `GET /instructor/all` — All instructors + courses (admin)
 
 ## Project Structure
 
 ```
-├── /components      # Reusable UI components
-├── /lib             # Helpers (db connection, stripe, auth)
-├── /models          # Mongoose models (Lesson, Chapter, User)
-├── /pages           # Next.js pages
-│   ├── /api         # API routes (auth, payments, courses)
-│   └── /courses     # Course pages
-├── /public          # Static assets
-├── /styles          # Global and Tailwind configs
-└── next.config.js   # Next.js config (remotePatterns, SSR)
+├── client/              # Next.js frontend
+│   ├── app/
+│   │   ├── components/  # Reusable components
+│   │   ├── lib/         # API helpers, auth client
+│   │   ├── types/       # TypeScript types
+│   │   ├── Courses/     # Course pages
+│   │   └── auth/        # Sign-in / Sign-up pages
+│   ├── next.config.ts
+│   └── package.json
+├── server/              # Express backend
+│   ├── src/
+│   │   ├── config/      # DB connection
+│   │   ├── lib/         # better-auth config
+│   │   ├── models/      # Mongoose models
+│   │   ├── routes/      # Route handlers
+│   │   ├── middlewares/  # Auth & role middleware
+│   │   └── index.ts     # Entry point
+│   └── package.json
+├── docker-compose.yml
+└── README.md
 ```
 
-## Authentication Flow
+## Roles
 
-* Users sign in via Google or GitHub.
-* Session data stored in a secure HTTP-only cookie.
-* Middleware protects paid routes; checks user subscription status.
-
-##
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
----
-
-> No fluff. Just the essentials. Get it running, keep it simple. Cheers.
+| Role | Permissions |
+|---|---|
+| user | View courses, chapters |
+| instrator | Create/edit own courses |
+| admin | Full access — manage courses, chapters, users |

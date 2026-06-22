@@ -6,18 +6,10 @@ import Chapter from '@/app/components/Chapter'
 
 
 
-export default async function LessonPage({ params }: { params: { lessonId: string } }) {
-  const { lessonId } = await params
-  let lesson: LessonData | null = null
-  
- try {
-  lesson = await fetchLessonById(lessonId) 
-  
-  
- } catch (error) {
-   console.log('Failed to fetch lesson:', error)
-
- }
+export default async function LessonPage({ params }: { params: Promise<{ courseId: string; lessonId: string }> }) {
+  const { courseId, lessonId } = await params
+  const lessons: LessonData[] = await fetchLessonById(lessonId).catch(() => [])
+  const lesson: LessonData | null = lessons[0] ?? null
 
  if (!lesson) {
    return (
@@ -110,7 +102,7 @@ export default async function LessonPage({ params }: { params: { lessonId: strin
 
 
              
-             <Chapter params={ lesson.id }/>
+             <Chapter courseId={courseId}/>
 
               <div className="p-6">
                 <ul className="space-y-4">

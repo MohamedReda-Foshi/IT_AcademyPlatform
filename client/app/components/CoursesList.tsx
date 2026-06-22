@@ -41,7 +41,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {courses.map((course) => (
             <div 
-              key={course._id} 
+              key={course.id} 
               className="group relative bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-2xl hover:shadow-red-500/20 transition-all duration-700 overflow-hidden border border-gray-800 hover:border-red-500/50 hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Animated border effect */}
@@ -142,7 +142,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                 {/* Enhanced CTA Button */}
                 <div className="pt-6">
                   <Link
-                    href={`/Courses/${course._id}`}
+                    href={`/Courses/${course.id}`}
                     className="block group/btn"
                   >
                     <div className="relative w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl hover:shadow-red-500/30 overflow-hidden">

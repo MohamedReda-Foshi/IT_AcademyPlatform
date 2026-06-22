@@ -4,6 +4,7 @@ import admin from './routes/adminRoute';
 import user from './routes/userRoute';
 import course from './routes/courseRoute';
 import chapter from './routes/Chapter';
+import instructor from './routes/instructorRoute';
 import dotenv from "dotenv";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
@@ -40,6 +41,7 @@ app.use('/dashboard', admin);
 app.use('/chapter', chapter);
 app.use('/user', user);
 app.use('/course', course);
+app.use('/instructor', instructor);
 
 async function bootstrap() {
   await client.connect();     // connect native MongoClient (for better-auth)

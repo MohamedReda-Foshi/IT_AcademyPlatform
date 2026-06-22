@@ -1,48 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
-import  {fetchCourseById}  from '@/app/lib/api/coures'
-import { Types } from 'mongoose';
-
-
-
-
-export interface CourseData {
-  id:               Types.ObjectId
-  Namecourse:       string
-  DescriptionCourse:string
-  shortDescription: string
-  category:         string
-  level:            string
-  duration:         number
-  XpNumber:         number
-  AchievementsIcon: string
-  Icon:             string
-  modules:          string[]
-  prerequisites:    string[]
-  learningOutcomes: string[]
-  rating:           number
-  totalLessons:     number
-  totalQuizzes:      number
-  enrollments:      number
-  imageUrl?:        string
-
-  o:number
-  i:number
-}
+import { fetchCourseById } from '@/app/lib/api/coures'
+import type { CourseData } from '@/app/types/course'
 
 
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const  {courseId}  = await params
-  let datacourse: CourseData | null = null 
-  console.log('Course Page - courseId:', courseId); 
-
-  try {
-    datacourse = await fetchCourseById(courseId)
-  } catch (error) {
-    console.log('Failed to fetch course:', error)
-  }
+  const courses: CourseData[] = await fetchCourseById(courseId).catch(() => [])
+  const datacourse: CourseData | null = courses[0] ?? null
 
   if (!datacourse) {
     return (

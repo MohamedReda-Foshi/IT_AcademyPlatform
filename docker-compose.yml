@@ -20,7 +20,11 @@ services:
     restart: unless-stopped
     env_file: ./server/.env
     environment:
-      MONGO_URI: mongodb://mongodb:27017/elearn  # ✅ localhost → mongodb (service name)
+      DATAURL: mongodb://mongodb:27017/elearn
+      BETTER_AUTH_URL: http://localhost:3000
+      FRONT_END_PORT: http://localhost:3000
+      BACK_END_PORT: http://localhost:8000
+      PORT: 8000
     ports:
       - "5000:8000"
     depends_on:                # ✅ Added
@@ -32,15 +36,19 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_EXPRESS_URL: "http://localhost:5000"
     container_name: mern_frontend
     restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_EXPRESS_URL: "http://api:8000"
+      PORT: 3000
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
-      - api                    # ✅ Was "backend", corrected to "api"
+      - api
     networks:
       - mern_network
-
 volumes:                       # ✅ Added top-level declaration
   mongo_data:
 

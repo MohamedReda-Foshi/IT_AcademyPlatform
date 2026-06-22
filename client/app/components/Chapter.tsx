@@ -15,7 +15,7 @@ import {
 
 
 
-export default function ChapterPage({ params }: { params: Promise<{ courseId: string }> }) {
+export default function ChapterPage({ courseId }: { courseId: string }) {
 
 
   const [chaptersData, setChaptersData] = useState<ChapterData[]>([]);
@@ -29,9 +29,9 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-      const token = localStorage.getItem("token"); // or however you store the token
+      const token = localStorage.getItem("token");
     axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${params}`,
+      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${courseId}`,
          {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -48,7 +48,7 @@ export default function ChapterPage({ params }: { params: Promise<{ courseId: st
       .catch((error) => {
         console.log(error);
       })
-  }, [params]);
+  }, [courseId]);
 
 
   function onSelect(

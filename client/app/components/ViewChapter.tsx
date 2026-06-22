@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactPlayer from 'react-player';
 interface Props {
-    ContentType: 'text' | 'video' | 'image' | 'file' | null;
-    ContentData: undefined;
+    ContentType: 'text' | 'video' | 'file' | null;
+    ContentData: string | string[] | undefined;
 }
 
 const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
@@ -12,9 +12,10 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
 
     return (
         <div>
-            {ContentType === 'text' && <p>{ContentData}</p>}
+            {ContentType === 'text' && typeof ContentData === 'string' && <p>{ContentData}</p>}
+            {ContentType === 'text' && Array.isArray(ContentData) && ContentData.map((item, i) => <p key={i}>{item}</p>)}
             {ContentType === 'video' &&
-                (
+                typeof ContentData === 'string' && (
                     <div className="video-container">
                         <ReactPlayer
                             url={ContentData}
@@ -27,6 +28,7 @@ const ViewChapter: React.FC<Props> = ({ ContentType, ContentData }) => {
                 )}
 
             {ContentType === 'file' &&
+                typeof ContentData === 'string' &&
                 <div className="p-4 bg-gray-50 rounded-lg">
                     <iframe
                         src={ContentData}

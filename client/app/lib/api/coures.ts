@@ -7,7 +7,7 @@ const API_URL = process.env.NEXT_PUBLIC_EXPRESS_URL;
 
 async function apiFetch<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
-    credentials: 'include', // send cookies automatically
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -18,6 +18,65 @@ async function apiFetch<T>(endpoint: string): Promise<T> {
   }
 
   return res.json();
+}
+
+async function apiPost<T>(endpoint: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: "POST",
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as Record<string, string>).message || `POST failed (${res.status})`);
+  }
+
+  return res.json();
+}
+
+async function apiPut<T>(endpoint: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: "PUT",
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as Record<string, string>).message || `PUT failed (${res.status})`);
+  }
+  return res.json();
+}
+
+async function apiDelete(endpoint: string): Promise<void> {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: "DELETE",
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as Record<string, string>).message || `DELETE failed (${res.status})`);
+  }
+}
+
+export async function createCourse(data: Record<string, unknown>): Promise<unknown> {
+  return apiPost('/course/AddCourse', data);
+}
+
+export async function updateCourse(id: string, data: Record<string, unknown>): Promise<unknown> {
+  return apiPut(`/course/UpdateCourse/${id}`, data);
+}
+
+export async function deleteCourse(id: string): Promise<void> {
+  return apiDelete(`/course/DeleteCourse/${id}`);
+}
+
+export async function fetchMyCourses(): Promise<unknown[]> {
+  return apiFetch('/instructor/my-courses');
 }
 
 /// get all courses card from the database
