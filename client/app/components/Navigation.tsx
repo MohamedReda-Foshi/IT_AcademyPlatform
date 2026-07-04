@@ -18,18 +18,18 @@ function Navigation() {
 
   return (
     <>
-      <nav className="bg-black border-b border-red-700 fixed w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 ">
-          <div className="flex justify-between h-16">
+      <nav className="bg-black border-b border-red-700 fixed w-full z-50 min-h-[80px]">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center min-h-full min-w-full">
               <Link href="/">
-            <div className="flex items-center flex-row py-4">
-              <FontAwesomeIcon
-                icon={faLaptopCode} className='text-red-600 size-8'/> 
-                <span className="flex items-center px-2">
-                  <span className="text-red-600 text-2xl font-bold">Tech</span>
-                  <span className="text-white text-2xl font-bold">Learn</span>
-                </span>
-            </div>
+                <div className="flex items-center flex-row py-4 min-w-full">
+                  <FontAwesomeIcon
+                    icon={faLaptopCode} className='text-red-600 size-8'/> 
+                    <span className="flex items-center px-2">
+                      <span className="text-red-600 text-2xl font-bold">Tech</span>
+                      <span className="text-white text-2xl font-bold">Learn</span>
+                    </span>
+                </div>
               </Link>
 
             {/* Desktop Navigation - Hidden on mobile */}

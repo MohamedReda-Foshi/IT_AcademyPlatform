@@ -4,7 +4,7 @@ export interface LessonData {
  
   id: Types.ObjectId ; // Unique identifier for the lesson
   ChapterId: string;
-  Namecourse: string
+  NameCourse: string
   chapterTitle:string;
   
     videoUrl?: string[]
@@ -16,15 +16,14 @@ export interface LessonData {
   
   sections:[
     {
-       title: string;
-       duration?: string;
-       type?: string;
-       description?: string;
-       content?: {
-         video?: string;
-         text?: string;
-
-       };
+      title: string;
+      duration?: string;
+      type?: string;
+      description?: string;
+      content?: {
+        video?: string;
+        text?: string;
+      };
     }
   ]
   totalLessons: number;

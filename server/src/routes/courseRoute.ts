@@ -1,8 +1,13 @@
+<<<<<<< HEAD
+import { Router, Request, Response, NextFunction} from 'express';
+import {courseModel, ICourse} from '../models/course';
+=======
 import { Router, Request, Response,NextFunction} from 'express';
 import {courseModel,Icourse } from '../models/course';
+>>>>>>> fadeac95cddd5dafc8550b362a042a357e7515b7
 import mongoose from 'mongoose';
 import { auth } from '../middlewares/auth';
-import { role } from '../middlewares/roleauth';
+// import { role } from '../middlewares/role-auth';
 
 // this is a cart course 
 
@@ -12,10 +17,9 @@ router.get("/CourseCard", async(req, res) => {
     try{
         const courses = await courseModel
         .find()
-        .select('_id Namecourse category shortDescription imageUrl duration level rating');
+        .select('_id NameCourse category shortDescription imageUrl duration level rating');
         res.status(200).send(courses);
     }catch (error) {
-      
         console.error("Failed to fetch courses", error);
         res.status(500).json({ message: "Internal server error" });
       }
@@ -30,7 +34,6 @@ router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction)
         res.status(200).send(courses);
         next();
     }catch (error) {
-      
         console.error("Failed to fetch courses", error);
         res.status(500).json({ message: "Internal server error" });
       }
@@ -43,28 +46,28 @@ router.get("/course/CourseCard", async(req, res) => {
       const courses = await courseModel
       .find()
       .limit(1)
-      .select('_id Namecourse category shortDescription imageUrl duration level rating');
+      .select('_id NameCourse category shortDescription imageUrl duration level rating');
       res.status(200).send(courses);
   }catch (error) {
-    
       console.error("Failed to fetch courses", error);
       res.status(500).json({ message: "Internal server error" });
     }
-
 });
 
 
-
-
 // this is a course page all user can see
-router.get("/:id", 
-  
-  async (req: Request, res: Response):Promise<any> => {
+router.get("/:id",  async (req: Request, res: Response):Promise<any> => {
     const { id } = req.params;
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
+<<<<<<< HEAD
+    }
+    // !mongoose.Types.ObjectId.isValid(`id`) Here Id Is a var Not A string
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+=======
 
     }if (!mongoose.Types.ObjectId.isValid(`id`)) {
+>>>>>>> fadeac95cddd5dafc8550b362a042a357e7515b7
         return res.status(400).json({ message: 'Invalid course ID format' });
       }
 
@@ -75,11 +78,10 @@ router.get("/:id",
         if(!Course) {
             return res.status(404).json({ message: "Lesson not found" });
         }
-
         
         const {
             _id,
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             category,
             level,
@@ -95,14 +97,13 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quize,
             createdAt,
             updatedAt
-          } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
+          } = Course.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
       
           res.status(200).json({
             id: _id,
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             category,
             level,
@@ -118,7 +119,6 @@ router.get("/:id",
             enrollments,
             videoUrl,
             text,
-            quize,
             createdAt,
             updatedAt
           });
@@ -130,11 +130,12 @@ router.get("/:id",
 
 
 
-    router.get("/lesson/:id",
-
-       async (req: Request, res: Response):Promise<any> => {
+    router.get("/lesson/:id", async (req: Request, res: Response):Promise<any> => {
 
     const { id } = req.params;
+
+
+
     if (!id) {
         return res.status(400).json({ message: "Course ID is required" });
 
@@ -150,36 +151,55 @@ router.get("/:id",
             return res.status(404).json({ message: "Lesson not found" });
         }
 
-        
+        // console.log(Lesson);
+        // const {
+        //     _id,   
+        //     NameCourse,
+        //     videoUrl,
+        //     text,
+        //     totalLessons,
+        //     totalQuizzes,
+        //     enrollments,
+        //     XpNumber,
+        //     duration
+        //   } = Lesson.toObject() as ICourse & { _id: mongoose.Types.ObjectId };
+
         const {
-            _id,   
-            Namecourse,
-            videoUrl,
-            text,
-            quize,
+                  id: _id,
+            NameCourse,
+            DescriptionCourse,
+            category,
+            level,
+            duration,
+            XpNumber,
+            price,
+            prerequisites,
+            learningOutcomes,
             totalLessons,
             totalQuizzes,
             enrollments,
-            XpNumber,
-            duration
-                        
-            
-          } = Lesson.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
+            videoUrl,
+            text
+        } = Lesson.toObject() as ICourse & {_id: mongoose.Types.ObjectId}
       
           res.status(200).json({
             id: _id,
-            Namecourse,
+            NameCourse,
+            DescriptionCourse,
+            category,
+            level,
             videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [], // Convert ObjectId to string
             // Convert ObjectId to string for each field
             text: text ? text.map((t: any) => t.toString()) : [],
-            quize: quize ? quize.map((q: any) => q.toString()) : [],
+            // quiz: quiz ? quiz.map((q: any) => q.toString()) : [],
             totalLessons,
             totalQuizzes,
             enrollments,
             XpNumber ,
-            duration
-
-            
+            duration,
+            price,
+            prerequisites,
+            learningOutcomes,
           });
         } catch (err) {
           console.error('Failed to fetch lesson', err);
@@ -191,7 +211,6 @@ router.get("/:id",
 
 
 // this is a course page all user can see
-  
 
 
 
@@ -231,14 +250,13 @@ router.get("/:id",
 
 
  //auth,role("admin")
-// add onlie admin can add a course
- router.post("/AddCourse",
+// add on line admin can add a course
+router.post("/AddCourse",
     auth,
-    role("admin"),
-   async(req, res) => {
-     try{
+    async(req, res) => {
+    try{
         const {
-            Namecourse,
+            NameCourse,
             DescriptionCourse,
             shortDescription,
             category,
@@ -253,14 +271,14 @@ router.get("/:id",
             XpNumber,
             videoUrl,
             text,
-            quize,
+            quiz,
             
         } = req.body;
 
-         const course = new courseModel({
-             Namecourse, 
-             DescriptionCourse,
-              shortDescription,
+        const course = new courseModel({
+            NameCourse, 
+            DescriptionCourse,
+            shortDescription,
             category,
             level,
             imageUrl,
@@ -273,15 +291,15 @@ router.get("/:id",
             XpNumber,
             videoUrl,
             text,
-            quize,
+            quiz,
             
-         });
-         const data = await course.save();
-         res.status(201).json(data);
-     }catch(err){
-         res.status(404).json(err);
-     };
- });
+        });
+        const data = await course.save();
+        res.status(201).json(data);
+    }catch(err){
+        res.status(404).json(err);
+    };
+});
 // update course
 
 
@@ -290,9 +308,9 @@ router.get("/:id",
 router.put("/UpdateCourse/:id", auth, role("admin"), async(req: Request, res: Response): Promise<void> =>{
   try{
     const id = req.params.id;
-    const {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse} = req.body;
+    const {NameCourse, DescriptionCourse, TypeCourse, levelCourse, imageCourse} = req.body;
     const updatedCourse = await courseModel.findByIdAndUpdate
-    (id, {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse},
+    (id, {NameCourse, DescriptionCourse, TypeCourse, levelCourse, imageCourse},
       { new: true, runValidators: true });
     if (!updatedCourse) {
       return res.status(404).json({ message: "Course not found" });

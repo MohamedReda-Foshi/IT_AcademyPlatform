@@ -1,6 +1,7 @@
 import React from "react";
+import Image from 'next/image'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from 'next/image';
+// import Image from 'next/image';
 import {
   faPlay,
   faGraduationCap,
@@ -65,6 +66,9 @@ const Hero = () => {
           <div className="relative">
             <div className="relative z-10">
               <Image
+                loading="lazy"
+                width={600}
+                height={600}
                 src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
                 alt="Student learning"
                 className="rounded-lg shadow-2xl"

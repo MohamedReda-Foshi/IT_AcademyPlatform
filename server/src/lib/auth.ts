@@ -13,10 +13,17 @@ export const auth = betterAuth({
   
   plugin: [
     jwt({
+<<<<<<< HEAD
+      jwt: {
+      expirationTime: "1h",
+      issuer: process.env.FRONT_END_PORT || "http://localhost:3000"
+    },
+=======
      jwt: {
       expirationTime: "1h",
       issuer :process.env.FRONT_END_PORT || "http://localhost:3000"
      },
+>>>>>>> fadeac95cddd5dafc8550b362a042a357e7515b7
     jwks:{
           keyPairConfig: { alg: "ES256" }, // EdDSA, RS256 also supported
       },  
@@ -61,7 +68,10 @@ export const auth = betterAuth({
         input: false,
         required: false,
       },
+<<<<<<< HEAD
+=======
       
+>>>>>>> fadeac95cddd5dafc8550b362a042a357e7515b7
       createdAt: {
         type: "string",
         required: false,

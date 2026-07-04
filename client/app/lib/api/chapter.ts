@@ -8,13 +8,13 @@ import { Types } from 'mongoose';
 export async function fetchChapterById(id: Types.ObjectId | string): Promise<ChapterData[]> {
   
   if(!id){
-    console.error('Invalid course ID provided:', id);
+    // console.error('Invalid course ID provided:', id);
     return [];
   }
   try {
-    const idstring =id.toString()
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idstring}` )
-        console.log('Fetching chapters for courseId:', idstring);
+    const idString =id.toString()
+    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/getChapter/${idString}` )
+        // console.log('Fetching chapters for courseId:', idString);
 
     if (!res.ok) {
       throw new Error(`Network response was not ok (${res.status})`);

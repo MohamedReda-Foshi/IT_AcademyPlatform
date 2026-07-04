@@ -2,7 +2,7 @@
 export interface Course {
   _id: number;
   
-  Namecourse: string;
+  NameCourse: string;
   DescriptionCourse: string;
   shortDescription?: string;
   category: string;
@@ -33,7 +33,7 @@ export interface Course {
   XpNumber: number; // XP number for the course
   videoUrl?: Types.ObjectId[]; // video URL of the lesson
   text?: Types.ObjectId[];
-  quize?: Types.ObjectId[];
+  quiz?: Types.ObjectId[];
   InstructorInformation: string;
   Instructor: string;
   o:number
