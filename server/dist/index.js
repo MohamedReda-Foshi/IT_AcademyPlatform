@@ -23,36 +23,40 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const node_1 = require("better-auth/node");
 const auth_1 = require("./lib/auth");
 const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-(0, database_1.connection)();
-app.use(express_1.default.json());
-app.get("/", (req, res) => {
-    res.send("Home page!");
-});
-//auth 
-// 
-// 
-// 
-// Login Post: /api/auth/sign-in/email
-// Registration: Post /api/auth/sign-up/email
-// Get Session : Get /api/auth/get-Session
-// Logout: Post /api/auth/sign-out
+app.use((0, helmet_1.default)());
+app.use((0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+}));
 app.use((0, cors_1.default)({
-    origin: `${process.env.FRONT_END_PORT}` || "http://localhost:3000", // frontend URL
+    origin: process.env.FRONT_END_PORT || "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 }));
+app.use(express_1.default.json({
+    verify: (req, _res, buf) => { req.rawBody = buf; }
+}));
+app.get("/", (_req, res) => {
+    res.send("Home page!");
+});
 app.all("/api/auth/*", (0, node_1.toNodeHandler)(auth_1.auth));
-app.use('/dashboard', adminRoute_1.default);
-app.use('/chapter', Chapter_1.default);
-app.use('/user', userRoute_1.default);
-app.use('/course', courseRoute_1.default);
-app.use('/instructor', instructorRoute_1.default);
+app.use("/dashboard", adminRoute_1.default);
+app.use("/chapter", Chapter_1.default);
+app.use("/user", userRoute_1.default);
+app.use("/course", courseRoute_1.default);
+app.use("/instructor", instructorRoute_1.default);
+app.use((err, _req, res, _next) => {
+    console.error("Unhandled error:", err);
+    res.status(500).json({ message: "Internal server error" });
+});
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield database_1.client.connect(); // connect native MongoClient (for better-auth)
-        yield (0, database_1.connection)(); // connect Mongoose (for your models)
+        yield database_1.client.connect();
+        yield (0, database_1.connection)();
         app.listen(process.env.PORT || 8000, () => {
             console.log(`Server running on port ${process.env.PORT || 8000}`);
         });

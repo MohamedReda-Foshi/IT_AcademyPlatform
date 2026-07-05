@@ -28,7 +28,7 @@ docker compose up -d mongodb
 
 ### 2. Configure environment
 
-Create `server/.env`:
+Create `server/.env.local`:
 
 ```env
 PORT=8000
@@ -88,7 +88,7 @@ The DB already has an admin account:
 docker compose up --build
 ```
 
-- Express API runs on port **5000** (mapped to container port 8000)
+- Express API runs on port **8000** (mapped to container port 8000)
 - Next.js runs on port **3000**
 - MongoDB runs on port **27017**
 

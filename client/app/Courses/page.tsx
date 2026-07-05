@@ -4,6 +4,8 @@ import CoursesList from '../components/CoursesList'
 import { fetchAllCourseFromExpr } from '../lib/api/coures'
 import type { CourseData } from '../types/course'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CoursesPage() {
   let courses: CourseData[] = []
   try {

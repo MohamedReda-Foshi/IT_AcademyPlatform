@@ -1,11 +1,11 @@
-// app/Courses/[courseId]/Chapters/page.tsx
 "use client"
 import { useState, useEffect } from 'react';
 import type { ChapterData } from '@/app/types/ChapterData';
 import React from 'react';
 import axios from 'axios';
 import ViewChapter from './ViewChapter';
-import { BookOpen, Star } from 'lucide-react';
+import QuizPlayer from './QuizPlayer';
+import { BookOpen, Star, ClipboardCheck } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -13,28 +13,24 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 
-
-
-export default function ChapterPage({ courseId }: { courseId: string }) {
-
+export default function ChapterPage({ lessonId }: { lessonId: string }) {
 
   const [chaptersData, setChaptersData] = useState<ChapterData[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<ChapterData | null>(
     null
   );
 
-  // Tracks which kind of content should be shown: "text", "video" or "quiz"
-  const [contentType, setContentType] = useState<"text" | "video" | "file">("text");
+  const [contentType, setContentType] = useState<"text" | "video" | "file" | "quiz">("text");
   const [contentData, setContentData] = useState<string | string[] | undefined>()
+  const [showQuiz, setShowQuiz] = useState(false)
+  const [quizChapterId, setQuizChapterId] = useState<string | null>(null)
   const [openItem, setOpenItem] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-      const token = localStorage.getItem("token");
     axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${courseId}`,
+      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${lessonId}`,
          {
         headers: {
-          'Authorization': `Bearer ${token}`,
            'Content-Type': 'application/json',
         },
         withCredentials:true,
@@ -48,7 +44,7 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
       .catch((error) => {
         console.log(error);
       })
-  }, [courseId]);
+  }, [lessonId]);
 
 
   function onSelect(
@@ -58,6 +54,7 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
   ) {
     setSelectedChapter(chapter);
     setContentType(type);
+    setShowQuiz(false);
 
 
     let contentData;
@@ -75,6 +72,13 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
     setContentData(contentData)
     console.log(`Selected chapter ${chapter} with type: ${type}`);
     console.log(`Selected chapter ${chapter.text || chapter.id} with type: ${type} and content:`, contentData);
+  }
+
+  function onQuiz(chapter: ChapterData) {
+    setSelectedChapter(chapter);
+    setContentType("quiz");
+    setShowQuiz(true);
+    setQuizChapterId(chapter._id);
   }
 
 
@@ -96,7 +100,7 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
         onValueChange={(value) => setOpenItem(value)}
       >
         {chaptersData.map((chapter) => (
-          <AccordionItem key={chapter.id} value={`item-${chapter.id}`}>
+          <AccordionItem key={chapter._id} value={`item-${chapter._id}`}>
             <AccordionTrigger>
               <span className="text-xl font-semibold text-white mb-2 px-2">
                 {chapter.order}. {chapter.ChapterTitle}
@@ -126,12 +130,19 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
                   {chapter.filename}
                 </button>
               )}
+
+              <button
+                className="px-4 py-2 font-bold text-lg hover:bg-red-200 rounded-md transition flex items-center gap-2"
+                onClick={() => onQuiz(chapter)}
+              >
+                <ClipboardCheck className="w-5 h-5" />
+                Quiz
+              </button>
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
     </div>
-
 
 
 
@@ -144,9 +155,11 @@ export default function ChapterPage({ courseId }: { courseId: string }) {
         </div>
 
         <div className="p-4">
-          {selectedChapter ? (
+          {selectedChapter && showQuiz && quizChapterId ? (
+            <QuizPlayer chapterId={quizChapterId} />
+          ) : selectedChapter ? (
             <ViewChapter
-              ContentType={contentType}
+              ContentType={contentType === "quiz" ? null : contentType}
               ContentData={contentData}
             />
           ) : (

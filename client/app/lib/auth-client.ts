@@ -1,7 +1,13 @@
 import { createAuthClient } from "better-auth/react"
+import { stripeClient } from "@better-auth/stripe/client"
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_EXPRESS_URL || "http://localhost:8000",
+  baseURL: "",
+  plugins: [
+      stripeClient({
+        subscription: true, //if you want to enable subscription management
+      })
+  ]
 })
 
-export const { signIn, signUp, signOut, useSession } = authClient;
+export const { signIn, signUp, signOut, useSession, subscription } = authClient;

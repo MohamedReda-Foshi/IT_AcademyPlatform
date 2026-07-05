@@ -4,22 +4,19 @@ import {  BookOpen, Clock, Users, FileText, Award, Brain, CheckCircle } from 'lu
 import type { LessonData } from '@/app/types/lesson'
 import Chapter from '@/app/components/Chapter'
 
-
-
 export default async function LessonPage({ params }: { params: Promise<{ courseId: string; lessonId: string }> }) {
-  const { courseId, lessonId } = await params
+  const { lessonId } = await params
   const lessons: LessonData[] = await fetchLessonById(lessonId).catch(() => [])
   const lesson: LessonData | null = lessons[0] ?? null
 
  if (!lesson) {
    return (
      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-red-900 to-black flex items-center justify-center">
-       <div className="text-red-500 text-xl">Lesson not </div>
+       <div className="text-red-500 text-xl">Lesson not found</div>
      </div>
    )
  }
 
- //Since this is SSR, we render progress and completed state as 0 and 0-of-total.
   const progress = 0
   const completedCount = 0
 
@@ -51,12 +48,6 @@ export default async function LessonPage({ params }: { params: Promise<{ courseI
                 <div className="flex items-center gap-2 text-yellow-400">
                   <Award className="w-4 h-4" />
                   <span>{lesson.XpNumber} XP</span>
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 text-gray-300">
-                    <Users className="w-4 h-4" />
-                    <span>{lesson.students} students enrolled</span>
-                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-blue-400">
                   <Brain className="w-4 h-4" />
@@ -94,15 +85,8 @@ export default async function LessonPage({ params }: { params: Promise<{ courseI
         </div>
 
         <div className=" gap-8">
-          {/* Lesson Content */}
-          
-
-          {/* Learning Outcomes */}
           <div className="bg-black/60 backdrop-blur-md rounded-2xl border border-red-500/30 overflow-hidden">
-
-
-             
-             <Chapter courseId={courseId}/>
+             <Chapter lessonId={lessonId}/>
 
               <div className="p-6">
                 <ul className="space-y-4">
@@ -114,9 +98,7 @@ export default async function LessonPage({ params }: { params: Promise<{ courseI
                   ))}
                 </ul>
               </div>
-            
           </div>
-
 
           <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
               <h3 className="font-semibold text-white mb-4">Your Instructor</h3>
@@ -133,7 +115,6 @@ export default async function LessonPage({ params }: { params: Promise<{ courseI
                 Full-stack developer with 8+ years of experience building scalable web applications with React and Next.js.
               </p>
             </div>
-            
         </div>
       </div>
     </div>

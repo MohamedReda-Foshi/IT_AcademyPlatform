@@ -1,8 +1,9 @@
+"use client";
+
 import React from 'react';
 import Button from './Button';
 
-// Type definitions
-type PricingTier = 'free' | 'most' | 'pro';
+type PricingTier = 'free' | 'most-used' | 'pro';
 
 interface FeatureItemProps {
   text: string;
@@ -15,13 +16,14 @@ interface PricingCardProps {
   isMost?: boolean;
   buttonText?: string;
   tier: PricingTier;
+  onSubscribe?: (plan: string) => void;
 }
 
 interface PricingSectionProps {
   className?: string;
+  onSubscribe?: (plan: string) => void;
 }
 
-// Reusable check icon component
 const CheckIcon: React.FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +37,6 @@ const CheckIcon: React.FC = () => (
   </svg>
 );
 
-// Feature item component
 const FeatureItem: React.FC<FeatureItemProps> = ({ text }) => (
   <li className="flex items-start gap-3 py-2">
     <CheckIcon />
@@ -43,14 +44,14 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ text }) => (
   </li>
 );
 
-// Price card component
 const PricingCard: React.FC<PricingCardProps> = ({
   title,
   price,
   features,
   isMost = false,
   buttonText = "Get Started",
-  tier
+  tier,
+  onSubscribe,
 }) => {
   return (
     <div
@@ -68,7 +69,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
         </h2>
         <p className="mt-2 sm:mt-4">
           <strong className="text-4xl font-bold text-white">{price}</strong>
-          <span className="text-lg font-medium text-gray-300">/month</span>
+          {price !== "Free" && <span className="text-lg font-medium text-gray-300">/month</span>}
         </p>
       </div>
       <ul className="mt-6 space-y-2">
@@ -77,49 +78,49 @@ const PricingCard: React.FC<PricingCardProps> = ({
         ))}
       </ul>
       <div className="mt-8">
-        <Button button={buttonText} />
+        <Button button={buttonText} onClick={() => onSubscribe?.(tier)} />
       </div>
     </div>
   );
 };
 
-const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
-  // Feature data
+const PricingSection: React.FC<PricingSectionProps> = ({ className = "", onSubscribe }) => {
   const pricingData: Record<PricingTier, { title: string; price: string; features: string[] }> = {
     free: {
       title: "Free",
       price: "Free",
       features: [
-        "10 users included",
-        "2GB of storage",
+        "Access to free courses",
+        "Basic community access",
         "Email support",
         "Help center access"
       ]
     },
-    most: {
-      title: "Starter",
-      price: "15$",
+    "most-used": {
+      title: "Most Used",
+      price: "$20",
       features: [
-        "10 users included",
-        "2GB of storage",
-        "Email support",
-        "Help center access"
+        "All free tier features",
+        "Access to premium courses",
+        "Priority email support",
+        "Downloadable resources",
+        "Certificate of completion"
       ]
     },
     pro: {
       title: "Pro",
-      price: "30$",
+      price: "$30",
       features: [
-        "20 users included",
-        "5GB of storage",
-        "Email support",
-        "Help center access",
+        "All Most Used features",
+        "1-on-1 mentoring sessions",
         "Phone support",
-        "Community access"
+        "Community access",
+        "Early access to new courses",
+        "Custom learning paths"
       ]
     },
   };
-  
+
   return (
     <div className={`mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 ${className}`}>
       <div className="text-center mb-12">
@@ -130,26 +131,29 @@ const PricingSection: React.FC<PricingSectionProps> = ({ className = "" }) => {
           Simple, transparent pricing for teams of all sizes.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <PricingCard
           title={pricingData.free.title}
           price={pricingData.free.price}
           features={pricingData.free.features}
           tier="free"
+          onSubscribe={onSubscribe}
         />
         <PricingCard
-          title={pricingData.most.title}
-          price={pricingData.most.price}
-          features={pricingData.most.features}
-          tier="most"
+          title={pricingData["most-used"].title}
+          price={pricingData["most-used"].price}
+          features={pricingData["most-used"].features}
+          tier="most-used"
           isMost={true}
+          onSubscribe={onSubscribe}
         />
         <PricingCard
           title={pricingData.pro.title}
           price={pricingData.pro.price}
           features={pricingData.pro.features}
           tier="pro"
+          onSubscribe={onSubscribe}
         />
       </div>
     </div>

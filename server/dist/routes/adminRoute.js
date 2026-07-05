@@ -28,7 +28,7 @@ router.get("/AdminUser", auth_1.auth, (0, roleauth_1.role)("admin"), (req, res) 
         res.status(404).json(err);
     }
 }));
-router.delete("/deleuser", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/deleuser", auth_1.auth, (0, roleauth_1.role)("admin"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.body.id;
         const data = yield userModel_1.userModel.findByIdAndDelete(id);

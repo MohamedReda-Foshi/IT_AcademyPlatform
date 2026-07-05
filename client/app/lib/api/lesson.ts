@@ -1,6 +1,6 @@
 import { LessonData } from '@/app/types/lesson';
 
-const API_URL = process.env.NEXT_PUBLIC_EXPRESS_URL;
+const API_URL = process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "";
 
 async function apiFetch<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
@@ -19,7 +19,8 @@ async function apiFetch<T>(endpoint: string): Promise<T> {
 
 export async function fetchLessonById(id: string): Promise<LessonData[]> {
   try {
-    return await apiFetch<LessonData[]>(`/course/lesson/${id}`);
+    const data = await apiFetch<LessonData | LessonData[]>(`/course/lesson/${id}`);
+    return Array.isArray(data) ? data : [data];
   } catch (error) {
     console.error(`Fetch lesson error for id: ${id}`, error);
     return [];

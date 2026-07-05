@@ -3,7 +3,7 @@
 import { CourseData } from '@/app/types/course';
 import { LessonData } from '@/app/types/lesson';
 
-const API_URL = process.env.NEXT_PUBLIC_EXPRESS_URL;
+const API_URL = process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "";
 
 async function apiFetch<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
@@ -103,7 +103,8 @@ export async function fetchCourseById(id: string): Promise<CourseData[]> {
   console.log('Fetching course with id:', id);
 
   try {
-    return await apiFetch<CourseData[]>(`/course/${id}`);
+    const data = await apiFetch<CourseData | CourseData[]>(`/course/${id}`);
+    return Array.isArray(data) ? data : [data];
   } catch (error) {
     console.error(`Error fetching course with id ${id}:`, error);
     return [];

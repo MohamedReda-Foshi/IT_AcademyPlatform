@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chapterModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const courseSchema = new mongoose_1.Schema({
+const chapterSchema = new mongoose_1.Schema({
     ChapterTitle: { type: String, required: true, trim: true },
     order: { type: Number, required: true, default: 0 },
     videoTitle: { type: String, default: null },
@@ -47,4 +47,4 @@ const courseSchema = new mongoose_1.Schema({
     filedata: { type: String, default: null },
     courseId: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Course", required: true }, // Reference to the course 
 });
-exports.chapterModel = mongoose_1.default.model('Chapter', courseSchema);
+exports.chapterModel = mongoose_1.default.model('Chapter', chapterSchema);

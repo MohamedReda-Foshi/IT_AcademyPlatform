@@ -19,6 +19,7 @@ export interface CourseData {
   imageUrl?: string;
   o: number;
   i: number;
+  lessonId?: string;
 }
 
 export interface Course {

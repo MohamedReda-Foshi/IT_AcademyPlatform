@@ -18,6 +18,7 @@ interface CourseItem {
   imageUrl?: string;
   shortDescription?: string;
   Instructor?: string;
+  lessonId?: string;
 }
 
 interface ChapterItem {
@@ -91,26 +92,26 @@ export default function CourseManagerPage() {
 
   useEffect(() => { fetchCourses(); }, []);
 
-  const fetchChapters = async (courseId: string) => {
-    setChaptersLoading(p => ({ ...p, [courseId]: true }));
+  const fetchChapters = async (lessonId: string) => {
+    setChaptersLoading(p => ({ ...p, [lessonId]: true }));
     setChapterError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${courseId}`,
+        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${lessonId}`,
         { credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Failed to fetch chapters (${res.status})`);
       const data: ChapterItem[] = await res.json();
-      setChapters(p => ({ ...p, [courseId]: data }));
+      setChapters(p => ({ ...p, [lessonId]: data }));
     } catch (err) {
       setChapterError(err instanceof Error ? err.message : 'Failed to load chapters');
-      setChapters(p => ({ ...p, [courseId]: [] }));
+      setChapters(p => ({ ...p, [lessonId]: [] }));
     } finally {
-      setChaptersLoading(p => ({ ...p, [courseId]: false }));
+      setChaptersLoading(p => ({ ...p, [lessonId]: false }));
     }
   };
 
-  const toggleExpand = (courseId: string) => {
+  const toggleExpand = (courseId: string, lessonId?: string) => {
     if (expandedCourse === courseId) {
       setExpandedCourse(null);
       setShowAddChapter(false);
@@ -119,7 +120,7 @@ export default function CourseManagerPage() {
       setExpandedCourse(courseId);
       setShowAddChapter(false);
       setChapterForm(emptyChapterForm);
-      if (!chapters[courseId]) fetchChapters(courseId);
+      if (lessonId && !chapters[lessonId]) fetchChapters(lessonId);
     }
   };
 
@@ -187,7 +188,7 @@ export default function CourseManagerPage() {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...chapterForm, courseId: expandedCourse }),
+          body: JSON.stringify({ ...chapterForm, lessonId: courses.find(c => c._id === expandedCourse)?.lessonId }),
         }
       );
       if (!res.ok) {
@@ -377,7 +378,7 @@ export default function CourseManagerPage() {
                     ) : (
                       <>
                         <td className="px-2 py-4">
-                          <button onClick={() => toggleExpand(course._id)}
+                          <button onClick={() => toggleExpand(course._id, course.lessonId)}
                             className="p-1 text-gray-500 hover:text-red-400 transition-colors">
                             {expandedCourse === course._id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                           </button>
@@ -479,11 +480,11 @@ export default function CourseManagerPage() {
                             </div>
                           )}
 
-                          {chaptersLoading[course._id] ? (
+                          {chaptersLoading[course.lessonId || ''] ? (
                             <p className="text-gray-500 text-sm py-4 text-center">Loading chapters...</p>
                           ) : chapterError && expandedCourse === course._id ? (
                             <p className="text-red-400 text-sm py-4 text-center">{chapterError}</p>
-                          ) : !chapters[course._id] || chapters[course._id].length === 0 ? (
+                          ) : !chapters[course.lessonId || ''] || chapters[course.lessonId || ''].length === 0 ? (
                             <p className="text-gray-500 text-sm py-4 text-center border border-dashed border-gray-800 rounded-lg">
                               No chapters yet
                             </p>
@@ -501,7 +502,7 @@ export default function CourseManagerPage() {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-800">
-                                  {(chapters[course._id] || []).map(chapter => (
+                                  {(chapters[course.lessonId || ''] || []).map(chapter => (
                                     <tr key={chapter._id} className="hover:bg-gray-900/50 transition-colors">
                                       {editChapterId === chapter._id ? (
                                         <>

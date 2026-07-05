@@ -102,7 +102,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                   </span>
                   <span className="bg-gray-800 text-gray-300 border border-gray-700 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:bg-gray-700 transition-colors duration-200">
                     <Clock size={12} />
-                    {course.duration}h
+                    {Math.round(course.duration / 60)}h
                   </span>
                   <span className="bg-gradient-to-r from-gray-700 to-gray-800 text-white border border-gray-600 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:from-gray-600 hover:to-gray-700 transition-all duration-200">
                     <BookOpen size={12} />

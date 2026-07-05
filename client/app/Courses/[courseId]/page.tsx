@@ -26,7 +26,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-4">{datacourse.Namecourse}</h1>
             <p className="text-lg text-white mb-6">{datacourse.DescriptionCourse}</p>
-            <Link href={`/Courses/${datacourse.id}/Lesson/${datacourse.id}`}>
+            <Link href={`/Courses/${datacourse.id}/Lesson/${datacourse.lessonId || datacourse.id}`}>
               <Button button="Get Started"  />
             </Link>
           </div>

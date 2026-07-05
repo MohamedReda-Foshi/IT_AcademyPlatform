@@ -1,25 +1,25 @@
 import { Router, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { chapterModel } from '../models/chapter';
+import { lessonModel } from '../models/lesson';
 import { courseModel } from '../models/course';
 import { role } from '../middlewares/roleauth';
 import { auth } from '../middlewares/auth';
 
 const router = Router();
 
-router.get("/getChapter/:courseId", auth, role("admin", "instrator", "user"),
+router.get("/getChapter/:lessonId", auth, role("admin", "instrator", "user"),
   async (req: Request, res: Response): Promise<void> => {
-    const { courseId } = req.params;
+    const { lessonId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(courseId)) {
-      res.status(400).json({ message: "Invalid course ID format" });
+    if (!mongoose.Types.ObjectId.isValid(lessonId)) {
+      res.status(400).json({ message: "Invalid lesson ID format" });
       return;
     }
 
     try {
       const chapters = await chapterModel
-        .find({ courseId })
-        .populate('courseId', 'ChapterTitle videoUrl text quize')
+        .find({ lessonId })
         .sort({ order: 1 });
 
       res.json(chapters);
@@ -31,29 +31,30 @@ router.get("/getChapter/:courseId", auth, role("admin", "instrator", "user"),
 );
 
 router.post("/addChapter", auth, role("admin", "instrator"), async (req: Request, res: Response): Promise<void> => {
-  const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, courseId } = req.body;
+  const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, lessonId } = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(courseId)) {
-    res.status(400).json({ message: "Invalid course ID format" });
+  if (!mongoose.Types.ObjectId.isValid(lessonId)) {
+    res.status(400).json({ message: "Invalid lesson ID format" });
     return;
   }
 
   try {
-    const course = await courseModel.findById(courseId);
-    if (!course) {
-      res.status(404).json({ message: "Course not found" });
+    const lesson = await lessonModel.findById(lessonId);
+    if (!lesson) {
+      res.status(404).json({ message: "Lesson not found" });
       return;
     }
 
+    const course = await courseModel.findById(lesson.courseId);
     const isAdmin = req.user?.role === "admin";
-    const isOwner = course.instructorId === req.user?.id;
+    const isOwner = course && course.instructorId === req.user?.id;
     if (!isAdmin && !isOwner) {
       res.status(403).json({ message: "Access denied — you do not own this course" });
       return;
     }
 
     const newChapter = new chapterModel({
-      ChapterTitle, order, videoUrl, textTitle, text, quize, courseId, videoTitle, filename, filedata
+      ChapterTitle, order, videoUrl, textTitle, text, quize, lessonId, videoTitle, filename, filedata
     });
 
     const savedChapter = await newChapter.save();
@@ -79,7 +80,8 @@ router.put("/updateChapter/:id", auth, role("admin", "instrator"), async (req: R
       return;
     }
 
-    const course = await courseModel.findById(chapter.courseId);
+    const lesson = await lessonModel.findById(chapter.lessonId);
+    const course = lesson ? await courseModel.findById(lesson.courseId) : null;
     const isAdmin = req.user?.role === "admin";
     const isOwner = course && course.instructorId === req.user?.id;
     if (!isAdmin && !isOwner) {
@@ -119,7 +121,8 @@ router.delete("/deleteChapter/:id", auth, role("admin", "instrator"), async (req
       return;
     }
 
-    const course = await courseModel.findById(chapter.courseId);
+    const lesson = await lessonModel.findById(chapter.lessonId);
+    const course = lesson ? await courseModel.findById(lesson.courseId) : null;
     const isAdmin = req.user?.role === "admin";
     const isOwner = course && course.instructorId === req.user?.id;
     if (!isAdmin && !isOwner) {

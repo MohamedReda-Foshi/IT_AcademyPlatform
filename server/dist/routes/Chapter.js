@@ -15,24 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
 const chapter_1 = require("../models/chapter");
+const course_1 = require("../models/course");
 const roleauth_1 = require("../middlewares/roleauth");
 const auth_1 = require("../middlewares/auth");
 const router = (0, express_1.Router)();
-/**
- * GET /getChapter/:courseId
- * Fetch all chapters associated with a specific course
- */
-router.get("/getChapter/:courseId", auth_1.auth, (0, roleauth_1.role)("admin", "user"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/getChapter/:courseId", auth_1.auth, (0, roleauth_1.role)("admin", "instrator", "user"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId } = req.params;
-    if (!mongoose_1.default.Types.ObjectId.isValid(`courseId`)) {
+    if (!mongoose_1.default.Types.ObjectId.isValid(courseId)) {
         res.status(400).json({ message: "Invalid course ID format" });
         return;
     }
     try {
         const chapters = yield chapter_1.chapterModel
             .find({ courseId })
-            .populate('courseId', ' ChapterTitile videoUrl text quize ')
-            .sort({ order: 1 }); // Sort chapters by order
+            .populate('courseId', 'ChapterTitle videoUrl text quize')
+            .sort({ order: 1 });
         res.json(chapters);
     }
     catch (error) {
@@ -40,34 +37,98 @@ router.get("/getChapter/:courseId", auth_1.auth, (0, roleauth_1.role)("admin", "
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-/**
- * POST /addChapter
- * Create a new chapter
- */
-router.post("/addChapter", auth_1.auth, (0, roleauth_1.role)("admin"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/addChapter", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, courseId } = req.body;
     if (!mongoose_1.default.Types.ObjectId.isValid(courseId)) {
         res.status(400).json({ message: "Invalid course ID format" });
         return;
     }
     try {
+        const course = yield course_1.courseModel.findById(courseId);
+        if (!course) {
+            res.status(404).json({ message: "Course not found" });
+            return;
+        }
+        const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
+        const isOwner = course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
+        if (!isAdmin && !isOwner) {
+            res.status(403).json({ message: "Access denied — you do not own this course" });
+            return;
+        }
         const newChapter = new chapter_1.chapterModel({
-            ChapterTitle,
-            order,
-            videoUrl,
-            textTitle,
-            text,
-            quize,
-            courseId,
-            videoTitle,
-            filename,
-            filedata
+            ChapterTitle, order, videoUrl, textTitle, text, quize, courseId, videoTitle, filename, filedata
         });
         const savedChapter = yield newChapter.save();
         res.status(201).json(savedChapter);
     }
     catch (error) {
         console.error("Error adding chapter:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}));
+router.put("/updateChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid chapter ID format" });
+        return;
+    }
+    try {
+        const chapter = yield chapter_1.chapterModel.findById(id);
+        if (!chapter) {
+            res.status(404).json({ message: "Chapter not found" });
+            return;
+        }
+        const course = yield course_1.courseModel.findById(chapter.courseId);
+        const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
+        const isOwner = course && course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
+        if (!isAdmin && !isOwner) {
+            res.status(403).json({ message: "Access denied" });
+            return;
+        }
+        const allowedFields = [
+            "ChapterTitle", "order", "videoUrl", "videoTitle",
+            "textTitle", "text", "quize", "filename", "filedata"
+        ];
+        const updates = {};
+        for (const field of allowedFields) {
+            if (req.body[field] !== undefined)
+                updates[field] = req.body[field];
+        }
+        const updated = yield chapter_1.chapterModel.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        res.status(200).json(updated);
+    }
+    catch (error) {
+        console.error("Error updating chapter:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}));
+router.delete("/deleteChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid chapter ID format" });
+        return;
+    }
+    try {
+        const chapter = yield chapter_1.chapterModel.findById(id);
+        if (!chapter) {
+            res.status(404).json({ message: "Chapter not found" });
+            return;
+        }
+        const course = yield course_1.courseModel.findById(chapter.courseId);
+        const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
+        const isOwner = course && course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
+        if (!isAdmin && !isOwner) {
+            res.status(403).json({ message: "Access denied" });
+            return;
+        }
+        yield chapter_1.chapterModel.findByIdAndDelete(id);
+        res.status(200).json({ message: "Chapter deleted successfully" });
+    }
+    catch (error) {
+        console.error("Error deleting chapter:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }));

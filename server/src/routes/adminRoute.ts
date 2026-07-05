@@ -1,7 +1,7 @@
-import express from 'express';
-import {userModel} from '../models/userModel'
-import { auth } from '../middlewares/auth';
-import {role} from '../middlewares/roleauth';
+import express from "express";
+import { userModel } from "../models/userModel";
+import { auth } from "../middlewares/auth";
+import { role } from "../middlewares/roleauth";
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.get("/AdminUser", auth, role("admin"), async (req, res) => {
   }
 });
 
-router.delete("/deleuser", async (req, res) => {
+router.delete("/deleuser", auth, role("admin"), async (req, res) => {
   try {
     const id = req.body.id;
     const data = await userModel.findByIdAndDelete(id);

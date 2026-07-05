@@ -48,25 +48,24 @@ router.get("/CourseCardHomepage", (req, res) => __awaiter(void 0, void 0, void 0
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-router.get("/AllCourse", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/AllCourse", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courses = yield course_1.courseModel.find();
-        res.status(200).send(courses);
-        next();
+        res.status(200).json(courses);
     }
     catch (error) {
         console.error("Failed to fetch courses", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-// all user courses
-router.get("/course/CourseCard", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// single course card (for authenticated users)
+router.get("/CourseCardSingle", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const courses = yield course_1.courseModel
             .find()
             .limit(1)
             .select("_id Namecourse category shortDescription imageUrl duration level rating");
-        res.status(200).send(courses);
+        res.status(200).json(courses);
     }
     catch (error) {
         console.error("Failed to fetch courses", error);
