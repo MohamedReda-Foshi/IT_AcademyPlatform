@@ -3,6 +3,20 @@ import Link from 'next/link'
 import Button from '@/app/components/Button'
 import { fetchCourseById } from '@/app/lib/api/coures'
 import type { CourseData } from '@/app/types/course'
+import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/app/lib/seo'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: Promise<{ courseId: string }> }): Promise<Metadata> {
+  const { courseId } = await params
+  const course = (await fetchCourseById(courseId))[0]
+  if (!course) return { title: 'Course not found', robots: { index: false, follow: false } }
+
+  return {
+    ...pageMetadata(course.Namecourse, course.shortDescription, `/Courses/${courseId}`),
+    robots: course.isPublished ? undefined : { index: false, follow: false },
+  }
+}
 
 
 
@@ -12,11 +26,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   const datacourse: CourseData | null = courses[0] ?? null
 
   if (!datacourse) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-red-500">Course not found.</p>
-      </div>
-    )
+    notFound()
   }
 
   return (

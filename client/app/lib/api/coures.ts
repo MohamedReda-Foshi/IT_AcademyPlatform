@@ -3,7 +3,9 @@
 import { CourseData } from '@/app/types/course';
 import { LessonData } from '@/app/types/lesson';
 
-const API_URL = process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "";
+const API_URL = typeof window === "undefined"
+  ? process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || ""
+  : "";
 
 async function apiFetch<T>(endpoint: string): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {

@@ -1,10 +1,26 @@
 import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
 
-const API_URL = process.env.NEXT_PUBLIC_EXPRESS_URL || "http://api:8000";
+const API_URL = process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "http://api:8000";
+if (process.env.VERCEL && !API_URL.startsWith("https://")) {
+  throw new Error("SERVER_API_URL must be an HTTPS backend URL on Vercel");
+}
 
 const nextConfig: NextConfig = {
   output: "standalone",
+
+  async headers() {
+    const privatePaths = [
+      "/Adminpage/:path*", "/Instructor/:path*", "/Profile",
+      "/Payment/:path*", "/auth/:path*", "/Courses/:courseId/Lesson/:lessonId",
+    ];
+    return [
+      ...privatePaths.map((source) => ({ source, headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] })),
+      ...(process.env.VERCEL_ENV === "preview"
+        ? [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }]
+        : []),
+    ];
+  },
 
   async rewrites() {
     return [
@@ -39,9 +55,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  experimental: {
-    turbo: {},
-  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "tolustar.com", pathname: "/**" },

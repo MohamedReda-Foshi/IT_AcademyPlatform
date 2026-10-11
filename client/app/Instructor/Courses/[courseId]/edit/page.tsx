@@ -45,7 +45,7 @@ export default function EditCoursePage() {
     if (!courseId) return;
     const loadCourse = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/${courseId}`, {
+        const res = await fetch(`/course/${courseId}`, {
           credentials: 'include',
         });
         if (!res.ok) throw new Error('Not found');
@@ -99,7 +99,7 @@ export default function EditCoursePage() {
     setSaving(true);
     setStatus(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/UpdateCourse/${courseId}`, {
+      const res = await fetch(`/course/UpdateCourse/${courseId}`, {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

@@ -40,7 +40,7 @@ export default function InstructorsPage() {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_EXPRESS_URL}/instructor/all`,
+          `/instructor/all`,
           { credentials: 'include' }
         );
         if (!res.ok) throw new Error(`Failed to fetch (${res.status})`);
@@ -152,7 +152,7 @@ export default function InstructorsPage() {
         <div className="text-center text-gray-500 py-20 border border-dashed border-gray-800 rounded-lg">
           <User size={48} className="mx-auto mb-4 opacity-30" />
           <p className="text-lg">No instructors found</p>
-          <p className="text-sm mt-1">Users with role &quot;instrator&quot; will appear here.</p>
+          <p className="text-sm mt-1">Users with role &quot;instructor&quot; will appear here.</p>
         </div>
       )}
     </div>

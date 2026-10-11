@@ -3,6 +3,13 @@
 import CoursesList from '../components/CoursesList'
 import { fetchAllCourseFromExpr } from '../lib/api/coures'
 import type { CourseData } from '../types/course'
+import { pageMetadata } from '../lib/seo'
+
+export const metadata = pageMetadata(
+  'Online IT Courses',
+  'Explore TechLearn courses in programming, cloud computing, and other IT skills.',
+  '/Courses',
+)
 
 export const dynamic = 'force-dynamic'
 

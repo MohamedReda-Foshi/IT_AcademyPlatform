@@ -30,9 +30,9 @@ export default function CoursesList({ courses }: CoursesListProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
             Featured Courses
-          </h1>
+          </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
             Discover our premium collection of courses designed to accelerate your learning journey
           </p>

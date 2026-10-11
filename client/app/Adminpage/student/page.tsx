@@ -23,7 +23,7 @@ export default function StudentsPage() {
     setError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/getuser`,
+        `/user/getuser`,
         { credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Failed to fetch (${res.status})`);
@@ -41,7 +41,7 @@ export default function StudentsPage() {
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/dashboard/deleuser`,
+        `/dashboard/deleuser`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -65,7 +65,7 @@ export default function StudentsPage() {
   const roleBadge = (role: string) => {
     const colors: Record<string, string> = {
       admin: 'bg-red-900/50 text-red-400',
-      instrator: 'bg-purple-900/50 text-purple-400',
+      instructor: 'bg-purple-900/50 text-purple-400',
       user: 'bg-blue-900/50 text-blue-400',
     };
     return colors[role] || 'bg-gray-800 text-gray-400';

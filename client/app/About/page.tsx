@@ -1,6 +1,13 @@
 // pages/about.jsx
 import React from 'react';
 import Link from 'next/link';
+import { pageMetadata } from '../lib/seo';
+
+export const metadata = pageMetadata(
+  'About Us',
+  'Learn about TechLearn and our approach to practical online IT education.',
+  '/About',
+);
 
 export default function About() {
   return (

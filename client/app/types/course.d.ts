@@ -20,6 +20,7 @@ export interface CourseData {
   o: number;
   i: number;
   lessonId?: string;
+  isPublished?: boolean;
 }
 
 export interface Course {
@@ -52,4 +53,3 @@ export interface Course {
   o: number;
   i: number;
 }
-  

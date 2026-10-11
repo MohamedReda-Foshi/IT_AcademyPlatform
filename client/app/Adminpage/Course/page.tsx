@@ -77,7 +77,7 @@ export default function CourseManagerPage() {
     setError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/CourseCard`,
+        `/course/CourseCard`,
         { credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Failed to fetch (${res.status})`);
@@ -97,7 +97,7 @@ export default function CourseManagerPage() {
     setChapterError(null);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${lessonId}`,
+        `/chapter/getChapter/${lessonId}`,
         { credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Failed to fetch chapters (${res.status})`);
@@ -127,7 +127,7 @@ export default function CourseManagerPage() {
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/DeleteCourse/${id}`,
+        `/course/DeleteCourse/${id}`,
         { method: 'DELETE', credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Delete failed (${res.status})`);
@@ -161,7 +161,7 @@ export default function CourseManagerPage() {
   const handleUpdate = async (id: string) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/course/UpdateCourse/${id}`,
+        `/course/UpdateCourse/${id}`,
         {
           method: 'PUT',
           credentials: 'include',
@@ -183,7 +183,7 @@ export default function CourseManagerPage() {
     if (!chapterForm.ChapterTitle.trim()) { alert('Chapter title is required'); return; }
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/addChapter`,
+        `/chapter/addChapter`,
         {
           method: 'POST',
           credentials: 'include',
@@ -206,7 +206,7 @@ export default function CourseManagerPage() {
   const handleDeleteChapter = async (chapterId: string) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/deleteChapter/${chapterId}`,
+        `/chapter/deleteChapter/${chapterId}`,
         { method: 'DELETE', credentials: 'include' }
       );
       if (!res.ok) throw new Error(`Delete failed (${res.status})`);
@@ -235,7 +235,7 @@ export default function CourseManagerPage() {
   const handleUpdateChapter = async (chapterId: string) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/updateChapter/${chapterId}`,
+        `/chapter/updateChapter/${chapterId}`,
         {
           method: 'PUT',
           credentials: 'include',

@@ -1,6 +1,13 @@
 import React from 'react'
 // import CardT from '../components/CardT'
 import CardT from "../components/Cardt"
+import { pageMetadata } from '../lib/seo'
+
+export const metadata = pageMetadata(
+  'IT Books',
+  'Explore programming and computer science books featured by TechLearn.',
+  '/Book',
+)
 
 function page() {
   return (

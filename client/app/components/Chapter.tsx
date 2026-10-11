@@ -28,7 +28,7 @@ export default function ChapterPage({ lessonId }: { lessonId: string }) {
 
   useEffect(() => {
     axios
-      .get<ChapterData[]>(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/chapter/getChapter/${lessonId}`,
+      .get<ChapterData[]>(`/chapter/getChapter/${lessonId}`,
          {
         headers: {
            'Content-Type': 'application/json',
