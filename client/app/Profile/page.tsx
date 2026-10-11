@@ -6,11 +6,13 @@ import Link from "next/link";
 import SignOutButton from "../_components/SignOut";
 
 async function getBackendSession() {
+  const apiUrl = process.env.SERVER_API_URL || (process.env.VERCEL ? "" : process.env.NEXT_PUBLIC_EXPRESS_URL || "http://localhost:8000");
+  if (!apiUrl) return null;
   const incomingHeaders = await headers();
   const cookie = incomingHeaders.get("cookie") ?? "";
 
   const res = await fetch(
-    `${process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "http://localhost:8000"}/api/auth/get-session`,
+    `${apiUrl}/api/auth/get-session`,
     {
       method: "GET",
       headers: {

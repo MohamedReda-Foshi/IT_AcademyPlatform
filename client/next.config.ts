@@ -1,8 +1,8 @@
 import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
 
-const API_URL = process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "http://api:8000";
-if (process.env.VERCEL && !API_URL.startsWith("https://")) {
+const API_URL = process.env.SERVER_API_URL || (process.env.VERCEL ? "" : process.env.NEXT_PUBLIC_EXPRESS_URL || "http://api:8000");
+if (API_URL && process.env.VERCEL && !API_URL.startsWith("https://")) {
   throw new Error("SERVER_API_URL must be an HTTPS backend URL on Vercel");
 }
 
@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
+    if (!API_URL) return [];
     return [
       {
         source: "/api/auth/:path*",
