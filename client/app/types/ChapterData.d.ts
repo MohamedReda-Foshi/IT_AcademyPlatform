@@ -1,5 +1,6 @@
 export interface ChapterData {
-    id: Types.ObjectId;
+    _id: string;
+    id?: string;
     ChapterTitle: string; // name of the course
     order: number; // order of the chapter
     videoTitle:string;

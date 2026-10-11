@@ -21,8 +21,8 @@ export default function SignInPage() {
         onSuccess() {
           console.log("Signed in successfully");
         },
-        onError(ctx) {
-          console.error("Sign-in failed:", ctx.error);
+        onError(ctx: { error: unknown }) {
+          console.log("Sign-in failed:", ctx.error);
         },
       }
     );

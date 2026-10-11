@@ -14,16 +14,12 @@ export default function SignUpPage() {
     const lastName = (form.get("lastName") as string)?.trim();
     const email = (form.get("email") as string)?.trim();
     const password = form.get("password") as string;
-    const about = ((form.get("about") as string) || "").trim();
-
     const fullName = `${firstName} ${lastName}`.trim();
 
     const { error } = await signUp.email({
       name: fullName,
-      lastName,
       email,
       password,
-      about,
       callbackURL: "/Profile",
     });
 

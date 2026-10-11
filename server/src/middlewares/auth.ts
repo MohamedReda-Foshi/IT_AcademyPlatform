@@ -1,48 +1,33 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { auth as betterAuth } from "../lib/auth";
 
-// Replace with your real secret (make sure it's in .env for production)
-const JWT_SECRET = process.env.JWT_SECRET_KEY as string;
-
-// Type for JWT payload
-interface JwtPayload {
-  id: string;
-  role: string;
-}
-
-// Extend Express Request to include `user`
 declare module "express-serve-static-core" {
   interface Request {
-    user?: JwtPayload;
+    user?: {
+      id: string;
+      role: string;
+    };
   }
 }
 
-export const auth = (req: Request, res: Response, next: NextFunction): void => {
-  const authHeader = req.get("Authorization") || req.headers.authorization;
-
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(403).json({ message: "Authorization header was not provided" });
-    console.log('auh',authHeader);
-    return;
-  }
-
-  const token = authHeader.split(" ")[1];
-  if (!token) {
-    res.status(403).json({ message: "Token was not provided" });
-    console.log("Token was not provided");
-    console.log(token);
-    return;
-  }
-
+export const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any ;
-    req.user = decoded;
-    console.log(decoded)
-   
+    const session = await betterAuth.api.getSession({
+      headers: req.headers as Record<string, string>,
+    });
+
+    if (!session) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    req.user = {
+      id: session.user.id,
+      role: (session.user as any).role || "user",
+    };
 
     next();
   } catch (err) {
-    res.status(401).json(console.log(err));
+    res.status(401).json({ message: "Invalid session" });
   }
 };

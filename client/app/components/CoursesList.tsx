@@ -30,9 +30,9 @@ export default function CoursesList({ courses }: CoursesListProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
             Featured Courses
-          </h1>
+          </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
             Discover our premium collection of courses designed to accelerate your learning journey
           </p>
@@ -41,7 +41,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {courses.map((course) => (
             <div 
-              key={course._id} 
+              key={course.id} 
               className="group relative bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-2xl hover:shadow-red-500/20 transition-all duration-700 overflow-hidden border border-gray-800 hover:border-red-500/50 hover:-translate-y-2 hover:scale-[1.02]"
             >
               {/* Animated border effect */}
@@ -102,7 +102,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                   </span>
                   <span className="bg-gray-800 text-gray-300 border border-gray-700 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:bg-gray-700 transition-colors duration-200">
                     <Clock size={12} />
-                    {course.duration}h
+                    {Math.round(course.duration / 60)}h
                   </span>
                   <span className="bg-gradient-to-r from-gray-700 to-gray-800 text-white border border-gray-600 px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 hover:from-gray-600 hover:to-gray-700 transition-all duration-200">
                     <BookOpen size={12} />
@@ -142,7 +142,7 @@ export default function CoursesList({ courses }: CoursesListProps) {
                 {/* Enhanced CTA Button */}
                 <div className="pt-6">
                   <Link
-                    href={`/Courses/${course._id}`}
+                    href={`/Courses/${course.id}`}
                     className="block group/btn"
                   >
                     <div className="relative w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-2xl hover:shadow-red-500/30 overflow-hidden">

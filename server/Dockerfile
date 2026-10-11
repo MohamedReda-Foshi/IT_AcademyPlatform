@@ -1,18 +1,25 @@
-FROM node:22.22.2
+FROM node:22.22.2 AS build
 
-WORKDIR /src
-    
+WORKDIR /app
+
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
+RUN npm run build
 
-# Expose the port your app runs on
-EXPOSE 5000
+FROM node:22.22.2 AS production
 
-#start app
-CMD [ "npm","start" ,"dev"]
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY --from=build /app/dist ./dist
+
+EXPOSE 8000
+
+CMD ["node", "dist/index.js"]
 
 
 

@@ -1,5 +1,7 @@
-# Build stage
-FROM node:22.22.2
+FROM node:22.22.2 AS build
+
+ARG NEXT_PUBLIC_EXPRESS_URL
+ENV NEXT_PUBLIC_EXPRESS_URL=$NEXT_PUBLIC_EXPRESS_URL
 
 WORKDIR /app
 
@@ -9,15 +11,16 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+FROM node:22.22.2-alpine AS production
 
-# Copy build files to nginx
-COPY --from=build /app/build /usr/share/nginx/html
+WORKDIR /app
 
-# Copy nginx configuration (optional)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV=production
 
-EXPOSE 80
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+CMD ["node", "server.js"]

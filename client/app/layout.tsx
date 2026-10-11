@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
+import { siteUrl } from "./lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TechLearn",
-  description: "TechLearn E-learn web",
+  metadataBase: siteUrl,
+  title: { default: "TechLearn | Practical IT Courses", template: "%s | TechLearn" },
+  description: "Learn practical IT skills through online courses in programming, cloud computing, and more.",
 };
 
 export default function RootLayout({

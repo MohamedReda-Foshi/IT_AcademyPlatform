@@ -1,55 +1,32 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/app/components/Button'
-import  {fetchCourseById}  from '@/app/lib/api/coures'
-import { Types } from 'mongoose';
+import { fetchCourseById } from '@/app/lib/api/coures'
+import type { CourseData } from '@/app/types/course'
+import { notFound } from 'next/navigation'
+import { pageMetadata } from '@/app/lib/seo'
+import type { Metadata } from 'next'
 
+export async function generateMetadata({ params }: { params: Promise<{ courseId: string }> }): Promise<Metadata> {
+  const { courseId } = await params
+  const course = (await fetchCourseById(courseId))[0]
+  if (!course) return { title: 'Course not found', robots: { index: false, follow: false } }
 
-
-
-export interface CourseData {
-  id:               Types.ObjectId
-  Namecourse:       string
-  DescriptionCourse:string
-  shortDescription: string
-  category:         string
-  level:            string
-  duration:         number
-  XpNumber:         number
-  AchievementsIcon: string
-  Icon:             string
-  modules:          string[]
-  prerequisites:    string[]
-  learningOutcomes: string[]
-  rating:           number
-  totalLessons:     number
-  totalQuizzes:      number
-  enrollments:      number
-  imageUrl?:        string
-
-  o:number
-  i:number
+  return {
+    ...pageMetadata(course.Namecourse, course.shortDescription, `/Courses/${courseId}`),
+    robots: course.isPublished ? undefined : { index: false, follow: false },
+  }
 }
 
 
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const  {courseId}  = await params
-  let datacourse: CourseData | null = null 
-  console.log('Course Page - courseId:', courseId); 
-
-  try {
-    datacourse = await fetchCourseById(courseId)
-  } catch (error) {
-    console.log('Failed to fetch course:', error)
-  }
+  const courses: CourseData[] = await fetchCourseById(courseId).catch(() => [])
+  const datacourse: CourseData | null = courses[0] ?? null
 
   if (!datacourse) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-red-500">Course not found.</p>
-      </div>
-    )
+    notFound()
   }
 
   return (
@@ -59,7 +36,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600 mb-4">{datacourse.Namecourse}</h1>
             <p className="text-lg text-white mb-6">{datacourse.DescriptionCourse}</p>
-            <Link href={`/Courses/${datacourse.id}/Lesson/${datacourse.id}`}>
+            <Link href={`/Courses/${datacourse.id}/Lesson/${datacourse.lessonId || datacourse.id}`}>
               <Button button="Get Started"  />
             </Link>
           </div>

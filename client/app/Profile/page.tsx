@@ -10,7 +10,7 @@ async function getBackendSession() {
   const cookie = incomingHeaders.get("cookie") ?? "";
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_EXPRESS_URL}/api/auth/get-session`,
+    `${process.env.SERVER_API_URL || process.env.NEXT_PUBLIC_EXPRESS_URL || "http://localhost:8000"}/api/auth/get-session`,
     {
       method: "GET",
       headers: {
@@ -31,7 +31,7 @@ export default async function ProfilePage() {
   const session = await getBackendSession();
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/auth/Sign-In");
   }
 
   const user = session.user;

@@ -1,332 +1,376 @@
-import { Router, Request, Response,NextFunction} from 'express';
-import {courseModel,Icourse } from '../models/course';
-import mongoose from 'mongoose';
-import { auth } from '../middlewares/auth';
-import { role } from '../middlewares/roleauth';
+import { Router, Request, Response } from "express";
+import { courseModel, Icourse } from "../models/course";
+import { lessonModel, Ilesson } from "../models/lesson";
+import { chapterModel } from "../models/chapter";
+import mongoose from "mongoose";
+import { auth } from "../middlewares/auth";
+import { role } from "../middlewares/roleauth";
 
-// this is a cart course 
+const router = Router();
 
-const router =Router();
-
-router.get("/CourseCard", async(req, res) => {
-    try{
-        const courses = await courseModel
-        .find()
-        .select('_id Namecourse category shortDescription imageUrl duration level rating');
-        res.status(200).send(courses);
-    }catch (error) {
-      
-        console.error("Failed to fetch courses", error);
-        res.status(500).json({ message: "Internal server error" });
-      }
-
-});
-
-
-router.get("/AllCourse", async (req: Request, res: Response, next: NextFunction):Promise<void> => {
-    try{
-        const courses = await courseModel
-        .find()
-        res.status(200).send(courses);
-        next();
-    }catch (error) {
-      
-        console.error("Failed to fetch courses", error);
-        res.status(500).json({ message: "Internal server error" });
-      }
-
-});
-
-// all user courses
-router.get("/course/CourseCard", async(req, res) => {
-  try{
-      const courses = await courseModel
+router.get("/CourseCard", async (req, res) => {
+  try {
+    const courses = await courseModel
       .find()
-      .limit(1)
-      .select('_id Namecourse category shortDescription imageUrl duration level rating');
-      res.status(200).send(courses);
-  }catch (error) {
-    
+      .select(
+        "_id Namecourse category shortDescription imageUrl duration level rating",
+      )
+      .lean();
+
+    const lessons = await lessonModel.find().select("courseId").lean();
+    const lessonMap = new Map(lessons.map((l) => [l.courseId.toString(), l._id.toString()]));
+
+    const mapped = courses.map((c) => ({
+      id: c._id,
+      ...c,
+      lessonId: lessonMap.get(c._id.toString()) || null,
+    }));
+    res.status(200).send(mapped);
+  } catch (error) {
+    console.error("Failed to fetch courses", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/CourseCardHomepage", async (req, res) => {
+  try {
+    const courses = await courseModel
+      .find()
+      .select(
+        "_id Namecourse category shortDescription imageUrl duration level rating",
+      )
+      .limit(6)
+      .lean();
+    const mapped = courses.map((c) => ({ id: c._id, ...c }));
+    res.status(200).send(mapped);
+  } catch (error) {
+    console.error("Failed to fetch homepage courses", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get(
+  "/AllCourse",
+  async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const courses = await courseModel.find();
+      res.status(200).json(courses);
+    } catch (error) {
       console.error("Failed to fetch courses", error);
       res.status(500).json({ message: "Internal server error" });
     }
+  },
+);
 
-});
+router.get(
+  "/CourseCardSingle",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const courses = await courseModel
+        .find()
+        .limit(1)
+        .select(
+          "_id Namecourse category shortDescription imageUrl duration level rating",
+        );
+      res.status(200).json(courses);
+    } catch (error) {
+      console.error("Failed to fetch courses", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
 
-
-
-
-// this is a course page all user can see
-router.get("/:id", 
-  
-  async (req: Request, res: Response):Promise<any> => {
+// Course detail page — joins course + lesson
+router.get(
+  "/:id",
+  async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
     if (!id) {
-        return res.status(400).json({ message: "Course ID is required" });
+      return res.status(400).json({ message: "Course ID is required" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid course ID format" });
+    }
 
-    }if (!mongoose.Types.ObjectId.isValid(`id`)) {
-        return res.status(400).json({ message: 'Invalid course ID format' });
+    try {
+      const Course = await courseModel.findById(id).select("-__v");
+      if (!Course) {
+        return res.status(404).json({ message: "Course not found" });
       }
 
-    try{
-        const Course = await courseModel
-        .findById(id)
-        .select('-__v'); // Exclude __v field from the response
-        if(!Course) {
-            return res.status(404).json({ message: "Lesson not found" });
-        }
+      const Lesson = await lessonModel.findOne({ courseId: id }).select("-__v").lean();
 
-        
-        const {
-            _id,
-            Namecourse,
-            DescriptionCourse,
-            category,
-            level,
-            duration,
-            rating,
-            price,
-            imageUrl,
-            XpNumber,
-            prerequisites,
-            learningOutcomes,
-            totalLessons,
-            totalQuizzes,
-            enrollments,
-            videoUrl,
-            text,
-            quize,
-            createdAt,
-            updatedAt
-          } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
-      
-          res.status(200).json({
-            id: _id,
-            Namecourse,
-            DescriptionCourse,
-            category,
-            level,
-            duration,
-            rating,
-            imageUrl,
-            XpNumber,
-            price,
-            prerequisites,
-            learningOutcomes,
-            totalLessons,
-            totalQuizzes,
-            enrollments,
-            videoUrl,
-            text,
-            quize,
-            createdAt,
-            updatedAt
-          });
-        } catch (err) {
-          console.error('Failed to fetch course', err);
-          res.status(500).json({ message: 'Internal server error' });
-        }
+      const {
+        _id,
+        Namecourse,
+        DescriptionCourse,
+        category,
+        level,
+        duration,
+        rating,
+        price,
+        imageUrl,
+        prerequisites,
+        createdAt,
+        updatedAt,
+        enrollments,
+        Instructor,
+        InstructorInformation,
+      } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
+
+      res.status(200).json({
+        id: _id,
+        Namecourse,
+        DescriptionCourse,
+        category,
+        level,
+        duration,
+        rating,
+        imageUrl,
+        price,
+        prerequisites,
+        enrollments,
+        Instructor,
+        InstructorInformation,
+        createdAt,
+        updatedAt,
+        ...(Lesson ? {
+          lessonId: Lesson._id.toString(),
+          learningOutcomes: Lesson.learningOutcomes,
+          totalLessons: Lesson.totalLessons,
+          totalQuizzes: Lesson.totalQuizzes,
+          XpNumber: Lesson.XpNumber,
+          videoUrl: Lesson.videoUrl,
+          text: Lesson.text,
+          quize: Lesson.quize,
+        } : {}),
       });
+    } catch (err) {
+      console.error("Failed to fetch course", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
 
-
-
-    router.get("/lesson/:id",
-
-       async (req: Request, res: Response):Promise<any> => {
-
+// Lesson page — queries lessonModel
+router.get(
+  "/lesson/:id",
+  async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
     if (!id) {
-        return res.status(400).json({ message: "Course ID is required" });
+      return res.status(400).json({ message: "Lesson ID is required" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid lesson ID format" });
+    }
 
-    }if (!mongoose.Types.ObjectId.isValid(`id`)) {
-        return res.status(400).json({ message: 'Invalid course ID format' });
+    try {
+      const lesson = await lessonModel.findById(id).select("-__v");
+      if (!lesson) {
+        return res.status(404).json({ message: "Lesson not found" });
       }
 
-    try{
-        const Lesson = await courseModel
-        .findById(id)
-        .select('-__v'); // Exclude __v field from the response
-        if(!Lesson) {
-            return res.status(404).json({ message: "Lesson not found" });
-        }
+      const {
+        _id,
+        Namecourse,
+        videoUrl,
+        text,
+        quize,
+        learningOutcomes,
+        totalLessons,
+        totalQuizzes,
+        enrollments,
+        XpNumber,
+        duration,
+        instructorId,
+        Instructor,
+      } = lesson.toObject() as Ilesson & { _id: mongoose.Types.ObjectId };
 
-        
-        const {
-            _id,   
-            Namecourse,
-            videoUrl,
-            text,
-            quize,
-            totalLessons,
-            totalQuizzes,
-            enrollments,
-            XpNumber,
-            duration
-                        
-            
-          } = Lesson.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
-      
-          res.status(200).json({
-            id: _id,
-            Namecourse,
-            videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [], // Convert ObjectId to string
-            // Convert ObjectId to string for each field
-            text: text ? text.map((t: any) => t.toString()) : [],
-            quize: quize ? quize.map((q: any) => q.toString()) : [],
-            totalLessons,
-            totalQuizzes,
-            enrollments,
-            XpNumber ,
-            duration
-
-            
-          });
-        } catch (err) {
-          console.error('Failed to fetch lesson', err);
-          res.status(500).json({ message: 'Internal server error' });
-        }
+      res.status(200).json({
+        id: _id,
+        Namecourse,
+        videoUrl: videoUrl ? videoUrl.map((v: any) => v.toString()) : [],
+        text: text ? text.map((t: any) => t.toString()) : [],
+        quize: quize ? quize.map((q: any) => q.toString()) : [],
+        learningOutcomes: learningOutcomes ? learningOutcomes.map((o: any) => o.toString()) : [],
+        totalLessons,
+        totalQuizzes,
+        enrollments,
+        XpNumber,
+        duration,
+        instructorId,
+        instructorUserName: Instructor,
       });
+    } catch (err) {
+      console.error("Failed to fetch lesson", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+);
 
+// Create course + lesson
+router.post(
+  "/AddCourse",
+  auth,
+  role("admin", "instrator"),
+  async (req, res) => {
+    try {
+      const {
+        Namecourse,
+        DescriptionCourse,
+        shortDescription,
+        category,
+        level,
+        imageUrl,
+        duration,
+        modules,
+        prerequisites,
+        price,
+        isPublished,
+        Instructor,
+        InstructorInformation,
+        learningOutcomes,
+        XpNumber,
+        videoUrl,
+        text,
+        quize,
+        totalLessons,
+        totalQuizzes,
+        enrollments,
+      } = req.body;
 
+      const course = new courseModel({
+        Namecourse,
+        DescriptionCourse,
+        shortDescription,
+        category,
+        level,
+        imageUrl,
+        duration,
+        modules,
+        prerequisites,
+        price,
+        isPublished,
+        Instructor,
+        InstructorInformation,
+        instructorId: req.user?.id,
+      });
+      const savedCourse = await course.save();
 
+      const lesson = new lessonModel({
+        courseId: savedCourse._id,
+        Namecourse,
+        videoUrl: videoUrl || [],
+        text: text || [],
+        quize: quize || [],
+        learningOutcomes: learningOutcomes || [],
+        totalLessons: totalLessons || 0,
+        totalQuizzes: totalQuizzes || 0,
+        enrollments: enrollments || 0,
+        XpNumber: XpNumber || 0,
+        duration: duration || 0,
+        instructorId: req.user?.id,
+        Instructor,
+      });
+      await lesson.save();
 
-// this is a course page all user can see
-  
+      res.status(201).json(savedCourse);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  },
+);
 
-
-
-
-
-
-
-
-
-// Method 2: Get all lessons for a specific course
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- //auth,role("admin")
-// add onlie admin can add a course
- router.post("/AddCourse",
-    auth,
-    role("admin"),
-   async(req, res) => {
-     try{
-        const {
-            Namecourse,
-            DescriptionCourse,
-            shortDescription,
-            category,
-            level,
-            imageUrl,
-            duration,
-            modules,
-            prerequisites,
-            learningOutcomes,
-            price,
-            isPublished,
-            XpNumber,
-            videoUrl,
-            text,
-            quize,
-            
-        } = req.body;
-
-         const course = new courseModel({
-             Namecourse, 
-             DescriptionCourse,
-              shortDescription,
-            category,
-            level,
-            imageUrl,
-            duration,
-            modules,
-            prerequisites,
-            learningOutcomes,
-            price,
-            isPublished,
-            XpNumber,
-            videoUrl,
-            text,
-            quize,
-            
-         });
-         const data = await course.save();
-         res.status(201).json(data);
-     }catch(err){
-         res.status(404).json(err);
-     };
- });
-// update course
-
-
-
-/*
-router.put("/UpdateCourse/:id", auth, role("admin"), async(req: Request, res: Response): Promise<void> =>{
-  try{
+// Update course + lesson
+router.put("/UpdateCourse/:id", auth, async (req: Request, res: Response): Promise<void> => {
+  try {
     const id = req.params.id;
-    const {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse} = req.body;
-    const updatedCourse = await courseModel.findByIdAndUpdate
-    (id, {Namecourse, Descriptioncourse, Typecourse, levelcourse, imagecourse},
-      { new: true, runValidators: true });
-    if (!updatedCourse) {
-      return res.status(404).json({ message: "Course not found" });
-      }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ message: "Invalid course ID format" });
+      return;
+    }
+
+    const course = await courseModel.findById(id);
+    if (!course) {
+      res.status(404).json({ message: "Course not found" });
+      return;
+    }
+
+    const isAdmin = req.user?.role === "admin";
+    const isOwner = course.instructorId === req.user?.id;
+    if (!isAdmin && !isOwner) {
+      res.status(403).json({ message: "Access denied" });
+      return;
+    }
+
+    const courseFields = [
+      "Namecourse", "DescriptionCourse", "shortDescription", "category",
+      "level", "imageUrl", "duration", "prerequisites",
+      "price", "isPublished", "Instructor", "InstructorInformation",
+    ];
+    const lessonFields = [
+      "learningOutcomes", "XpNumber", "videoUrl", "text", "quize",
+      "totalLessons", "totalQuizzes", "enrollments",
+    ];
+
+    const courseUpdates: Record<string, unknown> = {};
+    const lessonUpdates: Record<string, unknown> = {};
+
+    for (const field of courseFields) {
+      if (req.body[field] !== undefined) courseUpdates[field] = req.body[field];
+    }
+    for (const field of lessonFields) {
+      if (req.body[field] !== undefined) lessonUpdates[field] = req.body[field];
+    }
+
+    if (Object.keys(courseUpdates).length > 0) {
+      await courseModel.findByIdAndUpdate(id, courseUpdates, { new: true, runValidators: true });
+    }
+    if (Object.keys(lessonUpdates).length > 0) {
+      await lessonModel.findOneAndUpdate({ courseId: id }, lessonUpdates, { new: true, runValidators: true });
+    }
+
+    const updatedCourse = await courseModel.findById(id);
     res.status(200).json(updatedCourse);
   } catch (err) {
     console.error("Failed to update course", err);
     res.status(500).json({ message: "Internal server error" });
   }
-
 });
-*/
 
-
-
-
-// delete course
-/*
-router.delete("/DeleteCourse/:id", auth, role("admin"), async (req, res) => {
-  try { 
+// Delete course + lesson + chapters
+router.delete("/DeleteCourse/:id", auth, async (req: Request, res: Response): Promise<void> => {
+  try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid course ID format' });
+      res.status(400).json({ message: "Invalid course ID format" });
+      return;
     }
-    const deletedCourse = await courseModel.findByIdAndDelete(id);
-    if (!deletedCourse) {
-      return res.status(404).json({ message: "Course not found" });
+
+    const course = await courseModel.findById(id);
+    if (!course) {
+      res.status(404).json({ message: "Course not found" });
+      return;
     }
+
+    const isAdmin = req.user?.role === "admin";
+    const isOwner = course.instructorId === req.user?.id;
+    if (!isAdmin && !isOwner) {
+      res.status(403).json({ message: "Access denied" });
+      return;
+    }
+
+    const lesson = await lessonModel.findOne({ courseId: id });
+    if (lesson) {
+      await chapterModel.deleteMany({ lessonId: lesson._id });
+      await lessonModel.findByIdAndDelete(lesson._id);
+    }
+    await courseModel.findByIdAndDelete(id);
     res.status(200).json({ message: "Course deleted successfully" });
   } catch (err) {
     console.error("Failed to delete course", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
-*/
 
 export default router;
