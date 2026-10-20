@@ -31,7 +31,7 @@ function connection() {
         }
         catch (err) {
             console.log("MongoDB connection error:", err);
-            process.exit(1);
+            throw err;
         }
     });
 }

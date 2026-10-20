@@ -15,20 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
 const chapter_1 = require("../models/chapter");
+const lesson_1 = require("../models/lesson");
 const course_1 = require("../models/course");
 const roleauth_1 = require("../middlewares/roleauth");
 const auth_1 = require("../middlewares/auth");
+const csrf_1 = require("../middlewares/csrf");
+const sanitize_1 = require("../middlewares/sanitize");
 const router = (0, express_1.Router)();
-router.get("/getChapter/:courseId", auth_1.auth, (0, roleauth_1.role)("admin", "instrator", "user"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { courseId } = req.params;
-    if (!mongoose_1.default.Types.ObjectId.isValid(courseId)) {
-        res.status(400).json({ message: "Invalid course ID format" });
+router.get("/getChapter/:lessonId", auth_1.auth, (0, roleauth_1.role)("admin", "instructor", "user"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { lessonId } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(lessonId)) {
+        res.status(400).json({ message: "Invalid lesson ID format" });
         return;
     }
     try {
         const chapters = yield chapter_1.chapterModel
-            .find({ courseId })
-            .populate('courseId', 'ChapterTitle videoUrl text quize')
+            .find({ lessonId })
             .sort({ order: 1 });
         res.json(chapters);
     }
@@ -37,27 +39,28 @@ router.get("/getChapter/:courseId", auth_1.auth, (0, roleauth_1.role)("admin", "
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-router.post("/addChapter", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/addChapter", auth_1.auth, (0, roleauth_1.role)("admin", "instructor"), csrf_1.csrfMiddleware, sanitize_1.sanitizeMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, courseId } = req.body;
-    if (!mongoose_1.default.Types.ObjectId.isValid(courseId)) {
-        res.status(400).json({ message: "Invalid course ID format" });
+    const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, lessonId } = req.body;
+    if (!mongoose_1.default.Types.ObjectId.isValid(lessonId)) {
+        res.status(400).json({ message: "Invalid lesson ID format" });
         return;
     }
     try {
-        const course = yield course_1.courseModel.findById(courseId);
-        if (!course) {
-            res.status(404).json({ message: "Course not found" });
+        const lesson = yield lesson_1.lessonModel.findById(lessonId);
+        if (!lesson) {
+            res.status(404).json({ message: "Lesson not found" });
             return;
         }
+        const course = yield course_1.courseModel.findById(lesson.courseId);
         const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
-        const isOwner = course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
+        const isOwner = course && course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
         if (!isAdmin && !isOwner) {
             res.status(403).json({ message: "Access denied — you do not own this course" });
             return;
         }
         const newChapter = new chapter_1.chapterModel({
-            ChapterTitle, order, videoUrl, textTitle, text, quize, courseId, videoTitle, filename, filedata
+            ChapterTitle, order, videoUrl, textTitle, text, quize, lessonId, videoTitle, filename, filedata
         });
         const savedChapter = yield newChapter.save();
         res.status(201).json(savedChapter);
@@ -67,7 +70,7 @@ router.post("/addChapter", auth_1.auth, (0, roleauth_1.role)("admin", "instrator
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-router.put("/updateChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/updateChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instructor"), csrf_1.csrfMiddleware, sanitize_1.sanitizeMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const { id } = req.params;
     if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
@@ -80,7 +83,8 @@ router.put("/updateChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "ins
             res.status(404).json({ message: "Chapter not found" });
             return;
         }
-        const course = yield course_1.courseModel.findById(chapter.courseId);
+        const lesson = yield lesson_1.lessonModel.findById(chapter.lessonId);
+        const course = lesson ? yield course_1.courseModel.findById(lesson.courseId) : null;
         const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
         const isOwner = course && course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
         if (!isAdmin && !isOwner) {
@@ -104,7 +108,7 @@ router.put("/updateChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "ins
         res.status(500).json({ message: "Internal server error" });
     }
 }));
-router.delete("/deleteChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/deleteChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "instructor"), csrf_1.csrfMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const { id } = req.params;
     if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
@@ -117,7 +121,8 @@ router.delete("/deleteChapter/:id", auth_1.auth, (0, roleauth_1.role)("admin", "
             res.status(404).json({ message: "Chapter not found" });
             return;
         }
-        const course = yield course_1.courseModel.findById(chapter.courseId);
+        const lesson = yield lesson_1.lessonModel.findById(chapter.lessonId);
+        const course = lesson ? yield course_1.courseModel.findById(lesson.courseId) : null;
         const isAdmin = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "admin";
         const isOwner = course && course.instructorId === ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id);
         if (!isAdmin && !isOwner) {

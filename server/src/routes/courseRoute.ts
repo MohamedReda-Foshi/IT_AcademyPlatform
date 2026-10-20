@@ -5,6 +5,8 @@ import { chapterModel } from "../models/chapter";
 import mongoose from "mongoose";
 import { auth } from "../middlewares/auth";
 import { role } from "../middlewares/roleauth";
+import { csrfMiddleware } from "../middlewares/csrf";
+import { sanitizeMiddleware } from "../middlewares/sanitize";
 
 const router = Router();
 
@@ -13,7 +15,7 @@ router.get("/CourseCard", async (req, res) => {
     const courses = await courseModel
       .find()
       .select(
-        "_id Namecourse category shortDescription imageUrl duration level rating",
+        "_id Namecourse category shortDescription imageUrl duration level rating isPublished",
       )
       .lean();
 
@@ -104,6 +106,7 @@ router.get(
         _id,
         Namecourse,
         DescriptionCourse,
+        shortDescription,
         category,
         level,
         duration,
@@ -116,12 +119,14 @@ router.get(
         enrollments,
         Instructor,
         InstructorInformation,
+        isPublished,
       } = Course.toObject() as Icourse & { _id: mongoose.Types.ObjectId };
 
       res.status(200).json({
         id: _id,
         Namecourse,
         DescriptionCourse,
+        shortDescription,
         category,
         level,
         duration,
@@ -132,6 +137,7 @@ router.get(
         enrollments,
         Instructor,
         InstructorInformation,
+        isPublished,
         createdAt,
         updatedAt,
         ...(Lesson ? {
@@ -212,7 +218,9 @@ router.get(
 router.post(
   "/AddCourse",
   auth,
-  role("admin", "instrator"),
+  role("admin", "instructor"),
+  csrfMiddleware,
+  sanitizeMiddleware,
   async (req, res) => {
     try {
       const {
@@ -282,7 +290,7 @@ router.post(
 );
 
 // Update course + lesson
-router.put("/UpdateCourse/:id", auth, async (req: Request, res: Response): Promise<void> => {
+router.put("/UpdateCourse/:id", auth, csrfMiddleware, sanitizeMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -339,7 +347,7 @@ router.put("/UpdateCourse/:id", auth, async (req: Request, res: Response): Promi
 });
 
 // Delete course + lesson + chapters
-router.delete("/DeleteCourse/:id", auth, async (req: Request, res: Response): Promise<void> => {
+router.delete("/DeleteCourse/:id", auth, csrfMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(id)) {

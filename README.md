@@ -35,6 +35,7 @@ PORT=8000
 DATAURL=mongodb://localhost:27017/elearn
 BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=your-secret-here
+CORS_ORIGIN=http://localhost:3000
 JWT_SECRET_KEY=your-jwt-secret
 FRONT_END_PORT=http://localhost:3000
 BACK_END_PORT=http://localhost:8000
@@ -74,14 +75,6 @@ npm run dev
 
 Visit **http://localhost:3000**
 
-## Seed Data
-
-The DB already has an admin account:
-
-| Email | Password | Role |
-|---|---|---|
-| test@gmail.com | 123456789 | admin |
-
 ## Running everything with Docker
 
 ```bash
@@ -104,7 +97,7 @@ docker compose up --build
 - `GET /course/CourseCard` — All courses
 - `GET /course/CourseCardHomepage` — Homepage courses (max 6)
 - `GET /course/:id` — Single course
-- `POST /course/AddCourse` — Create course (admin/instrator)
+- `POST /course/AddCourse` — Create course (admin/instructor)
 - `PUT /course/UpdateCourse/:id` — Update course (owner/admin)
 - `DELETE /course/DeleteCourse/:id` — Delete course (owner/admin)
 
@@ -117,7 +110,7 @@ docker compose up --build
 - `DELETE /dashboard/deleuser` — Delete user
 
 ### Instructor
-- `GET /instructor/my-courses` — My courses (instrator)
+- `GET /instructor/my-courses` — My courses (instructor)
 - `GET /instructor/all` — All instructors + courses (admin)
 
 ## Project Structure
@@ -150,5 +143,27 @@ docker compose up --build
 | Role | Permissions |
 |---|---|
 | user | View courses, chapters |
-| instrator | Create/edit own courses |
+| instructor | Create/edit own courses |
 | admin | Full access — manage courses, chapters, users |
+
+## Vercel deployment
+
+Create two Vercel projects from this repository: set the root directory to `server` for the Express API and `client` for the Next.js app. Deploy the API first, then set the frontend's `SERVER_API_URL` to its HTTPS URL. The frontend routes browser requests through its rewrites, so auth cookies stay on the frontend origin.
+
+The API needs a hosted MongoDB connection; `mongodb://localhost` is only for local development. Set these API environment variables for production:
+
+| Variable | Value |
+|---|---|
+| `DATAURL` | Hosted MongoDB connection string with database name |
+| `CORS_ORIGIN` | Exact HTTPS origin of the frontend, without a trailing slash |
+| `BETTER_AUTH_URL` | HTTPS URL used for auth routes on the frontend |
+| `BETTER_AUTH_SECRET` | Random secret of at least 32 characters |
+| `STRIPE_PRIVATE_KEY` | Production Stripe secret key |
+| `STRIPE_WEBHOOK_SECRET` | Signing secret for the production webhook |
+| `FRONT_END_PORT` | Same HTTPS frontend origin, for JWT issuer |
+
+Set `SERVER_API_URL` on the frontend project to the API project's HTTPS origin. Register the frontend URL plus `/api/auth/stripe/webhook` as the Stripe webhook endpoint, and configure its signing secret on the API project. Configure the production plan price IDs in `server/src/lib/auth.ts` before accepting payments; the current IDs are hardcoded. Vercel provides HTTPS for its deployment domains. After deployment, verify login, course creation and deletion, quiz submission, and a signed Stripe webhook against the live services.
+
+SEO canonical links, `robots.txt`, and `sitemap.xml` use Vercel's production domain variable. Local builds use `http://localhost:3000`; build on Vercel for production URLs.
+
+Keep secrets in Vercel project environment variables. Never copy `server/.env` into the deployment or commit it.

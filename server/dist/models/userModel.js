@@ -41,7 +41,7 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     role: {
         type: String,
-        enum: ["user", "admin", "instrator"],
+        enum: ["user", "admin", "instructor"],
         required: true,
     },
     about: { type: String, default: "" },

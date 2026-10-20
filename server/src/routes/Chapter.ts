@@ -5,10 +5,12 @@ import { lessonModel } from '../models/lesson';
 import { courseModel } from '../models/course';
 import { role } from '../middlewares/roleauth';
 import { auth } from '../middlewares/auth';
+import { csrfMiddleware } from '../middlewares/csrf';
+import { sanitizeMiddleware } from '../middlewares/sanitize';
 
 const router = Router();
 
-router.get("/getChapter/:lessonId", auth, role("admin", "instrator", "user"),
+router.get("/getChapter/:lessonId", auth, role("admin", "instructor", "user"),
   async (req: Request, res: Response): Promise<void> => {
     const { lessonId } = req.params;
 
@@ -30,7 +32,7 @@ router.get("/getChapter/:lessonId", auth, role("admin", "instrator", "user"),
   }
 );
 
-router.post("/addChapter", auth, role("admin", "instrator"), async (req: Request, res: Response): Promise<void> => {
+router.post("/addChapter", auth, role("admin", "instructor"), csrfMiddleware, sanitizeMiddleware, async (req: Request, res: Response): Promise<void> => {
   const { ChapterTitle, order, videoUrl, videoTitle, textTitle, text, quize, filename, filedata, lessonId } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(lessonId)) {
@@ -65,7 +67,7 @@ router.post("/addChapter", auth, role("admin", "instrator"), async (req: Request
   }
 });
 
-router.put("/updateChapter/:id", auth, role("admin", "instrator"), async (req: Request, res: Response): Promise<void> => {
+router.put("/updateChapter/:id", auth, role("admin", "instructor"), csrfMiddleware, sanitizeMiddleware, async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -106,7 +108,7 @@ router.put("/updateChapter/:id", auth, role("admin", "instrator"), async (req: R
   }
 });
 
-router.delete("/deleteChapter/:id", auth, role("admin", "instrator"), async (req: Request, res: Response): Promise<void> => {
+router.delete("/deleteChapter/:id", auth, role("admin", "instructor"), csrfMiddleware, async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {

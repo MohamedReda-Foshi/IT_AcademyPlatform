@@ -6,7 +6,7 @@ import { role } from "../middlewares/roleauth";
 
 const router = Router();
 
-router.get("/my-courses", auth, role("instrator"), async (req: Request, res: Response): Promise<void> => {
+router.get("/my-courses", auth, role("instructor"), async (req: Request, res: Response): Promise<void> => {
   try {
     const courses = await courseModel
       .find({ instructorId: req.user?.id })
@@ -23,7 +23,7 @@ router.get("/all", auth, role("admin"), async (req: Request, res: Response): Pro
   try {
     const instructors = await db
       .collection("user")
-      .find({ role: "instrator" })
+      .find({ role: "instructor" })
       .project({ name: 1, email: 1, role: 1, about: 1, createdAt: 1 })
       .toArray();
 

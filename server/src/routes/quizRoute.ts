@@ -3,12 +3,15 @@ import mongoose from "mongoose";
 import { quizModel } from "../models/quiz";
 import { lessonModel } from "../models/lesson";
 import { courseModel } from "../models/course";
+import { chapterModel } from "../models/chapter";
 import { role } from "../middlewares/roleauth";
 import { auth } from "../middlewares/auth";
+import { csrfMiddleware } from "../middlewares/csrf";
+import { sanitizeMiddleware } from "../middlewares/sanitize";
 
 const router = Router();
 
-router.get("/byChapter/:chapterId", auth, role("admin", "instrator", "user"),
+router.get("/byChapter/:chapterId", auth, role("admin", "instructor", "user"),
   async (req: Request, res: Response): Promise<void> => {
     const { chapterId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(chapterId)) {
@@ -16,7 +19,7 @@ router.get("/byChapter/:chapterId", auth, role("admin", "instrator", "user"),
       return;
     }
     try {
-      const quiz = await quizModel.findOne({ chapterId });
+      const quiz = await quizModel.findOne({ chapterId }).select("-questions.correctAnswer");
       if (!quiz) {
         res.status(404).json({ message: "No quiz found for this chapter" });
         return;
@@ -29,7 +32,7 @@ router.get("/byChapter/:chapterId", auth, role("admin", "instrator", "user"),
   }
 );
 
-router.get("/byLesson/:lessonId", auth, role("admin", "instrator", "user"),
+router.get("/byLesson/:lessonId", auth, role("admin", "instructor", "user"),
   async (req: Request, res: Response): Promise<void> => {
     const { lessonId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(lessonId)) {
@@ -46,7 +49,7 @@ router.get("/byLesson/:lessonId", auth, role("admin", "instrator", "user"),
   }
 );
 
-router.post("/create", auth, role("admin", "instrator"),
+router.post("/create", auth, role("admin", "instructor"), csrfMiddleware, sanitizeMiddleware,
   async (req: Request, res: Response): Promise<void> => {
     const { title, chapterId, lessonId, questions, passingScore } = req.body;
 
@@ -64,7 +67,7 @@ router.post("/create", auth, role("admin", "instrator"),
     }
 
     for (const q of questions) {
-      if (!q.question || !q.options || q.options.length < 2 || q.correctAnswer === undefined) {
+      if (!q || typeof q.question !== "string" || !Array.isArray(q.options) || q.options.length < 2 || q.correctAnswer === undefined) {
         res.status(400).json({ message: "Each question needs: question text, 2+ options, and correctAnswer index" });
         return;
       }
@@ -74,6 +77,12 @@ router.post("/create", auth, role("admin", "instrator"),
       const lesson = await lessonModel.findById(lessonId);
       if (!lesson) {
         res.status(404).json({ message: "Lesson not found" });
+        return;
+      }
+
+      const chapter = await chapterModel.findById(chapterId);
+      if (!chapter || chapter.lessonId?.toString() !== lessonId) {
+        res.status(400).json({ message: "Chapter does not belong to lesson" });
         return;
       }
 
@@ -107,7 +116,7 @@ router.post("/create", auth, role("admin", "instrator"),
   }
 );
 
-router.put("/update/:id", auth, role("admin", "instrator"),
+router.put("/update/:id", auth, role("admin", "instructor"), csrfMiddleware, sanitizeMiddleware,
   async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -147,7 +156,7 @@ router.put("/update/:id", auth, role("admin", "instrator"),
   }
 );
 
-router.delete("/delete/:id", auth, role("admin", "instrator"),
+router.delete("/delete/:id", auth, role("admin", "instructor"), csrfMiddleware,
   async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -180,7 +189,7 @@ router.delete("/delete/:id", auth, role("admin", "instrator"),
   }
 );
 
-router.post("/submit/:id", auth, role("admin", "instrator", "user"),
+router.post("/submit/:id", auth, role("admin", "instructor", "user"),
   async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) {

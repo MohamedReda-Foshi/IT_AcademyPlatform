@@ -9,10 +9,11 @@ const stripe_1 = require("@better-auth/stripe");
 const stripe_2 = require("../config/stripe");
 exports.auth = (0, better_auth_1.betterAuth)({
     database: (0, mongodb_1.mongodbAdapter)(database_1.db),
+    trustedOrigins: [process.env.CORS_ORIGIN || "http://localhost:3000"],
     emailAndPassword: {
         enabled: true,
     },
-    plugin: [
+    plugins: [
         (0, stripe_1.stripe)({
             stripeClient: stripe_2.stripeClient,
             stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
@@ -66,7 +67,7 @@ exports.auth = (0, better_auth_1.betterAuth)({
                 input: true,
             },
             role: {
-                type: ["user", "admin", "instrator"],
+                type: ["user", "admin", "instructor"],
                 required: false,
                 defaultValue: "user",
                 input: false,

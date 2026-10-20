@@ -15,7 +15,7 @@ const course_1 = require("../models/course");
 const auth_1 = require("../middlewares/auth");
 const roleauth_1 = require("../middlewares/roleauth");
 const router = (0, express_1.Router)();
-router.get("/my-courses", auth_1.auth, (0, roleauth_1.role)("instrator"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/my-courses", auth_1.auth, (0, roleauth_1.role)("instructor"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const courses = yield course_1.courseModel
@@ -33,7 +33,7 @@ router.get("/all", auth_1.auth, (0, roleauth_1.role)("admin"), (req, res) => __a
     try {
         const instructors = yield database_1.db
             .collection("user")
-            .find({ role: "instrator" })
+            .find({ role: "instructor" })
             .project({ name: 1, email: 1, role: 1, about: 1, createdAt: 1 })
             .toArray();
         const courses = yield course_1.courseModel

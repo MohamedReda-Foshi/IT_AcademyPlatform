@@ -39,12 +39,12 @@ const chapterSchema = new mongoose_1.Schema({
     ChapterTitle: { type: String, required: true, trim: true },
     order: { type: Number, required: true, default: 0 },
     videoTitle: { type: String, default: null },
-    videoUrl: { type: String, default: null }, // Optional video URL
+    videoUrl: { type: String, default: null },
     textTitle: { type: String, default: null },
-    text: { type: [String], default: null }, // Optional text content
-    quize: { type: String, default: null }, // Optional quiz content
+    text: { type: [String], default: null },
+    quize: { type: String, default: null },
     filename: { type: String, default: null },
     filedata: { type: String, default: null },
-    courseId: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Course", required: true }, // Reference to the course 
+    lessonId: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Lesson", required: true },
 });
 exports.chapterModel = mongoose_1.default.model('Chapter', chapterSchema);

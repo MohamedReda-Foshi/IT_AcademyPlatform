@@ -51,19 +51,12 @@ const courseSchema = new mongoose_1.Schema({
     modules: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Module" }],
     prerequisites: [{ type: String }],
     price: { type: String, enum: ["Free", "Paid"], default: "Free" },
-    rating: { type: Number, default: 0, min: 0, max: 5 }, // Fixed: single number
-    learningOutcomes: [{ type: String }],
+    rating: { type: Number, default: 0, min: 0, max: 5 },
     isPublished: { type: Boolean, default: false },
-    totalLessons: { type: Number, default: 0 },
-    totalQuizzes: { type: Number, default: 0 },
     enrollments: { type: Number, default: 0 },
-    XpNumber: { type: Number, default: 0 },
     instructorId: { type: String, index: true },
     Instructor: { type: String },
     InstructorInformation: { type: String },
-    videoUrl: [{ type: String }],
-    text: [{ type: String }],
-    quize: [{ type: String }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

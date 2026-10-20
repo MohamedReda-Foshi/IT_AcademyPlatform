@@ -12,10 +12,13 @@ import { auth } from "./lib/auth";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import morgan from "morgan";
+import { csrfMiddleware } from "./middlewares/csrf";
 
 dotenv.config();
 
 const app = express();
+if (process.env.VERCEL) app.set("trust proxy", 1);
 
 app.use(helmet());
 
@@ -34,15 +37,38 @@ app.use(
   }),
 );
 
+app.use(morgan("combined"));
+
 app.use(express.json({
   verify: (req: any, _res, buf) => { req.rawBody = buf; }
 }));
 
+let databaseReady: Promise<void> | undefined;
+function connectDatabase(): Promise<void> {
+  databaseReady ??= Promise.all([client.connect(), connection()]).then(() => undefined).catch((error) => {
+    databaseReady = undefined;
+    throw error;
+  });
+  return databaseReady;
+}
+
+if (process.env.VERCEL) {
+  app.use(async (_req, _res, next) => {
+    try {
+      await connectDatabase();
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+}
+
+app.all("/api/auth/*", toNodeHandler(auth));
+app.use(csrfMiddleware);
+
 app.get("/", (_req, res) => {
   res.send("Home page!");
 });
-
-app.all("/api/auth/*", toNodeHandler(auth));
 
 app.use("/dashboard", admin);
 app.use("/chapter", chapter);
@@ -57,14 +83,13 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 async function bootstrap() {
-  await client.connect();
-  await connection();
+  await connectDatabase();
 
   app.listen(process.env.PORT || 8000, () => {
     console.log(`Server running on port ${process.env.PORT || 8000}`);
   });
 }
 
-bootstrap();
+if (!process.env.VERCEL) bootstrap();
 
 export default app;
